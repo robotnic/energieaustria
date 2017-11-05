@@ -1,0 +1,15 @@
+{
+  "name": "energiecharts",
+  "version": "1.0.0",
+  "description": " energy charts austria",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular-chart.js": "^1.1.1",
+    "express": "^4.16.2"
+  }
+}
