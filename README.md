@@ -1,4 +1,5 @@
-API für österreichische Energiedaten mit angular UI
+REST mit angular-nvd3 frontend. 
+Die Daten werden aus diversen (copyright?) Quellen bezogen und in einer Postgres gelagert. 
 
 # API
 There is REST API to retrieve the Data. 
