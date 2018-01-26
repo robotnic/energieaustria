@@ -1,0 +1,70 @@
+{
+  "Pumpspeicher": {
+    "color": "lime",
+    "minpower": -1.9,
+    "maxpower": 5,
+    "type": "pump"
+  },
+  "Power2Gas": {
+    "color": "pink",
+    "type": "loss"
+  },
+  "Lauf- und Schwellwasser": {
+    "color": "#0000ff",
+    "type": "renewable"
+  },
+  "Kohle": {
+    "color": "black",
+    "type": "fossil"
+  },
+  "Öl": {
+    "color": "darkbrown",
+    "type": "fossil"
+  },
+  "Gas": {
+    "color": "red",
+    "type": "fossil"
+  },
+  "Biomasse": {
+    "color": "#f4a460",
+    "type": "renewable"
+  },
+  "Wind": {
+    "color": "#add8e6",
+    "type": "renewable"
+  },
+  "Sonstige Erneuerbare": {
+    "color": "#00ff00",
+    "type": "renewable"
+  },
+  "Geothermie": {
+    "color": "#ff99ff",
+    "type": "renewable"
+  },
+  "Speicher": {
+    "color": "purple",
+    "minpower": 0,
+    "maxpower": 2,
+    "type": "storage"
+  },
+  "Solar": {
+    "color": "#ffff00",
+    "type": "renewable"
+  },
+  "Müll": {
+    "color": "aqua",
+    "type": ""
+  },
+  "Andere": {
+    "color": "lightgrey",
+    "type": "fossil"
+  },
+  "Leistung [MW]": {
+    "color": "black",
+    "type": "total"
+  },
+   "Preis [EUR/MWh]": {
+    "color": "lightgreen",
+    "type": "price"
+  }
+}

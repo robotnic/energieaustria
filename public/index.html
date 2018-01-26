@@ -1,37 +1,42 @@
 <!DOCTYPE html>
-<html ng-app="energy">
-<head>
+<html ng-app="plunker">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Angular-nvD3 Multi Chart</title>
+    <script>document.write('<base href="' + document.location + '" />');</script>
+    <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
     <link rel="stylesheet" href="style.css" />
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1/nv.d3.min.css"/>   
-<style type="text/css">
-#chart{
-width:1600px;
-height:1200px;
-margin-left:50px;
-}
-#labels{
-position:absolute;
-right:10px;
-top:10px;
-}
-.color{
-width:10px;
-height:10px;
-display:inline-block;
-}
-.md-default-theme.md-hue-2 .md-datepicker-input, .md-hue-2 .md-datepicker-input {
-    color: white !important;
-}
-</style>
-</head>
-<body ng-controller="chart">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.2/nv.d3.min.css"/>    
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.6.8/angular-locale_de-at.js"></script>
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.2/nv.d3.min.js"></script>
+    <script src="https://rawgit.com/krispo/angular-nvd3/v1.0.6/dist/angular-nvd3.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/angular-moment/angular-moment.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+
+
+    <script src="services/dataManager.js"></script>
+    <script src="directives/chart.js"></script>
+    <script src="directives/pie.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body ng-controller="MainCtrl">
     <md-toolbar class="md-hue-2">
       <div class="md-toolbar-tools">
-
+        <a href="/">
         <img src="images/logo.png" style="height:36px;"/>
+        </a>
         <h2 flex md-truncate>Stromerzeugung Österreich</h2>
 
         <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
@@ -52,36 +57,97 @@ display:inline-block;
       <md-radio-button value="week"> week </md-radio-button>
       <md-radio-button value="month">month</md-radio-button>
     </md-radio-group>
-<!-- 
-<div style="position:absolute;right:40px;top:0px">
-<md-button ng-click="reload()" style="font-size:20px">⟲</md-button>
-<md-button ng-click="previouseDay()">◀</md-button>
-<md-button ng-click="nextDay()">▶</md-button>
- <md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date"></md-datepicker>
-</div>
--->
-<br/>
-<br/>
-<div id="chart">
-<nvd3 g-if="data[1]" options="options" data="data" api="rc.api" config="config"></nvd3>
-</div>
-<div id="labels">
-<div ng-repeat="serie in series">
-<div class="color" style="background-color:{{colors[$index]}}"></div>
-{{serie}}
-</div>
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
-<script src="bower_components/chart.js/dist/Chart.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.3/nv.d3.min.js"></script>
-<script src="https://rawgit.com/krispo/angular-nvd3/v1.0.7/dist/angular-nvd3.js"></script>
-<script src="bower_components/moment/moment.js"></script>
-<script src="bower_components/angular-moment/angular-moment.js"></script>
-<script src="bower_components/angular-aria/angular-aria.js"></script>
-<script src="bower_components/angular-animate/angular-animate.js"></script>
-<script src="bower_components/angular-material/angular-material.js"></script>
-<script src="script.js"></script>
-</body>
+
+    <chart ctrl="ctrl"></chart>
+
+
+  <div class="config">
+      <md-slider-container max="100">
+        <span>Solar</span>
+        <md-slider flex min="1" max="100" step="1" ng-model="mutate.Solar" aria-label="red" id="red-slider">
+        </md-slider>
+        <md-input-container>
+          <input type="number" ng-model="mutate.Solar" aria-label="red" aria-controls="red-slider">
+        </md-input-container>
+      </md-slider-container>
+      <md-slider-container max="100">
+        <span>Wind</span>
+        <md-slider flex min="1" max="100" step="1" ng-model="mutate.Wind" aria-label="red" id="red-slider">
+        </md-slider>
+        <md-input-container>
+          <input type="number" ng-model="mutate.Wind" aria-label="red" aria-controls="red-slider">
+        </md-input-container>
+      </md-slider-container>
+</div>
+<!--
+<table>
+<tr ng-repeat="(key,value) in free">
+<td>{{key}}</td><td> {{value|number:2}} GWh</td>
+</tr>
+</table>
+-->
+<table class="table">
+<tr>
+<th></th>
+<th>Original GWh</th>
+<th>Delta in GWh</th>
+<th>Ist in GWh</th>
+<th> Ø in GW</th>
+<th>Type</th>
+<th>min GW</th>
+<th>max GW</th>
+</td>
+</tr>
+<tr ng-repeat="(key,value) in sources">
+<td>{{key}}</td>
+<td><span ng-if="originalTotal"> {{originalTotal[key]|number:0}} </span></td>
+<td><span ng-if="free[key]">{{free[key]|number:0}} </span></td>
+<td><span ng-if="total[key]">{{total[key]|number:0}} </span></td>
+<td><span ng-if="total[key]">{{total[key]/30/34|number:2}} </span></td>
+<td><span ng-if="sources[key].type">{{sources[key].type}} </span></td>
+<td><span ng-if="sources[key].minpower">{{sources[key].minpower}} </span></td>
+<td><span ng-if="sources[key].maxpower">{{sources[key].maxpower}} </span></td>
+
+</tr>
+</table>
+    <pie type="'Tabelle1'" year="'Summe'" title="'Total'"></pie>
+<!--
+<p>Diese Tabelle zeigt den Energieverbrauch der Endverbraucher. Umwandlungsverluste sind bereits abgezogen. Ungefähr 1/4 der Energie geht durch Umwandlung verloren. </p>
+<p>Das betrifft vor allem die Elektrische Energie die durch Verbrennung gewonnen wird. (~%50 Verlust)</p>
+<p>Ungefähr ein drittel der Energie beziehen wir in der Form von Erdölprodukten. Die 110TWh könnten durch elektische 30TWh ersetzt werden.
+-->
+    <pie type="'Tabelle1'" year="'Traktion'" title="'Verkehr'"></pie>
+<!--PKW, LKW, Flugzeuge, Eisenbahn, Straßenbahn, ...-->
+    <pie type="'Tabelle1'" year="'Raumheizung und Klimaanlagen'" title="'Raumheizung und Klimaanlagen'"></pie>
+    <pie type="'Tabelle1'" year="'Dampferzeugung'" title="'Dampferzeugung'"></pie>
+    <pie type="'Tabelle1'" year="'Industrieöfen'" title="'Industrieöfen'"></pie>
+    <pie type="'Tabelle1'" year="'Standmotoren'" title="'Standmotoren'"></pie>
+    <pie type="'Tabelle1'" year="'Beleuchtung und EDV'" title="'Beleuchtung und EDV'"></pie>
+<h4>Maßnahmen</h4>
+<p>Transport elektrifizieren</p>
+<p>Häuser dämmen</p>
+<hr/>
+    <pie type="'Gesamtenergiebilanz'" year="'2016'"></pie>
+    <pie type="'Erdölbilanz'" year="'2016'"></pie>
+    <pie type="'Gasbilanz'" year="'2016'"></pie>
+    <pie type="'Kohlebilanz'" year="'2016'"></pie>
+    <pie type="'Erneuerbare'" year="'2016'"></pie>
+<!--
+<pre>{{originalTotal|json}}</pre>
+<pre>{{total|json}}</pre>
+<pre>{{free|json}}</pre>
+<pre>{{mutate|json}}</pre>
+  </div>
+    <div class="energycontainer">
+    <div class="energybox"></div>
+    <div style="height:{{currentEnergy(ctrl.date)}}px" class="energy">{{currentEnergy(ctrl.date)*10}} GWh</div>
+    </div>
+-->
+
+<!--
+    <nvd3 options="options" data="data"></nvd3>
+-->
+  </body>
+
 </html>

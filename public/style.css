@@ -1,47 +1,47 @@
-
-ul {
-    list-style: none;
+/* Put your css in here */
+chart{
+margin-left:20px;
+margin-right:200px;
+display:block;
 }
-.box {
-    height: 100%;
-    /* border: 1px solid #ccc; */
-    background-color: #fff;
+.energycontainer{
+position:absolute;
+top:500px;
+right:20px;
+border:1px solid red;
 }
-.box-header {
-    height: 30px;
-    background-color: #eee;
-    /* padding: 0 30px 0 10px; */
-    border-bottom: 1px solid #ccc;
-    cursor: move;
-    position: absolute;
-    top:0;
-    left:0;
-    width: 100%;
+.energy{
+position:absolute;
+bottom:0px;
+right:20px;
+width:50px;
+height:500px;
+background-color:lime;
+border:1px solid black;
 }
-.box-header h3 {
-    width: 100%;
-    margin: 5px;
-    display: inline-block;
+.energybox{
+position:absolute;
+bottom:0px;
+right:20px;
+width:50px;
+height:200px;
+background-color:none;
+border:1px solid black;
 }
-.box-content {
-    height: 100%;
-    padding: 0px;
+.config{
+width:500px;
+margin-left:20px;
 }
-.box-header-btns {
-    top: 15px;
-    right: 10px;
-    cursor: pointer;
-    position: absolute;
+.table{
+background-color:#efefef;
 }
-a {
-    color: #ccc;
+.table td{
+background-color:white;
+padding:2px;
 }
-form {
-    margin-bottom: 0;
+.table th{
+background-color:#efefef;
 }
-.gridster {
-    border: 1px solid #ccc;
-}
-.gridster-item {
-    border: 1px solid #ccc;
+pie{
+display:inline-block;
 }
