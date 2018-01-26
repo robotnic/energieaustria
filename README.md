@@ -11,8 +11,8 @@ All data are Cached as bson postgres table.
 There are some unstructured function to retrieve the data. Copyright is unclear.
 
 # Todo
-nodejs: split single file server to data provider and data scraper.
-angular: timing and update problems
-sources: check legal state of data, find new data sources
+* nodejs: split single file server to data provider and data scraper.
+* angular: timing and update problems
+* sources: check legal state of data, find new data sources
 
 # energieaustria
