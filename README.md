@@ -11,8 +11,7 @@ All data are Cached as bson postgres table.
 There are some unstructured function to retrieve the data. Copyright is unclear.
 
 # Todo
-* nodejs: split single file server to data provider and data scraper.
-* angular: timing and update problems
+* openapi API definition (generator)
 * sources: check legal state of data, find new data sources
 * whatif: What happens if we add 5x Solar,... (Plugin mechanism)
 
