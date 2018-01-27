@@ -6,7 +6,7 @@ angular.module('charts', ['nvd3','energiecharts'])
       ctrl:'=',
       mutate:'=',
     },
-    template:'<h1>{{ctrl.titledate}}</h1><nvd3 options="options" data="viewdata"></nvd3>',
+    template:'<h1>{{ctrl.titledate}}</h1><nvd3 options="options" data="viewdata" api="api"></nvd3>',
     controller: function($scope, dataManager, $q) {
       $scope.free={
         pump:0,
@@ -14,6 +14,7 @@ angular.module('charts', ['nvd3','energiecharts'])
       };
  
       console.log($scope.mutate);
+      console.log($scope.api);
       $scope.ctrl.myDate=moment($scope.ctrl.date);
       //init();     
       $scope.reload = function(){
@@ -188,10 +189,10 @@ angular.module('charts', ['nvd3','energiecharts'])
       }
 
       $scope.$watch('mutate',function(value){
-        console.log(value);
-        if(typeof(data)!=='undefined'){
+        if(typeof($scope.data)!=='undefined'){
           $scope.viewdata = manipulate($scope.data);
           readHash();
+          $scope.api.refresh();
         }
       },true);
 
