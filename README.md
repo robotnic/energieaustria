@@ -16,8 +16,13 @@ There are some unstructured function to retrieve the data. Copyright is unclear.
 * whatif: What happens if we add 5x Solar,... (Plugin mechanism)
 
 # Install
+* clone repository
+* npm install
+* initialize postgres database
 
 ```
 psql energy < config/energy.sql
 ```
 
+# Start
+node index.js
