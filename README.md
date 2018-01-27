@@ -15,4 +15,9 @@ There are some unstructured function to retrieve the data. Copyright is unclear.
 * sources: check legal state of data, find new data sources
 * whatif: What happens if we add 5x Solar,... (Plugin mechanism)
 
-# energieaustria
+# Install
+copy repository
+```
+psql energy < config/energy.sql
+```
+
