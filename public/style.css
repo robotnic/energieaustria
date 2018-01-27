@@ -29,8 +29,10 @@ background-color:none;
 border:1px solid black;
 }
 .config{
-width:500px;
 margin-left:20px;
+}
+.config input{
+width:50px;
 }
 .table{
 background-color:#efefef;
@@ -44,4 +46,8 @@ background-color:#efefef;
 }
 pie{
 display:inline-block;
+}
+
+md-tabs{
+margin-right:200px;
 }

@@ -40,7 +40,15 @@
         <img src="images/logo.png" style="height:36px;"/>
         </a>
         <h2 flex md-truncate>Stromerzeugung Österreich</h2>
-
+        <md-input-container class="md-block" lex-gt-sm>
+          <label>Solar</label> 
+          <input ng-model="mutate.Solar" style="width:50px;color:white">
+        </md-input-container>
+        <md-input-container class="md-block" lex-gt-sm>
+          <label>Wind</label> 
+          <input ng-model="mutate.Wind" style="width:50px;color:white">
+        </md-input-container>
+ 
         <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
           <md-icon ng-bind="'navigate_before'"></md-icon>
         </md-button>
@@ -60,27 +68,13 @@
       <md-radio-button value="month">month</md-radio-button>
     </md-radio-group>
 
+    <md-tabs md-dynamic-height md-border-bottom>
+      <md-tab label="Chart">
+        <md-content class="md-padding">
+          <chart ctrl="ctrl"></chart>
+        </md-content>
+      </md-tab>
 
-    <chart ctrl="ctrl"></chart>
-
-  <div class="config" ng-if="mutate.Solar">
-      <md-slider-container max="100">
-        <span>Solar</span>
-        <md-slider flex min="1" max="100" step="1" ng-model="mutate.Solar" aria-label="red" id="red-slider">
-        </md-slider>
-        <md-input-container>
-          <input type="number" ng-model="mutate.Solar" aria-label="red" aria-controls="red-slider">
-        </md-input-container>
-      </md-slider-container>
-      <md-slider-container max="100">
-        <span>Wind</span>
-        <md-slider flex min="1" max="100" step="1" ng-model="mutate.Wind" aria-label="wind" id="wind-slider">
-        </md-slider>
-        <md-input-container>
-          <input type="number" ng-model="mutate.Wind" aria-label="wind" aria-controls="wind-slider">
-        </md-input-container>
-      </md-slider-container>
-</div>
 <!--
 <table>
 <tr ng-repeat="(key,value) in free">
@@ -88,6 +82,8 @@
 </tr>
 </table>
 -->
+      <md-tab label="table">
+        <md-content class="md-padding">
 <table class="table">
 <tr>
 <th></th>
@@ -112,6 +108,16 @@
 
 </tr>
 </table>
+
+        </md-content>
+      </md-tab>
+
+
+      <md-tab label="Statistics">
+        <md-content class="md-padding">
+ 
+
+
     <pie type="'Tabelle1'" year="'Summe'" title="'Total'"></pie>
 <!--
 <p>Diese Tabelle zeigt den Energieverbrauch der Endverbraucher. Umwandlungsverluste sind bereits abgezogen. Ungefähr 1/4 der Energie geht durch Umwandlung verloren. </p>
@@ -134,6 +140,9 @@
     <pie type="'Gasbilanz'" year="'2016'"></pie>
     <pie type="'Kohlebilanz'" year="'2016'"></pie>
     <pie type="'Erneuerbare'" year="'2016'"></pie>
+        </md-content>
+      </md-tab>
+    </md-tabs>
 <!--
 <pre>{{originalTotal|json}}</pre>
 <pre>{{total|json}}</pre>
