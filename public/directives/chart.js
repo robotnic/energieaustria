@@ -6,7 +6,7 @@ angular.module('charts', ['nvd3','energiecharts'])
       ctrl:'=',
       mutate:'=',
     },
-    template:'<h1>{{ctrl.titledate}}</h1><nvd3 options="options" data="viewdata" api="api"></nvd3>',
+    template:'<nvd3 options="options" data="viewdata" api="api"></nvd3>',
     controller: function($scope, dataManager, $q) {
       $scope.free={
         pump:0,
