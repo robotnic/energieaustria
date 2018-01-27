@@ -12,13 +12,35 @@ angular.module('energiecharts',[])
     },
     getSector:function(type, year){
       return getSector(type,year);
+    },
+    getHydroStorage:function(year, monthNumber){
+      return getHydroStorage(year, monthNumber);
     }
     
   }
 
   var data = [];
+  var hydroStorage = null;
   var timetype = 'day';
 
+  function getHydroStorage(year, monthNumber){
+    var q = $q.defer();
+    if(hydroStorage && hydroStorage[year] && hydroStorage[year][monthNumber]){
+      q.resolve(hydroStorage[year][monthNumber]);
+    } else {
+      $http.get('/hydrostorage').then(function(storage){
+        hydroStorage = storage.data; 
+        console.log('==========================',year, monthNumber, hydroStorage[year][monthNumber]);
+        try{
+          q.resolve(hydroStorage[year][monthNumber]);
+        }catch(e){
+          q.reject(e);
+        }
+      });
+    }
+    return q.promise;
+  }
+  getHydroStorage('2017','0');
 
   colors=null;
 

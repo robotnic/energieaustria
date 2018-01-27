@@ -75,8 +75,22 @@ app.get('/statistics', function(req, res) {
   }, function(error) {
     console.log(error);
   });
-
 });
+
+
+app.get('/hydrostorage', function(req, res) {
+  loadStorage().then(function(responses) {
+    console.log(responses);
+    res.send(responses);
+  }, function(error) {
+    console.log(error);
+  });
+});
+
+
+
+
+
 app.get('/sectors', function(req, res) {
   var sectors = [];
   for (var s in statistics) {
@@ -234,6 +248,52 @@ function getYears(stat) {
 }
 
 
+function loadStorage(){
+  var q = $q.defer();
+  if(hydrostorage){
+    q.resolve(hydrostorage);
+  }
+  var storage={};
+  var url = 'https://www.e-control.at/documents/20903/724575/MStWW2_Spe-2017.xlsx/6bc38892-0661-74fb-2b87-a109992d89c0';
+  loadFile(url).then(function(excel){
+    //console.log('STORAGE', excel.Sheets.Wa);
+    var first = "A", last = "Z";
+    for(var i = first.charCodeAt(0); i <= last.charCodeAt(0); i++) {
+        var c = String.fromCharCode(i);
+        var cell = excel.Sheets.Wa[c+'6'];
+        if(cell){
+          console.log(cell.v);
+          var colname = cell.v;
+          if(storage[colname]){
+            console.log('BIG');
+            colname = colname+'%';
+          }
+          storage[colname]=[];
+          for(var n=8; n<20;n++){
+            //console.log(c+n);
+            var valueCell = excel.Sheets.Wa[c+n];
+            if(valueCell){
+              var month = excel.Sheets.Wa['B'+n];
+              console.log(month.v,valueCell.v);
+              storage[colname].push(valueCell.v);
+            }
+            //console.log(storage);
+          }
+        }
+    }
+    console.log(storage);
+    q.resolve(storage);
+  });
+  return q.promise;
+}
+
+var hydrostorage = null;
+loadStorage().then(function(storage){
+  hydrostrorage = storage;
+});
+
+
+
 var statistics = null;
 loadStatistics();
 
@@ -247,7 +307,7 @@ function loadStatistics() {
     'http://www.statistik.at/wcm/idc/idcplg?IdcService=GET_NATIVE_FILE&RevisionSelectionMethod=LatestReleased&dDocName=022713',
     'http://www.statistik.at/wcm/idc/idcplg?IdcService=GET_NATIVE_FILE&RevisionSelectionMethod=LatestReleased&dDocName=022716',
     'http://www.statistik.at/wcm/idc/idcplg?IdcService=GET_NATIVE_FILE&RevisionSelectionMethod=LatestReleased&dDocName=022718',
-    'http://www.statistik.at/wcm/idc/idcplg?IdcService=GET_NATIVE_FILE&RevisionSelectionMethod=LatestReleased&dDocName=022719'
+    'http://www.statistik.at/wcm/idc/idcplg?IdcService=GET_NATIVE_FILE&RevisionSelectionMethod=LatestReleased&dDocName=022719',
   ]
 
   var resolveCount = 0;

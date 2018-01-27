@@ -13,8 +13,6 @@ angular.module('charts', ['nvd3','energiecharts'])
         unused:0
       };
  
-      console.log($scope.mutate);
-      console.log($scope.api);
       $scope.ctrl.myDate=moment($scope.ctrl.date);
       //init();     
       $scope.reload = function(){
@@ -60,9 +58,9 @@ angular.module('charts', ['nvd3','energiecharts'])
             height: 650,
             margin : {
                 top: 170,
-                right: 0,
-                bottom: 50,
-                left: 70
+                right: 30,
+                bottom: 100,
+                left: 30
             },
             color: d3.scale.category10().range(),
             //useInteractiveGuideline: true,
@@ -144,7 +142,6 @@ angular.module('charts', ['nvd3','energiecharts'])
             $scope.data = $scope.data.concat(list);
           })
           $scope.sources = dataManager.getSources();
-          console.log($scope.data);
           var values=[];
           $scope.data[0].values.forEach(function(value){
             values.push({x:value.x,y:0});
@@ -185,9 +182,7 @@ angular.module('charts', ['nvd3','energiecharts'])
         };
         $scope.total={};
         $scope.originalTotal={};
-      console.log(data); 
         data = JSON.parse(JSON.stringify(data));
-        console.log('manipulate', data);
         data.forEach(function(chart){
           $scope.originalTotal[chart.key]=calcTotal(chart);
         });
@@ -196,7 +191,6 @@ angular.module('charts', ['nvd3','energiecharts'])
             //$scope.originalTotal[m]=calcTotal(chart);
             if(chart.key === m){
               var value = $scope.mutate[m];
-              console.log(chart.key, m, value);
               alter(m, chart, value, data,['Gas','Kohle','Öl','Speicher']);
             }
             //$scope.total[m]=calcTotal(chart);
@@ -222,14 +216,12 @@ angular.module('charts', ['nvd3','energiecharts'])
 
       function alter(name, chart, factor, data, replace){
         var rest = 0;
-        console.log(replace,data);
         var pumpChart = null;
         var replaceCharts={};
         //$scope.free[name]=0;
         data.forEach(function(replaceChart){
           replace.forEach(function(r){
             if(replaceChart.key === r){
-              console.log('rC',r,replaceChart);
               replaceCharts[r]=replaceChart;
             }
           });
@@ -266,7 +258,7 @@ angular.module('charts', ['nvd3','energiecharts'])
             //$scope.free[name]=+delta;
           if(delta !== 0){
             var xy=pumpChart.values[i];
-            console.log('Pumpit',new Date(xy.x), xy.y +' + '+delta+'='+(xy.y + delta));
+            //console.log('Pumpit',new Date(xy.x), xy.y +' + '+delta+'='+(xy.y + delta));
             var maxpump=-1.9;
             //$scope.free[name]=+delta;
             if((xy.y + delta) > maxpump){
@@ -277,12 +269,12 @@ angular.module('charts', ['nvd3','energiecharts'])
               delta =   delta - maxpump; 
               $scope.free.pump += delta;
               xy.y = maxpump;
-              console.log('overloa delta', delta,'already pumping', xy.y);
+              //console.log('overloa delta', delta,'already pumping', xy.y);
             }
           }
           if(delta !== 0){
-            console.log('hau weg', delta);
-            console.log('hau weg', p2gChart);
+            //console.log('hau weg', delta);
+            //console.log('hau weg', p2gChart);
             if(delta>0)delta=0;
             p2gChart.values[i].y = delta;
             $scope.free.unused += delta;

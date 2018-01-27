@@ -30,6 +30,7 @@
     <script src="services/dataManager.js"></script>
     <script src="directives/chart.js"></script>
     <script src="directives/pie.js"></script>
+    <script src="directives/hydrostorage.js"></script>
     <script src="app.js"></script>
   </head>
 
@@ -40,11 +41,13 @@
         <img src="images/logo.png" style="height:36px;"/>
         </a>
         <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}</h2>
-        <md-input-container class="md-block" lex-gt-sm>
+        <md-input-container class="md-block">
+          <md-tooltip md-direction="left">Multiply installed PV</md-tooltip>
           <label>Solar</label> 
           <input ng-model="mutate.Solar" style="width:50px;color:white">
         </md-input-container>
         <md-input-container class="md-block" lex-gt-sm>
+          <md-tooltip md-direction="left">Multiply installed Wind</md-tooltip>
           <label>Wind</label> 
           <input ng-model="mutate.Wind" style="width:50px;color:white">
         </md-input-container>
@@ -67,6 +70,10 @@
       <md-radio-button value="week"> week </md-radio-button>
       <md-radio-button value="month">month</md-radio-button>
     </md-radio-group>
+
+
+    <hydrostorage date="ctrl.date" ></hydrostorage>
+
 
     <md-tabs md-dynamic-height md-border-bottom>
       <md-tab label="Chart">
