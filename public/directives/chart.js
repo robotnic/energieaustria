@@ -109,7 +109,6 @@ angular.module('charts', ['nvd3','energiecharts'])
                 if(d.series[0].values){
                   d.series[0].values.forEach(function(value){
                     if(value.x === d.value){
-                      console.log(value);
                       yValue=value.display.y;
                     }
                   });

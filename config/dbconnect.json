@@ -1,0 +1,7 @@
+{
+  "user": "energy",
+  "host": "localhost",
+  "database": "energy",
+  "password": "energy",
+  "port": 5432
+}
