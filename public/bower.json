@@ -1,0 +1,19 @@
+{
+  "name": "public",
+  "homepage": "https://github.com/robotnic/energieaustria",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-material": "^1.1.5",
+    "angular-moment": "^1.2.0",
+    "angular-nvd3": "^1.0.9"
+  }
+}

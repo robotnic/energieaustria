@@ -102,6 +102,22 @@ angular.module('charts', ['nvd3','energiecharts'])
                     legendStateChanged();
                   }
               }
+            },
+            tooltip: {
+              contentGenerator: function(d) { 
+                var yValue = d.series[0].value;
+                if(d.series[0].values){
+                  d.series[0].values.forEach(function(value){
+                    if(value.x === d.value){
+                      console.log(value);
+                      yValue=value.display.y;
+                    }
+                  });
+                }
+                var name = d.series[0].key;
+                var time = moment(d.point.x).format('MMMM Do YYYY, HH:mm');
+                return time + '<h3>' + name + ': ' + yValue + '</h3>';
+              }
             }
 
         }
