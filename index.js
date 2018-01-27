@@ -6,6 +6,7 @@ var $q = require('q');
 var app = express();
 var fs = require('fs');
 var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
+var swaggerTemplate = fs.readFileSync('config/swaggertemplate.json', 'utf8');
 
 console.log(dbconnect);
 var XLSX = require('xlsx');
@@ -110,7 +111,23 @@ app.get('/sectors/:sector/:year', function(req, res) {
   res.send(result);
 });
 
+//display path in swagger, not datamodel jet
+app.get('/openapi', function(req, res) {
+  var swagger = JSON.parse(swaggerTemplate);
+  app._router.stack.forEach(function(layer){
+  if(layer.route){
+    swagger.paths[layer.route.path] = {};
+    for(var m in layer.route.methods){
+      swagger.paths[layer.route.path][m]={};
+      console.log(m, layer.route.path);
+    }
+  }
+  });
+  res.send(swagger);
+});
 
+
+//move part below to seperate file
 
 function parseTabelle1(stat) {
   var ret = {};

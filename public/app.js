@@ -22,6 +22,22 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   if(hashParts[2]){
     $scope.ctrl.layercode=hashParts[2];
   }
+  if(hashParts[3]){
+    $scope.mutate=readMutation(hashParts[3]);
+  }
+
+  function readMutation(mutateString){
+    console.log(mutateString);
+    var mutate ={};
+    var parts = mutateString.split('&');
+    parts.forEach(function(part){
+      console.log(part.split('='));
+      var name = part.split('=')[0]; 
+      var value = part.split('=')[1]; 
+      mutate[name]=parseInt(value); 
+    });
+    return mutate;
+  }
 
 
   $scope.previouseDay=function(){

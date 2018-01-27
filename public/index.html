@@ -63,8 +63,7 @@
 
     <chart ctrl="ctrl"></chart>
 
-
-  <div class="config">
+  <div class="config" ng-if="mutate.Solar">
       <md-slider-container max="100">
         <span>Solar</span>
         <md-slider flex min="1" max="100" step="1" ng-model="mutate.Solar" aria-label="red" id="red-slider">
@@ -75,10 +74,10 @@
       </md-slider-container>
       <md-slider-container max="100">
         <span>Wind</span>
-        <md-slider flex min="1" max="100" step="1" ng-model="mutate.Wind" aria-label="red" id="red-slider">
+        <md-slider flex min="1" max="100" step="1" ng-model="mutate.Wind" aria-label="wind" id="wind-slider">
         </md-slider>
         <md-input-container>
-          <input type="number" ng-model="mutate.Wind" aria-label="red" aria-controls="red-slider">
+          <input type="number" ng-model="mutate.Wind" aria-label="wind" aria-controls="wind-slider">
         </md-input-container>
       </md-slider-container>
 </div>

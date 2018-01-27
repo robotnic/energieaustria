@@ -131,27 +131,7 @@ angular.module('charts', ['nvd3','energiecharts'])
           date = dateString;
         }
         $scope.data = [];
-        /*
-        dataManager.loadData('AGPT',date , 1,$scope.ctrl.timetype,'area', null,reload).then(function(charts){
-          $scope.data = $scope.data.concat(charts);
-        }, function(error){
-          console.log(error);
-        });
-        dataManager.loadData('AL', date,1,$scope.ctrl.timetype,'line',null, reload).then(function(charts){
-          $scope.data = $scope.data.concat(charts);
-        }, function(error){
-          console.log(error);
-        });
-        dataManager.loadData('EXAAD1P', date,2,$scope.ctrl.timetype,'line',  function(y){
-            return y*1000;
-          }, reload).then(function(charts){
-          console.log(charts);
-          $scope.data = $scope.data.concat(charts);
-        }, function(error){
-          console.log(error);
-        });
-        */
-        var promises = [
+       var promises = [
           dataManager.loadData('AGPT',date , 1,$scope.ctrl.timetype,'area', null,reload),
           dataManager.loadData('AL', date,1,$scope.ctrl.timetype,'line',null, reload),
           dataManager.loadData('EXAAD1P', date,2,$scope.ctrl.timetype,'line',  function(y){            
@@ -191,8 +171,10 @@ angular.module('charts', ['nvd3','energiecharts'])
       $scope.$watch('mutate',function(value){
         if(typeof($scope.data)!=='undefined'){
           $scope.viewdata = manipulate($scope.data);
-          readHash();
-          $scope.api.refresh();
+          if($scope.api){
+            $scope.api.update();
+          }
+          setHash();
         }
       },true);
 
@@ -330,13 +312,18 @@ angular.module('charts', ['nvd3','energiecharts'])
 
       function setHash(){
         var code = $scope.ctrl.layercode || '';
-        location.hash=moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code;
+        var mutateString=';'
+        for(var m in $scope.mutate){
+          mutateString = mutateString + m + '=' + $scope.mutate[m] + '&';
+        }; 
+        mutateString = mutateString.slice(0, -1);
+        location.hash=moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code + mutateString;
       }
 
       function readHash(){
         var layercode= $scope.ctrl.layercode + '';
         for(var i = 0; i< layercode.length;i++){
-          if($scope.ctrl.layercode[i] === '0'){
+          if($scope.ctrl.layercode[i] === '0' && $scope.viewdata[i]){
             $scope.viewdata[i].disabled = true;
           }
         }
