@@ -16,7 +16,7 @@ There are some unstructured function to retrieve the data. Copyright is unclear.
 * whatif: What happens if we add 5x Solar,... (Plugin mechanism)
 
 # Install
-copy repository
+
 ```
 psql energy < config/energy.sql
 ```
