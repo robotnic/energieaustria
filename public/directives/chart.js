@@ -57,10 +57,10 @@ angular.module('charts', ['nvd3','energiecharts'])
       $scope.options = {
         chart: {
             type: 'multiChart',
-            height: 450,
+            height: 650,
             margin : {
-                top: 30,
-                right: 60,
+                top: 170,
+                right: 0,
                 bottom: 50,
                 left: 70
             },
