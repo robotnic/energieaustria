@@ -1,6 +1,9 @@
 REST mit angular-nvd3 frontend. 
 Die Daten werden aus diversen (copyright?) Quellen bezogen und in einer Postgres gelagert. 
 
+![alt text](https://raw.githubusercontent.com/robotnic/energieaustria/master/doc/screenshots/energyaustriaexmaplechart.png)
+
+
 # API
 There is REST API to query Data.
 If the Data are not available in the Database, they will be retrieved from the original source.
