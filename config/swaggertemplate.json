@@ -26,9 +26,8 @@
           "title": "The Pid Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
-          "examples": [
-            "AL"
-          ]
+          "example": "AL"
+          
         },
         "DateString": {
           "$id": "/properties/DateString",
@@ -36,9 +35,7 @@
           "title": "The Datestring Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
-          "examples": [
-            "20160601000000"
-          ]
+          "example": "20160601000000" 
         },
         "Resolution": {
           "$id": "/properties/Resolution",
@@ -46,9 +43,7 @@
           "title": "The Resolution Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
-          "examples": [
-            "15M"
-          ]
+          "example": "15M" 
         },
         "Language": {
           "$id": "/properties/Language",
@@ -56,9 +51,7 @@
           "title": "The Language Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
-          "examples": [
-            "de"
-          ]
+          "example": "de" 
         },
         "AdditionalFilter": {
           "$id": "/properties/AdditionalFilter",
@@ -66,9 +59,7 @@
           "title": "The Additionalfilter Schema",
           "description": "An explanation about the purpose of this instance.",
           "default": "",
-          "examples": [
-            "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"
-          ]
+          "example": "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"
         }
       }
     }
