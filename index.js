@@ -8,6 +8,8 @@ var fs = require('fs');
 var scrapers = require('./scrapers.js');
 var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
 var swaggerTemplate = fs.readFileSync('config/swaggertemplate.json', 'utf8');
+var cors = require('cors')
+
 
 console.log(dbconnect);
 var XLSX = require('xlsx');
@@ -102,7 +104,7 @@ app.get('/sectors/:sector/:year', function(req, res) {
 });
 
 //display path in swagger, not datamodel jet
-app.get('/openapi', function(req, res) {
+app.get('/openapi',cors(), function(req, res) {
   var swagger = JSON.parse(swaggerTemplate);
   app._router.stack.forEach(function(layer){
   if(layer.route){
