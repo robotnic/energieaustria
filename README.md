@@ -23,6 +23,7 @@ psql energy < config/energy.sql
 # Start
 node index.js
 
+## swagger
 To use the /openapi you can use a browser plugin like
 https://github.com/mshauneu/chrome-swagger-ui
 
