@@ -51,6 +51,7 @@ app.post('/month', function(req, res) {
   getDays(day, pid, resolution, reload, 31).then(function(response) {
     res.send(response);
   });
+  var example={"PID":"AL","DateString":"20160601000000","Resolution":"15M","Language":"de","AdditionalFilter":"B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"}
 
 })
 
@@ -130,10 +131,36 @@ app.get('/openapi', function(req, res) {
   var swagger = JSON.parse(swaggerTemplate);
   app._router.stack.forEach(function(layer){
   if(layer.route){
-    swagger.paths[layer.route.path] = {};
+    var path = layer.route.path;
+    swagger.paths[path] = {};
     for(var m in layer.route.methods){
-      swagger.paths[layer.route.path][m]={};
-      console.log(m, layer.route.path);
+      var def = {}
+      if(m === 'post'){
+        def.parameters = [
+          {
+            "name": "apg",
+            "in": "body",
+            "description": "Query APG",
+            "schema": {
+              "$ref": "#/definitions/apgquery"
+            }
+          }
+        ]
+      }
+      var pathParts = path.split('/');
+      pathParts.forEach(function(part){
+        if (part[0] === ':') {
+          if (!def.parameters) {
+            def.parameters = [];
+          }
+          var name = part.substr(1);
+          def.parameters.push({
+            "name": name,
+            "in": "path",
+          });
+        }
+      });
+      swagger.paths[layer.route.path][m]=def;
     }
   }
   });

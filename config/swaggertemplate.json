@@ -1,5 +1,6 @@
 {
   "swagger":"2.0",
+  "schemes": ["http"],
   "title": "Energy Austria",
   "description": "REST API for Austrian energy data.",
   "contact": {
@@ -12,5 +13,66 @@
     "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
   },
   "version": "1.0.1",
-  "paths":{}
+  "paths":{},
+  "definitions":{
+    "apgquery":{
+      "type": "object",
+      "definitions": {},
+      "$schema": "http://json-schema.org/draft-06/schema#",
+      "properties": {
+        "PID": {
+          "$id": "/properties/PID",
+          "type": "string",
+          "title": "The Pid Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "AL"
+          ]
+        },
+        "DateString": {
+          "$id": "/properties/DateString",
+          "type": "string",
+          "title": "The Datestring Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "20160601000000"
+          ]
+        },
+        "Resolution": {
+          "$id": "/properties/Resolution",
+          "type": "string",
+          "title": "The Resolution Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "15M"
+          ]
+        },
+        "Language": {
+          "$id": "/properties/Language",
+          "type": "string",
+          "title": "The Language Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "de"
+          ]
+        },
+        "AdditionalFilter": {
+          "$id": "/properties/AdditionalFilter",
+          "type": "string",
+          "title": "The Additionalfilter Schema",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"
+          ]
+        }
+      }
+    }
+
+
+  }
 }
