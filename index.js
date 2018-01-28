@@ -15,13 +15,14 @@ var XLSX = require('xlsx');
 
 app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
-
+/*
 const {
   Pool,
   Client
 } = require('pg')
 
 const pool = new Pool(dbconnect);
+*/
 
 app.post('/day', function(req, res) {
   var day = req.body.DateString;
@@ -72,7 +73,6 @@ app.get('/energy', function(req, res) {
 
 app.get('/statistics', function(req, res) {
   scrapers.loadStatistics().then(function(responses) {
-    console.log(responses);
     res.send(responses);
   }, function(error) {
     console.log(error);
@@ -82,7 +82,6 @@ app.get('/statistics', function(req, res) {
 
 app.get('/hydrostorage', function(req, res) {
   scrapers.loadStorage().then(function(responses) {
-    console.log(responses);
     res.send(responses);
   }, function(error) {
     console.log(error);
@@ -111,25 +110,26 @@ app.get('/openapi', function(req, res) {
     var swaggerpath = swaggerize(layer.route.path);
     swagger.paths[swaggerpath] = {};
     for(var m in layer.route.methods){
-      var def = {}
+      var def = {
+        parameters:[{
+          "in":"query",
+          "name":"reload",
+          "type":"boolean"
+        }]
+      }
       if(m === 'post'){
-        def.parameters = [
-          {
-            "name": "apg",
-            "in": "body",
-            "description": "Query APG",
-            "schema": {
-              "$ref": "#/definitions/apgquery"
-            }
+        def.parameters.push( {
+          "name": "apg",
+          "in": "body",
+          "description": "Query APG",
+          "schema": {
+            "$ref": "#/definitions/apgquery"
           }
-        ]
+        })
       }
       var pathParts = path.split('/');
       pathParts.forEach(function(part){
         if (part[0] === ':') {
-          if (!def.parameters) {
-            def.parameters = [];
-          }
           var name = part.substr(1);
           def.parameters.push({
             "name": name,
