@@ -192,8 +192,13 @@ function swaggerize(path){
   return newPathParts.join('/');
 }
 
+app.listen(3000, function() {
+  console.log('Example app listening on port 3000!');
+});
 
 //move part below to seperate file
+
+/*
 
 function parseTabelle1(stat) {
   var ret = {};
@@ -236,20 +241,7 @@ function select(stat, a, b) {
   console.log(xAxis);
   var r = getItems(stat, a, b, xAxis);
   console.log(r);
-  /*
-  for (var s in stat) {
-    if (comp(a, s, b)) {
-        console.log(s);
-        if (!result[stat[s].v]) {
-            console.log(s,stat[s]);
-            result[stat[s].v] = stat[s];
-        } else {
-            //console.log('else', stat[s]);
-        }
-    };
-  }
-  */
-  return r;
+ return r;
 }
 
 function getItems(stat, a, b, xAxis) {
@@ -600,11 +592,6 @@ function getDays(day, pid, resolution, reload, days) {
 
 function getChart(day, pid, resolution, reload) {
   var q = $q.defer();
-  /*
-    var day = req.body.DateString;
-    var pid = req.body.PID;
-    var resolution = req.body.Resolution;
-  */
   var select = {
     text: 'select * from chart where day = $1 AND pid = $2 AND resolution = $3 LIMIT 1',
     values: [day, pid, resolution]
@@ -663,8 +650,5 @@ function insertToChart(day, body, pid, resolution) {
     .catch(e => console.error(e.stack))
 
 }
+*/
 
-
-app.listen(3000, function() {
-  console.log('Example app listening on port 3000!');
-});
