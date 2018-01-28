@@ -71,8 +71,11 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
     $scope.ctrl.myDate=moment($scope.ctrl.myDate).add(delta,'d');
   }
 
+/*
   $scope.currentEnergy = function (date){
-    if(!date)return '-';
+    if(!date){
+      date = $scope.ctrl.myDate;
+    }
     if(!$scope.energy)return '-';
     var m = moment(date);
     var w = m.format('w')
@@ -83,13 +86,13 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
         value = week.value;
       }
     });
-    return parseInt(value/10000) ;
+    return parseInt(value/1000) ;
   }
 
   $http.get('/energy').then(function(response){
     $scope.energy = response.data;
   });
-
+*/
 
 
 

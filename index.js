@@ -51,12 +51,20 @@ app.post('/month', function(req, res) {
   var pid = req.body.PID;
   var resolution = '60M';
   var reload = req.query.reload;
-  scrapers.getDays(day, pid, resolution, reload, 31).then(function(response) {
+console.log('DAY',day);
+  var year = day.substring(0,4);
+  var month = day.substr(4,2);
+  var daysInMonth = new Date(year, month, 0).getDate();
+console.log('DAYinMonth',year, month, daysInMonth);
+
+  scrapers.getDays(day, pid, resolution, reload, daysInMonth).then(function(response) {
     res.send(response);
   });
   var example={"PID":"AL","DateString":"20160601000000","Resolution":"15M","Language":"de","AdditionalFilter":"B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"}
 
 })
+
+
 
 
 app.get('/energy', function(req, res) {
