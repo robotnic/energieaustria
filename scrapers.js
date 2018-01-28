@@ -1,20 +1,34 @@
-var express = require('express');
-var bodyParser = require('body-parser');
 var request = require('request');
 var moment = require('moment');
 var $q = require('q');
-var app = express();
 var fs = require('fs');
-var scrapers = require('./scrapers.js');
 var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
-var swaggerTemplate = fs.readFileSync('config/swaggertemplate.json', 'utf8');
 
 console.log(dbconnect);
 var XLSX = require('xlsx');
 
+module.exports={
+  getChart: function(day, pid, resolution, reload){
+    return getChart(day, pid, resolution, reload)
+  },
+  getDays: function(day, pid, resolution, reload, days){
+    return getDays(day, pid, resolution, reload, days)
+  },
+  getEnergy: function(day, pid, resolution, reload, days){
+    return getEnergy(day, pid, resolution, reload, days)
+  },
+  loadStatistics:function(){
+    return loadStatistics()
+  },
+  loadStorage:function(){
+    return loadStorage()
+  },
+  getSectors: function(sector,year){
+    return getSectors(sector,year)
+  }
 
-app.use('/', express.static(__dirname + '/public'));
-app.use(bodyParser.json());
+}
+
 
 const {
   Pool,
@@ -23,177 +37,47 @@ const {
 
 const pool = new Pool(dbconnect);
 
-app.post('/day', function(req, res) {
-  var day = req.body.DateString;
-  var pid = req.body.PID;
-  var resolution = req.body.Resolution;
-  var reload = req.query.reload;
-  scrapers.getChart(day, pid, resolution, reload).then(function(chart) {
-    res.send(chart);
-  });
-});
-
-app.post('/week', function(req, res) {
-  var day = req.body.DateString;
-  var pid = req.body.PID;
-  var resolution = '60M';
-  var reload = req.query.reload;
-  scrapers.getDays(day, pid, resolution, reload, 7).then(function(response) {
-    res.send(response);
-  });
-
-})
-
-app.post('/month', function(req, res) {
-  var day = req.body.DateString;
-  var pid = req.body.PID;
-  var resolution = '60M';
-  var reload = req.query.reload;
-  scrapers.getDays(day, pid, resolution, reload, 31).then(function(response) {
-    res.send(response);
-  });
-  var example={"PID":"AL","DateString":"20160601000000","Resolution":"15M","Language":"de","AdditionalFilter":"B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"}
-
-})
+//move part below to seperate file
 
 
-app.get('/energy', function(req, res) {
-  var day = req.body.DateString;
-  var pid = req.body.PID;
-  var resolution = '60M';
-  var reload = req.query.reload;
-  scrapers.getEnergy(day, pid, resolution, reload, 31).then(function(response) {
-    res.send(response);
-  });
-
-
-});
-
-
-app.get('/statistics', function(req, res) {
-  scrapers.loadStatistics().then(function(responses) {
-    console.log(responses);
-    res.send(responses);
-  }, function(error) {
-    console.log(error);
-  });
-});
-
-
-app.get('/hydrostorage', function(req, res) {
-  scrapers.loadStorage().then(function(responses) {
-    console.log(responses);
-    res.send(responses);
-  }, function(error) {
-    console.log(error);
-  });
-});
-
-
-app.get('/sectors', function(req, res) {
-  /*
-  var sectors = [];
-  for (var s in statistics) {
-    sectors.push(s);
+function getSectors(sector, year){
+  if(!sector && !year){
+    var sectors = [];
+    for (var s in statistics) {
+      sectors.push(s);
+    }
+    return sectors;
   }
-  res.send(sectors);
-  */
-  res.send(scrapers.getSectors());
-});
-app.get('/sectors/:sector', function(req, res) {
-  console.log(req.params.sector);
-  /*
-  var stat = statistics[req.params.sector];
-  if (req.params.sector === 'Tabelle1') {
-    var selected = parseTabelle1(stat);
-  } else {
-    var selected = select(stat, '30', '36');
-  }
-  res.send(selected);
-  */
-  res.send(scrapers.getSectors(req.params.sector));
-});
 
-app.get('/sectors/:sector/:year', function(req, res) {
-  /*
-  console.log('yea', req.params);
+  if(!year){
+console.log('---',sector);
+    var stat = statistics[sector];
+    if (sector === 'Tabelle1') {
+      var selected = parseTabelle1(stat);
+    } else {
+      var selected = select(stat, '30', '36');
+    }
+    return selected;
+  }
+
+  //else
   var result = {};
-  var stat = statistics[req.params.sector];
+  var stat = statistics[sector];
   var selected = select(stat, '30', '36');
   for (var s in selected) {
     console.log(s);
-    result[s] = selected[s][req.params.year];
+    result[s] = selected[s][year];
   }
-  if (req.params.sector === 'Tabelle1') {
-    result = parseTabelle1(stat)[req.params.year];
+  if (sector === 'Tabelle1') {
+    result = parseTabelle1(stat)[year];
     delete result['Insgesamt'];
   }
-  res.send(result);
-  */
-  res.send(scrapers.getSectors(req.params.sector,req.params.year));
-});
+  return result;
 
-//display path in swagger, not datamodel jet
-app.get('/openapi', function(req, res) {
-  var swagger = JSON.parse(swaggerTemplate);
-  app._router.stack.forEach(function(layer){
-  if(layer.route){
-    var path = layer.route.path;
-    var swaggerpath = swaggerize(layer.route.path);
-    swagger.paths[swaggerpath] = {};
-    for(var m in layer.route.methods){
-      var def = {}
-      if(m === 'post'){
-        def.parameters = [
-          {
-            "name": "apg",
-            "in": "body",
-            "description": "Query APG",
-            "schema": {
-              "$ref": "#/definitions/apgquery"
-            }
-          }
-        ]
-      }
-      var pathParts = path.split('/');
-      pathParts.forEach(function(part){
-        if (part[0] === ':') {
-          if (!def.parameters) {
-            def.parameters = [];
-          }
-          var name = part.substr(1);
-          def.parameters.push({
-            "name": name,
-            "in": "path",
-            "required": true,
-            "type": "string"
-          });
-        }
-      });
-      swagger.paths[swaggerpath][m]=def;
-    }
-  }
-  });
-  res.send(swagger);
-});
-
-function swaggerize(path){
-  // /aaa/:bbb/:ccc -> /aaa/{bbb}/{ccc}
-  var parts= path.split('/');
-  var newPathParts=[];
-  parts.forEach(function(part){
-    if(part[0] === ':'){
-      var newpart = '{' + part.substr(1) + '}';
-    } else {
-      var newpart = part;
-    }
-    newPathParts.push(newpart);
-  });
-  return newPathParts.join('/');
 }
 
 
-//move part below to seperate file
+
 
 function parseTabelle1(stat) {
   var ret = {};
@@ -665,6 +549,3 @@ function insertToChart(day, body, pid, resolution) {
 }
 
 
-app.listen(3000, function() {
-  console.log('Example app listening on port 3000!');
-});
