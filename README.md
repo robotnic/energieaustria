@@ -31,5 +31,6 @@ node index.js
 
 ## swagger
 To use the [/openapi](http://localhost:3000/openapi) you can use a browser plugin like
-https://github.com/mshauneu/chrome-swagger-ui
+https://github.com/mshauneu/chrome-swagger-ui .
+You can find it in the chrome store:
 [chrome store](https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?utm_source=chrome-app-launcher-info-dialog)
