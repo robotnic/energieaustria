@@ -22,25 +22,33 @@ angular.module('energiecharts',[])
   var data = [];
   var hydroStorage = null;
   var timetype = 'day';
+  var hydroPromises = [];
 
   function getHydroStorage(year, monthNumber){
     var q = $q.defer();
     if(hydroStorage && hydroStorage[year] && hydroStorage[year][monthNumber]){
       q.resolve(hydroStorage[year][monthNumber]);
     } else {
-      $http.get('/hydrostorage').then(function(storage){
-        hydroStorage = storage.data; 
-        console.log('==========================',year, monthNumber, hydroStorage[year][monthNumber]);
-        try{
-          q.resolve(hydroStorage[year][monthNumber]);
-        }catch(e){
-          q.reject(e);
-        }
-      });
+      if(hydroPromises.length === 0){
+        $http.get('/hydrostorage').then(function(storage){
+          hydroStorage = storage.data; 
+          try{
+            var value = hydroStorage[year][monthNumber];
+            hydroPromises.forEach(function(qq){
+              qq.resolve(value);
+            });
+          }catch(e){
+            hydroPromises.forEach(function(qq){
+              qq.reject(e);
+            });
+          }
+        });
+        hydroPromises.push(q);
+      }
     }
     return q.promise;
   }
-  getHydroStorage('2017','0');
+//  getHydroStorage('2017','0');
 
   colors=null;
 

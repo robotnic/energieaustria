@@ -8,7 +8,8 @@ angular.module('hydrostorage', ['nvd3','energiecharts'])
     template:`<h4>Hydrostorage</h4>
     <div class="outer">
     <div class="inner" style="min-height:{{percent}}">
-{{month}} {{percent}} 
+{{month}} {{percent}} <br/>
+{{abs}} GWh
     </div>
     </div>
     `,
@@ -22,6 +23,10 @@ angular.module('hydrostorage', ['nvd3','energiecharts'])
           $scope.percent = Math.round(response*100) + "%";
           $scope.month = m.format('MMM');
         });
+        dataManager.getHydroStorage(m.year(),m.month()).then(function(response){
+          $scope.abs = Math.round(response);
+        });
+ 
       }
     }
   }

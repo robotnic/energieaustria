@@ -249,6 +249,7 @@ function getYears(stat) {
 
 
 function loadStorage(){
+  //https://www.e-control.at/de/statistik/strom/marktstatistik/kennzahlen_wasser_waerme
   var q = $q.defer();
   if(hydrostorage){
     q.resolve(hydrostorage);
@@ -262,10 +263,8 @@ function loadStorage(){
         var c = String.fromCharCode(i);
         var cell = excel.Sheets.Wa[c+'6'];
         if(cell){
-          console.log(cell.v);
           var colname = cell.v;
           if(storage[colname]){
-            console.log('BIG');
             colname = colname+'%';
           }
           storage[colname]=[];
@@ -274,14 +273,11 @@ function loadStorage(){
             var valueCell = excel.Sheets.Wa[c+n];
             if(valueCell){
               var month = excel.Sheets.Wa['B'+n];
-              console.log(month.v,valueCell.v);
               storage[colname].push(valueCell.v);
             }
-            //console.log(storage);
           }
         }
     }
-    console.log(storage);
     q.resolve(storage);
   });
   return q.promise;

@@ -9,7 +9,6 @@ angular.module('pie', ['nvd3','energiecharts'])
     },
       template:'<div><h3> <span ng-if="!title">{{type}} </span> <span ng-if="title">{{title}}</span> </h3><p>{{total}}; {{totalGWh}} TWh; ⌀{{power}}</p><nvd3 options="options" data="piedata" tooltipcontent="toolTipContentFunction()"></nvd3></div>',
     controller: function($scope, dataManager, $q) {
-      console.log("$scope.",$scope);
       dataManager.getSector($scope.type,$scope.year).then(function(sector){
         $scope.piedata=[];
         var total=0;
