@@ -1,3 +1,7 @@
+/*
+Sorry, it's a bit a mess in this file
+*/
+
 var request = require('request');
 var moment = require('moment');
 var $q = require('q');
@@ -36,8 +40,6 @@ const {
 } = require('pg')
 
 const pool = new Pool(dbconnect);
-
-//move part below to seperate file
 
 
 function getSectors(sector, year){

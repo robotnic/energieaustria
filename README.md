@@ -10,10 +10,6 @@ All data are Cached as bson postgres table.
 # Data sources
 There are some unstructured function to retrieve the data. Copyright is unclear.
 
-# Todo
-* openapi API definition (generator)
-* sources: check legal state of data, find new data sources
-* whatif: What happens if we add 5x Solar,... (Plugin mechanism)
 
 # Install
 * clone repository
@@ -26,3 +22,6 @@ psql energy < config/energy.sql
 
 # Start
 node index.js
+
+To use the /openapi you can use a browser plugin like
+https://github.com/mshauneu/chrome-swagger-ui
