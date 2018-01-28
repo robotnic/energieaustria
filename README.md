@@ -9,7 +9,7 @@ Das Ziel dieses Projektes ist es, einen Plan zu bekommen wie unsere nachhaltige 
 # API
 There is REST API to query Data.
 If the Data are not available in the Database, they will be retrieved from the original source.
-All data are Cached as bson postgres table.
+All data are Cached as bson in postgres table.
 
 
 # Data sources
@@ -24,11 +24,12 @@ There are some unstructured function to retrieve the data. Copyright is unclear.
 ```
 psql energy < config/energy.sql
 ```
+Feel free to host a live version.
 
 # Start
 node index.js
 
 ## swagger
-To use the /openapi you can use a browser plugin like
+To use the [/openapi](http://localhost:3000/openapi) you can use a browser plugin like
 https://github.com/mshauneu/chrome-swagger-ui
 
