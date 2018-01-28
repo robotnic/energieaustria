@@ -4,6 +4,7 @@ Die Daten werden aus diversen (copyright?) Quellen bezogen und in einer Postgres
 Hier kann man sehen wie die Stromerzeugung ausschauen würde, wenn man PV *10 und Wind *3 einstellt
 ![alt text](https://raw.githubusercontent.com/robotnic/energieaustria/master/doc/screenshots/energyaustriaexmaplechart.png)
 
+Das Ziel dieses Projektes ist es, einen Plan zu bekommen wie unsere nachhaltige Energiezukunft ausschauen könnte.
 
 # API
 There is REST API to query Data.
