@@ -1,6 +1,7 @@
 REST mit angular-nvd3 frontend. 
 Die Daten werden aus diversen (copyright?) Quellen bezogen und in einer Postgres gelagert. 
 
+Hier kann man sehen wie die Stromerzeugung ausschauen würde, wenn man PV *10 und Wind *3 einstellt
 ![alt text](https://raw.githubusercontent.com/robotnic/energieaustria/master/doc/screenshots/energyaustriaexmaplechart.png)
 
 
