@@ -27,6 +27,3 @@ node index.js
 To use the /openapi you can use a browser plugin like
 https://github.com/mshauneu/chrome-swagger-ui
 
-You can also use
-http://petstore.swagger.io/ and paste
-http://localhost:3000/openapi to the input field (cors is anabled for /openapi);

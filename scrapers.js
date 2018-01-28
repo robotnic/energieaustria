@@ -52,7 +52,6 @@ function getSectors(sector, year){
   }
 
   if(!year){
-console.log('---',sector);
     var stat = statistics[sector];
     if (sector === 'Tabelle1') {
       var selected = parseTabelle1(stat);
@@ -67,7 +66,6 @@ console.log('---',sector);
   var stat = statistics[sector];
   var selected = select(stat, '30', '36');
   for (var s in selected) {
-    console.log(s);
     result[s] = selected[s][year];
   }
   if (sector === 'Tabelle1') {
@@ -89,10 +87,8 @@ function parseTabelle1(stat) {
     var sx = parseInt(s.substring(1));
     if (sx === 2) {
       firstLine = stat[s];
-      console.log('firstLine', firstLine.v);
       title = firstLine.v
       if (title) {
-        console.log(title);
         title = (title + '').replace(/[\n\r\t-]/g, '');
       }
       titleArray.push(title);
@@ -100,11 +96,9 @@ function parseTabelle1(stat) {
     } else {
       if (s[0] === 'A') {
         title = stat[s].v;
-        console.log('s', s[0], title);
       } else {
         var char = s[0].charCodeAt(0) - 65;
 
-        console.log('else', s[0], char, title, titleArray[char], stat[s].v);
         var subTitle = titleArray[char];
         if (ret[subTitle]) {
           ret[subTitle][title] = stat[s].v;
@@ -119,9 +113,7 @@ function parseTabelle1(stat) {
 function select(stat, a, b) {
   var result = {}
   var xAxis = getYears(stat);
-  console.log(xAxis);
   var r = getItems(stat, a, b, xAxis);
-  console.log(r);
   /*
   for (var s in stat) {
     if (comp(a, s, b)) {
@@ -139,7 +131,6 @@ function select(stat, a, b) {
 }
 
 function getItems(stat, a, b, xAxis) {
-  console.log(a, b, l);
   var l = xAxis.length;
   var rows = {};
   var title = "nix";
