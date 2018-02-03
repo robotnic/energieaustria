@@ -154,8 +154,22 @@ angular.module('charts', ['nvd3','energiecharts'])
             values: values,
             seriesIndex: $scope.data.length
           };
+          var transport = {
+            key:'Transport',
+            yAxis: '1',
+            color: '#999999',
+            type: 'area',
+            values: JSON.parse(JSON.stringify(values)),
+            seriesIndex: $scope.data.length
+          };
+          transport.values.forEach(function(value){
+            console.log(value);
+            value.y=4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
+          });
+
 //          $scope.data.unshift(p2g);
           $scope.data.splice(1, 0, p2g);
+          $scope.data.push(transport);
           $scope.viewdata = manipulate($scope.data);
             //$scope.data = $scope.data.concat(charts);
           var hash = readHash();
@@ -191,7 +205,7 @@ angular.module('charts', ['nvd3','energiecharts'])
             //$scope.originalTotal[m]=calcTotal(chart);
             if(chart.key === m){
               var value = $scope.mutate[m];
-              alter(m, chart, value, data,['Gas','Kohle','Öl','Speicher']);
+              alter(m, chart, value, data,['Transport','Gas','Kohle','Öl','Speicher']);
             }
             //$scope.total[m]=calcTotal(chart);
           }

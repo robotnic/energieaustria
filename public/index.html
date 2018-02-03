@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8" />
-    <title>Angular-nvD3 Multi Chart</title>
+    <title>Energie Österreich</title>
     <script>document.write('<base href="' + document.location + '" />');</script>
     <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -50,6 +50,11 @@
           <md-tooltip md-direction="left">Multiply installed Wind</md-tooltip>
           <label>Wind</label> 
           <input ng-model="mutate.Wind" style="width:50px;color:white">
+        </md-input-container>
+         <md-input-container class="md-block" lex-gt-sm>
+          <md-tooltip md-direction="left">Electric Transport percentage</md-tooltip>
+          <label>EV%</label> 
+          <input ng-model="mutate.Transport" style="width:50px;color:white">
         </md-input-container>
  
         <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
