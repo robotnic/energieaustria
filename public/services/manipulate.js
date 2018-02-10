@@ -20,8 +20,12 @@ angular.module('manipulate', [])
           total: {},
           originalTotal: {}
         };
+        var originalTotals = {};
+        var totals = {};
         data.forEach(function(chart){
-          meta.originalTotal[chart.key]=calcTotal(chart);  //duration missing
+          if (chart.type === 'area') {
+            originalTotals[chart.key]=calcTotal(chart);  //duration missing
+          }
         });
         data.forEach(function(chart){
               if(chart.key === 'Power2Gas') {
@@ -29,15 +33,24 @@ angular.module('manipulate', [])
               }
         });
         data.forEach(function(chart){
+          if (chart.type === 'area') {
               var multiplier = mutate[chart.key] || 1;
               addRenewalbles(chart, multiplier);
+          }
         });
         reduceFossiles();
+        pump();
+        releaseExcess();
+        console.log('totals',totals);
         data.forEach(function(chart){
           meta.total[chart.key]=calcTotal(chart);
         });
         console.log(meta);
-        return data;
+        return {
+          data: data,
+          totals: totals,
+          originalTotals: originalTotals
+        }
 
         function calcTotal(chart){
           var total =0;
@@ -51,6 +64,37 @@ angular.module('manipulate', [])
           }
           */
           return total;
+        }
+
+        function pump() {
+          var total=0;
+          data.forEach(function(chart){
+                if(chart.key === 'Pumpspeicher') {
+                  console.log('pump', chart);
+                  var minpower = sources[chart.key].minpower;
+                  var maxpower = sources[chart.key].maxpower;
+                  console.log(minpower, maxpower);
+                  chart.values.forEach(function(value,i){
+                    var pg = Power2Gas.values[i];
+                    //console.log(value.y,pg.y,i);
+                    var oldY = value.y;
+                    var sum = value.y + pg.y;
+                    if(sum < minpower) {
+                      sum = minpower;
+                    }
+                    value.y = sum;
+                    pg.y = 0; //sum + oldY;
+                    var delta = value.y - oldY;
+                    total += delta;
+                    //console.log(sum);
+                  });
+                  totals[chart.key] = total;  //total
+                }
+          });
+          return total; 
+        }
+        function releaseExcess() {
+
         }
 
 
@@ -68,10 +112,11 @@ angular.module('manipulate', [])
           if (total) {
             console.log('Unused Energie', chart.key, total, multiplier, Power2Gas);
           }
+          totals[chart.key] = total;
         }
 
         function reduceFossiles(){
-          var order  = ['Transport','Kohle', 'Öl', 'Gas'];
+          var order  = ['Transport','Kohle', 'Öl', 'Gas','Speicher'];
           for(var o in order) {
            data.forEach(function(chart){
               if(chart.key === order[o]) {
@@ -85,99 +130,31 @@ angular.module('manipulate', [])
 
 
         function recudeCO2(chart) {
+          var total = 0;
           chart.values.forEach(function(value,i){
+            var delta = 0;
             var pg = Power2Gas.values[i];
             if (pg) {
               if(value.y > 0 && pg.y < 0) {
-                console.log('bevor',value.y, -pg.y);
                 var bigger = false;
                 if(value.y > -pg.y){
                   bigger = true;
                   var oldY = value.y;
                   value.y = value.y + pg.y;
-                  var delta = value.y - oldY;
+                  delta = value.y - oldY;
                   pg.y = pg.y - delta;
                 } else {
-                  var delta = value.y;
+                  delta = value.y;
                   value.y = 0;
                   pg.y = pg.y + delta;
                 }
-                console.log('after',value.y, -pg.y, bigger, delta);
+    
               }
             }
+            total += delta;
           });
+          totals[chart.key] = -total;
         }
       }
 
-/*
-      function alter(name, chart, factor, data, replace, meta){
-        var rest = 0;
-        var pumpChart = null;
-        var replaceCharts={};
-        //$scope.free[name]=0;
-        data.forEach(function(replaceChart){
-          replace.forEach(function(r){
-            if(replaceChart.key === r){
-              replaceCharts[r]=replaceChart;
-            }
-          });
-          if(replaceChart.key === 'Pumpspeicher'){
-            pumpChart = replaceChart;
-          };
-          if(replaceChart.key === 'Power2Gas'){
-            p2gChart = replaceChart;
-          };
-        });
-        console.log(chart.values.length);
-        chart.values.forEach(function(value,i){
-          var newy = value.y * factor;
-          var delta= value.y - newy;
-          value.y = newy;
-            for(var r in replaceCharts){ 
-              if(typeof(meta.free[r]) === 'undefined'){
-                console.log('init free',r);
-                meta.free[r]=0;
-              } 
-              var oldDelta = delta;
-              //$scope.free[r]=+delta;
-              var rv=replaceCharts[r].values[i];
-              if((rv.y + delta) > 0){
-                rv.y = rv.y + delta;
-                delta =0;
-              }else{
-                delta +=rv.y; 
-                rv.y = 0;
-              }
-              meta.free[r]+=(oldDelta - delta);
-            }
-          
-            //$scope.free[name]=+delta;
-          if(delta !== 0){
-            var xy=pumpChart.values[i];
-            //console.log('Pumpit',new Date(xy.x), xy.y +' + '+delta+'='+(xy.y + delta));
-            var maxpump=-1.9;
-            //$scope.free[name]=+delta;
-            if((xy.y + delta) > maxpump){
-              xy.y = xy.y + delta;
-              meta.free.pump += delta;
-              delta= 0;
-            }else{
-              delta =   delta - maxpump; 
-              meta.free.pump += delta;
-              xy.y = maxpump;
-              //console.log('overloa delta', delta,'already pumping', xy.y);
-            }
-          }
-          if(delta !== 0){
-            //console.log('hau weg', delta);
-            //console.log('hau weg', p2gChart);
-            if(delta>0)delta=0;
-            p2gChart.values[i].y = delta;
-            meta.free.unused += delta;
-          }
-          
-        });
-        return chart; 
-      }
-*/
 });

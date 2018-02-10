@@ -6,7 +6,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       ctrl:'=',
       mutate:'=',
     },
-    template:'<nvd3 options="options" data="viewdata" api="api"></nvd3>',
+    template:'<nvd3 options="options" data="viewdata" api="api"></nvd3><table><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in totals"><td>{{k}}</td> <td>{{originalTotals[k]| number : 1}}</td><<td>{{v| number : 1}}</td></table>',
     controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
@@ -179,7 +179,10 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
 
           $scope.data.splice(1, 0, p2g);
           $scope.data.push(transport);
-          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources);   //here the manipulation happens
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources);   //here the manipulation happens
+          $scope.viewdata = manipulationResult.data;
+          $scope.totals = manipulationResult.totals;
+          $scope.originalTotals = manipulationResult.originalTotals;
           var hash = readHash();
         },function(error){
           console.log(error);
@@ -190,7 +193,9 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
 
       $scope.$watch('mutate',function(value){
         if(typeof($scope.data)!=='undefined'){
-          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources);  //also manipulation
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources);   //here the manipulation happens
+          $scope.viewdata = manipulationResult.data;
+          $scope.totals = manipulationResult.totals;
           if($scope.api){
             $scope.api.update();
           }
