@@ -1,4 +1,4 @@
-angular.module('charts', ['nvd3','energiecharts'])
+angular.module('charts', ['nvd3','energiecharts','manipulate'])
 
 .directive('chart', function() {
   return {
@@ -7,7 +7,7 @@ angular.module('charts', ['nvd3','energiecharts'])
       mutate:'=',
     },
     template:'<nvd3 options="options" data="viewdata" api="api"></nvd3>',
-    controller: function($scope, dataManager, $q) {
+    controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
         unused:0
@@ -18,6 +18,10 @@ angular.module('charts', ['nvd3','energiecharts'])
       $scope.reload = function(){
         init(null, true);
       }
+
+      
+      //time navigation
+
       $scope.$watch('ctrl',function(newvalue, oldvalue, scope){
         if(newvalue.myDate){
           var date=moment($scope.ctrl.myDate).startOf($scope.ctrl.timetype);
@@ -52,6 +56,10 @@ angular.module('charts', ['nvd3','energiecharts'])
           }
         }
       },true);
+
+      
+      //nvd3
+
       $scope.options = {
         chart: {
             type: 'multiChart',
@@ -121,6 +129,8 @@ angular.module('charts', ['nvd3','energiecharts'])
         }
       };
 
+      //load charts
+
       function init(dateString, reload){
         console.log('--init--', $scope.ctrl.layercode, dateString);
         var date = $scope.ctrl.date;
@@ -129,7 +139,7 @@ angular.module('charts', ['nvd3','energiecharts'])
           date = dateString;
         }
         $scope.data = [];
-       var promises = [
+        var promises = [
           dataManager.loadData('AGPT',date , 1,$scope.ctrl.timetype,'area', null,reload),
           dataManager.loadData('AL', date,1,$scope.ctrl.timetype,'line',null, reload),
           dataManager.loadData('EXAAD1P', date,2,$scope.ctrl.timetype,'line',  function(y){            
@@ -163,17 +173,13 @@ angular.module('charts', ['nvd3','energiecharts'])
             seriesIndex: $scope.data.length
           };
           transport.values.forEach(function(value){
-            console.log(value);
             value.y=4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
           });
 
-//          $scope.data.unshift(p2g);
           $scope.data.splice(1, 0, p2g);
           $scope.data.push(transport);
-          $scope.viewdata = manipulate($scope.data);
-            //$scope.data = $scope.data.concat(charts);
+          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate);   //here the manipulation happens
           var hash = readHash();
-          //legendStateChanged();
         },function(error){
           console.log(error);
         });
@@ -181,7 +187,7 @@ angular.module('charts', ['nvd3','energiecharts'])
 
       $scope.$watch('mutate',function(value){
         if(typeof($scope.data)!=='undefined'){
-          $scope.viewdata = manipulate($scope.data);
+          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate);
           if($scope.api){
             $scope.api.update();
           }
@@ -189,115 +195,8 @@ angular.module('charts', ['nvd3','energiecharts'])
         }
       },true);
 
-      function manipulate(data){
-        $scope.free={
-          pump:0,
-          unused:0
-        };
-        $scope.total={};
-        $scope.originalTotal={};
-        data = JSON.parse(JSON.stringify(data));
-        data.forEach(function(chart){
-          $scope.originalTotal[chart.key]=calcTotal(chart);
-        });
-        data.forEach(function(chart){
-          for(var m in $scope.mutate){
-            //$scope.originalTotal[m]=calcTotal(chart);
-            if(chart.key === m){
-              var value = $scope.mutate[m];
-              alter(m, chart, value, data,['Transport','Gas','Kohle','Öl','Speicher']);
-            }
-            //$scope.total[m]=calcTotal(chart);
-          }
-        });
-        data.forEach(function(chart){
-          $scope.total[chart.key]=calcTotal(chart);
-        });
-        return data;
-      }
 
-      function calcTotal(chart){
-        var total =0;
-        chart.values.forEach(function(value){
-          total += value.y;
-        });
-//        $scope.total[chart.key]=total;
-        if($scope.ctrl.timetype==='day'){
-          total = total/4;
-        }
-        return total;
-      }
-
-      function alter(name, chart, factor, data, replace){
-        var rest = 0;
-        var pumpChart = null;
-        var replaceCharts={};
-        //$scope.free[name]=0;
-        data.forEach(function(replaceChart){
-          replace.forEach(function(r){
-            if(replaceChart.key === r){
-              replaceCharts[r]=replaceChart;
-            }
-          });
-          if(replaceChart.key === 'Pumpspeicher'){
-            pumpChart = replaceChart;
-          };
-          if(replaceChart.key === 'Power2Gas'){
-            p2gChart = replaceChart;
-          };
-        });
-        console.log(chart.values.length);
-        chart.values.forEach(function(value,i){
-          var newy = value.y * factor;
-          var delta= value.y - newy;
-          value.y = newy;
-            for(var r in replaceCharts){ 
-              if(typeof($scope.free[r]) === 'undefined'){
-                console.log('init free',r);
-                $scope.free[r]=0;
-              } 
-              var oldDelta = delta;
-              //$scope.free[r]=+delta;
-              var rv=replaceCharts[r].values[i];
-              if((rv.y + delta) > 0){
-                rv.y = rv.y + delta;
-                delta =0;
-              }else{
-                delta +=rv.y; 
-                rv.y = 0;
-              }
-              $scope.free[r]+=(oldDelta - delta);
-            }
-          
-            //$scope.free[name]=+delta;
-          if(delta !== 0){
-            var xy=pumpChart.values[i];
-            //console.log('Pumpit',new Date(xy.x), xy.y +' + '+delta+'='+(xy.y + delta));
-            var maxpump=-1.9;
-            //$scope.free[name]=+delta;
-            if((xy.y + delta) > maxpump){
-              xy.y = xy.y + delta;
-              $scope.free.pump += delta;
-              delta= 0;
-            }else{
-              delta =   delta - maxpump; 
-              $scope.free.pump += delta;
-              xy.y = maxpump;
-              //console.log('overloa delta', delta,'already pumping', xy.y);
-            }
-          }
-          if(delta !== 0){
-            //console.log('hau weg', delta);
-            //console.log('hau weg', p2gChart);
-            if(delta>0)delta=0;
-            p2gChart.values[i].y = delta;
-            $scope.free.unused += delta;
-          }
-          
-        });
-        return chart; 
-      }
-
+      //Deeplinking
 
       function legendStateChanged(){
         var legendState = {};
@@ -313,8 +212,6 @@ angular.module('charts', ['nvd3','energiecharts'])
         });
         setHash();
       }
-
-
 
       function setHash(){
         var code = $scope.ctrl.layercode || '';
