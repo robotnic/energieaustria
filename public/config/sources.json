@@ -66,5 +66,9 @@
    "Preis [EUR/MWh]": {
     "color": "lightgreen",
     "type": "price"
+  },
+  "Transport": {
+    "color":"green",
+    "type":"fossile"
   }
 }

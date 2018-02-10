@@ -167,7 +167,6 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           var transport = {
             key:'Transport',
             yAxis: '1',
-            color: '#999999',
             type: 'area',
             values: JSON.parse(JSON.stringify(values)),
             seriesIndex: $scope.data.length
@@ -185,9 +184,11 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
         });
       }
 
+      //watch manipulation
+
       $scope.$watch('mutate',function(value){
         if(typeof($scope.data)!=='undefined'){
-          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate);
+          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate);  //also manipulation
           if($scope.api){
             $scope.api.update();
           }
