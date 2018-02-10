@@ -2,13 +2,16 @@ angular.module('manipulate', [])
 
 .factory('manipulator', function() {
       return {
-        manipulate: function(data, mutate) {
-          return manipulate(data, mutate);
+        manipulate: function(data, mutate, sources) {
+          return manipulate(data, mutate, sources);
         }
 
       }
-      function manipulate(data, mutate){
+      function manipulate(origdata, mutate, sources){
+        console.log('-----sources----', sources);
         console.log('-----manipulate----', mutate);
+        var data = JSON.parse(JSON.stringify(origdata));
+        var Power2Gas = null;
         var meta = {
           free: {
             pump: 0,
@@ -17,41 +20,96 @@ angular.module('manipulate', [])
           total: {},
           originalTotal: {}
         };
-        data = JSON.parse(JSON.stringify(data));
         data.forEach(function(chart){
-          meta.originalTotal[chart.key]=calcTotal(chart);
+          meta.originalTotal[chart.key]=calcTotal(chart);  //duration missing
         });
         data.forEach(function(chart){
-          for(var m in mutate){
-            //$scope.originalTotal[m]=calcTotal(chart);
-            if(chart.key === m){
-              var value = mutate[m];
-              alter(m, chart, value, data,['Transport','Gas','Kohle','Öl','Speicher'], meta);
-            }
-            //$scope.total[m]=calcTotal(chart);
-          }
+              if(chart.key === 'Power2Gas') {
+                Power2Gas = chart;
+              }
         });
+        data.forEach(function(chart){
+              var multiplier = mutate[chart.key] || 1;
+              addRenewalbles(chart, multiplier);
+        });
+        reduceFossiles();
         data.forEach(function(chart){
           meta.total[chart.key]=calcTotal(chart);
         });
         console.log(meta);
         return data;
-      }
 
-      function calcTotal(chart){
-        var total =0;
-        chart.values.forEach(function(value){
-          total += value.y;
-        });
-//        $scope.total[chart.key]=total;
-        /*
-        if($scope.ctrl.timetype==='day'){
-          total = total/4;
+        function calcTotal(chart){
+          var total =0;
+          chart.values.forEach(function(value){
+            total += value.y;
+          });
+  //        $scope.total[chart.key]=total;
+          /*
+          if($scope.ctrl.timetype==='day'){
+            total = total/4;
+          }
+          */
+          return total;
         }
-        */
-        return total;
+
+
+        function addRenewalbles(chart, multiplier) {
+          var total = 0;
+          chart.values.forEach(function(value, i) {
+            var oldValue = value.y;
+            value.y = value.y * multiplier;
+            var delta = value.y - oldValue;
+            if (Power2Gas.values[i]) {  
+              Power2Gas.values[i].y -= delta ;
+            }
+            total += delta;
+          });
+          if (total) {
+            console.log('Unused Energie', chart.key, total, multiplier, Power2Gas);
+          }
+        }
+
+        function reduceFossiles(){
+          var order  = ['Transport','Kohle', 'Öl', 'Gas'];
+          for(var o in order) {
+           data.forEach(function(chart){
+              if(chart.key === order[o]) {
+                console.log('reduce', chart);
+                recudeCO2(chart);
+              }
+            });
+            
+          }
+        }
+
+
+        function recudeCO2(chart) {
+          chart.values.forEach(function(value,i){
+            var pg = Power2Gas.values[i];
+            if (pg) {
+              if(value.y > 0 && pg.y < 0) {
+                console.log('bevor',value.y, -pg.y);
+                var bigger = false;
+                if(value.y > -pg.y){
+                  bigger = true;
+                  var oldY = value.y;
+                  value.y = value.y + pg.y;
+                  var delta = value.y - oldY;
+                  pg.y = pg.y - delta;
+                } else {
+                  var delta = value.y;
+                  value.y = 0;
+                  pg.y = pg.y + delta;
+                }
+                console.log('after',value.y, -pg.y, bigger, delta);
+              }
+            }
+          });
+        }
       }
 
+/*
       function alter(name, chart, factor, data, replace, meta){
         var rest = 0;
         var pumpChart = null;
@@ -121,5 +179,5 @@ angular.module('manipulate', [])
         });
         return chart; 
       }
-
+*/
 });

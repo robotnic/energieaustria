@@ -1,4 +1,10 @@
 {
+  "Transport": {
+    "color":"green",
+    "type":"fossile",
+    "co2":"1500"
+  },
+
   "Pumpspeicher": {
     "color": "lime",
     "minpower": -1.9,
@@ -15,7 +21,8 @@
   },
   "Kohle": {
     "color": "black",
-    "type": "fossil"
+    "type": "fossil",
+    "co2": "1000"
   },
   "Öl": {
     "color": "darkbrown",
@@ -23,7 +30,8 @@
   },
   "Gas": {
     "color": "red",
-    "type": "fossil"
+    "type": "fossil",
+    "co2": "500"
   },
   "Biomasse": {
     "color": "#f4a460",
@@ -66,9 +74,5 @@
    "Preis [EUR/MWh]": {
     "color": "lightgreen",
     "type": "price"
-  },
-  "Transport": {
-    "color":"green",
-    "type":"fossile"
   }
 }

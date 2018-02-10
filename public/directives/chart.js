@@ -172,12 +172,14 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             seriesIndex: $scope.data.length
           };
           transport.values.forEach(function(value){
-            value.y=4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
+            if(value){
+            value.y = -4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
+            }
           });
 
           $scope.data.splice(1, 0, p2g);
           $scope.data.push(transport);
-          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate);   //here the manipulation happens
+          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources);   //here the manipulation happens
           var hash = readHash();
         },function(error){
           console.log(error);
@@ -188,7 +190,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
 
       $scope.$watch('mutate',function(value){
         if(typeof($scope.data)!=='undefined'){
-          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate);  //also manipulation
+          $scope.viewdata = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources);  //also manipulation
           if($scope.api){
             $scope.api.update();
           }

@@ -45,17 +45,17 @@
         <md-input-container class="md-block">
           <md-tooltip md-direction="left">Multiply installed PV</md-tooltip>
           <label>Solar</label> 
-          <input ng-model="mutate.Solar" style="width:50px;color:white">
+          <input type="number" ng-model="mutate.Solar" style="width:50px;color:white">
         </md-input-container>
         <md-input-container class="md-block" lex-gt-sm>
           <md-tooltip md-direction="left">Multiply installed Wind</md-tooltip>
           <label>Wind</label> 
-          <input ng-model="mutate.Wind" style="width:50px;color:white">
+          <input type="number" ng-model="mutate.Wind" style="width:50px;color:white">
         </md-input-container>
          <md-input-container class="md-block" lex-gt-sm>
           <md-tooltip md-direction="left">Electric Transport percentage</md-tooltip>
           <label>EV%</label> 
-          <input ng-model="mutate.Transport" style="width:50px;color:white">
+          <input type="number" ng-model="mutate.Transport" style="width:50px;color:white">
         </md-input-container>
  
         <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
