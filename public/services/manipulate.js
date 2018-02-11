@@ -43,7 +43,9 @@ angular.module('manipulate', [])
         releaseExcess();
         console.log('totals',totals);
         data.forEach(function(chart){
-          meta.total[chart.key]=calcTotal(chart);
+          if (chart.type === 'area') {
+            totals[chart.key]=calcTotal(chart);
+          }
         });
         console.log(meta);
         return {
@@ -68,28 +70,30 @@ angular.module('manipulate', [])
 
         function pump() {
           var total=0;
+          var totalPG=0;
           data.forEach(function(chart){
-                if(chart.key === 'Pumpspeicher') {
-                  console.log('pump', chart);
-                  var minpower = sources[chart.key].minpower;
-                  var maxpower = sources[chart.key].maxpower;
-                  console.log(minpower, maxpower);
-                  chart.values.forEach(function(value,i){
-                    var pg = Power2Gas.values[i];
-                    //console.log(value.y,pg.y,i);
-                    var oldY = value.y;
-                    var sum = value.y + pg.y;
-                    if(sum < minpower) {
-                      sum = minpower;
-                    }
-                    value.y = sum;
-                    pg.y = 0; //sum + oldY;
-                    var delta = value.y - oldY;
-                    total += delta;
-                    //console.log(sum);
-                  });
-                  totals[chart.key] = total;  //total
+            if(chart.key === 'Pumpspeicher') {
+              console.log('pump', chart);
+              var minpower = sources[chart.key].minpower;
+              var maxpower = sources[chart.key].maxpower;
+              console.log(minpower, maxpower);
+              chart.values.forEach(function(value,i){
+                var pg = Power2Gas.values[i];
+                console.log('old', value.y, pg.y);
+                //console.log(value.y,pg.y,i);
+                var oldY = value.y;
+                var sum = value.y + pg.y;
+                if(sum < minpower) {
+                  sum = minpower;
                 }
+                value.y = sum;
+                var delta = value.y - oldY;
+                total += delta;
+                pg.y = pg.y - delta;
+                totalPG += pg.y;
+                console.log('new', value.y, pg.y);
+              });
+            }
           });
           return total; 
         }
@@ -112,7 +116,6 @@ angular.module('manipulate', [])
           if (total) {
             console.log('Unused Energie', chart.key, total, multiplier, Power2Gas);
           }
-          totals[chart.key] = total;
         }
 
         function reduceFossiles(){
@@ -153,7 +156,6 @@ angular.module('manipulate', [])
             }
             total += delta;
           });
-          totals[chart.key] = -total;
         }
       }
 
