@@ -45,17 +45,17 @@
         <md-input-container class="md-block">
           <md-tooltip md-direction="left">Multiply installed PV</md-tooltip>
           <label>Solar</label> 
-          <input type="number" ng-model="mutate.Solar" style="width:50px;color:white">
+          <input type="number" min="1" ng-model="mutate.Solar" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
         <md-input-container class="md-block" lex-gt-sm>
           <md-tooltip md-direction="left">Multiply installed Wind</md-tooltip>
           <label>Wind</label> 
-          <input type="number" ng-model="mutate.Wind" style="width:50px;color:white">
+          <input type="number" min="1" ng-model="mutate.Wind" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
          <md-input-container class="md-block" lex-gt-sm>
           <md-tooltip md-direction="left">Electric Transport percentage</md-tooltip>
           <label>EV%</label> 
-          <input type="number" ng-model="mutate.Transport" style="width:50px;color:white">
+          <input type="number" min="1" ng-model="mutate.Transport" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
  
         <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
@@ -76,9 +76,9 @@
       <md-radio-button value="week"> week </md-radio-button>
       <md-radio-button value="month">month</md-radio-button>
     </md-radio-group>
+<button claa="md-button">{{ctrl.pumpsurplus}}</button>
 
-
-    <hydrostorage date="ctrl.date" ></hydrostorage>
+    <hydrostorage date="ctrl.date" ctrl="ctrl"></hydrostorage>
 
     <md-tabs md-dynamic-height md-border-bottom md-selected="selectedIndex">
       <md-tab label="Chart">
@@ -170,6 +170,7 @@
 <!--
     <nvd3 options="options" data="data"></nvd3>
 -->
+<pre>{{ctrl|json}}</pre>
   </body>
 
 </html>

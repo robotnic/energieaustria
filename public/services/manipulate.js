@@ -2,14 +2,15 @@ angular.module('manipulate', [])
 
 .factory('manipulator', function() {
       return {
-        manipulate: function(data, mutate, sources) {
-          return manipulate(data, mutate, sources);
+        manipulate: function(data, mutate, sources, surplus) {
+          return manipulate(data, mutate, sources, surplus);
         }
 
       }
-      function manipulate(origdata, mutate, sources){
+      function manipulate(origdata, mutate, sources, surplus){
         console.log('-----sources----', sources);
         console.log('-----manipulate----', mutate);
+        console.log('-----pumpbonus----', surplus);
         var data = JSON.parse(JSON.stringify(origdata));
         var Power2Gas = null;
         var meta = {
@@ -39,23 +40,26 @@ angular.module('manipulate', [])
           }
         });
         reduceFossiles();
-        pump();
-        releaseExcess();
+        console.log('surplus before pump', surplus);
+        pump(surplus);
+//        releaseExcess();
         console.log('totals',totals);
         data.forEach(function(chart){
           if (chart.type === 'area') {
             totals[chart.key]=calcTotal(chart);
           }
         });
-        console.log(meta);
+        pumpsurplus = totals['Pumpspeicher'] - originalTotals['Pumpspeicher'];
+        console.log('PUMPSURPLUS',pumpsurplus);
         return {
           data: data,
           totals: totals,
-          originalTotals: originalTotals
+          originalTotals: originalTotals,
+          pumpsurplus: pumpsurplus
         }
 
         function calcTotal(chart){
-          var total =0;
+          var total = 0;
           chart.values.forEach(function(value){
             total += value.y;
           });
@@ -68,37 +72,66 @@ angular.module('manipulate', [])
           return total;
         }
 
-        function pump() {
+        function pump(surplus) {
           var total=0;
+          if(surplus){
+            total = surplus;
+            console.log('set total', total);
+          }
           var totalPG=0;
           data.forEach(function(chart){
             if(chart.key === 'Pumpspeicher') {
-              console.log('pump', chart);
+              //console.log('pump', chart);
               var minpower = sources[chart.key].minpower;
               var maxpower = sources[chart.key].maxpower;
-              console.log(minpower, maxpower);
+              //console.log(minpower, maxpower);
               chart.values.forEach(function(value,i){
                 var pg = Power2Gas.values[i];
-                console.log('old', value.y, pg.y);
+//                console.log('old', value.y, pg.y);
                 //console.log(value.y,pg.y,i);
+                //console.log('before', value.y, pg.y, 'total:',total);
                 var oldY = value.y;
                 var sum = value.y + pg.y;
                 if(sum < minpower) {
                   sum = minpower;
                 }
+
                 value.y = sum;
                 var delta = value.y - oldY;
                 total += delta;
                 pg.y = pg.y - delta;
                 totalPG += pg.y;
-                console.log('new', value.y, pg.y);
+
+                //release
+                if(total < 0){
+                  //console.log('total additional pumped', total);
+                  total = release(i, total);
+                  //console.log('after', value.y, pg.y, 'total:',total);
+                }
               });
             }
           });
           return total; 
         }
-        function releaseExcess() {
 
+        function release(i, total){
+          var order  = ['Transport','Kohle', 'Öl', 'Gas'];
+          for(var o in order) {
+            data.forEach(function(chart){
+              if(chart.key === order[o] && chart.values[i].y > 0) {
+                var delta = total;
+                if(chart.values[i].y < total) {
+                  chart.values[i].y += total;
+                  total = 0;
+                } else {
+                  delta = chart.values[i].y;
+                  chart.values[i].y = 0;
+                  total += delta;
+                }
+              }
+            });
+          }
+          return total;
         }
 
 
@@ -119,9 +152,9 @@ angular.module('manipulate', [])
         }
 
         function reduceFossiles(){
-          var order  = ['Transport','Kohle', 'Öl', 'Gas','Speicher'];
+          var order  = ['Transport','Kohle', 'Öl', 'Gas'];
           for(var o in order) {
-           data.forEach(function(chart){
+            data.forEach(function(chart){
               if(chart.key === order[o]) {
                 console.log('reduce', chart);
                 recudeCO2(chart);

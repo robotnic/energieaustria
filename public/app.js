@@ -4,7 +4,8 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {
     date: '20171222',
     timetype: 'day',
-    layercode: '0111111111111111111111'
+    layercode: '0111111111111111111111',
+    keep: true
   }
   $scope.mutate = {
     Solar:1,

@@ -36,3 +36,18 @@ You can find it in the
 [chrome store](https://chrome.google.com/webstore/detail/swagger-ui-console/ljlmonadebogfjabhkppkoohjkjclfai?utm_source=chrome-app-launcher-info-dialog).
 
 ![swagger](https://raw.githubusercontent.com/robotnic/energieaustria/master/doc/screenshots/swagger.png)
+
+# Implemetation state
+
+* draw chart
+* modify solar and wind
+* remove additional solar + wind from fossil
+* use the pumps
+* use pumped surplus energy
+* keep surplus energy for next month
+* limit storage size (todo)
+* diffentiate between Speicher and Pumpspeicher (todo)
+* Time shift Biomasse (todo)
+* Report (todo)
+
+

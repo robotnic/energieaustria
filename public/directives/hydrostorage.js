@@ -3,11 +3,14 @@ angular.module('hydrostorage', ['nvd3','energiecharts'])
 .directive('hydrostorage', function() {
   return {
     scope:{
-      date:'='
+      ctrl:'='
     },
     template:`<h4>Hydrostorage</h4>
     <div class="outer">
-    <div class="inner" style="min-height:{{percent}}">
+    <div class="inner" style="min-height:{{surplus + percent}}%; background-color:rgba(0,255,0,0.3)">
+{{surplusGWh}} GWh
+    </div>
+    <div class="inner" style="min-height:{{percent}}%;">
 {{month}} {{percent}} <br/>
 {{abs}} GWh<br/>
     </div>
@@ -15,13 +18,16 @@ angular.module('hydrostorage', ['nvd3','energiecharts'])
 {{currentEnergy}} GWh
     `,
     controller: function($scope, dataManager, $q, $http) {
-      $scope.$watch('date',function(){
+      $scope.$watch('ctrl',function(){
         update(); 
-      });
+        $scope.surplus = -$scope.ctrl.pumpsurplus / 3000 * 100;
+        $scope.surplusGWh = Math.round(-$scope.ctrl.pumpsurplus);
+      }, true);
+      $scope.surplus = $scope.ctrl.pumpsurplus;
       function update(){
-        var m = moment($scope.date);
+        var m = moment($scope.ctrl.date);
         dataManager.getHydroStorage(m.year()+'%',m.month()).then(function(response){
-          $scope.percent = Math.round(response*100) + "%";
+          $scope.percent = Math.round(response*100);
           $scope.month = m.format('MMM');
         });
         dataManager.getHydroStorage(m.year(),m.month()).then(function(response){
