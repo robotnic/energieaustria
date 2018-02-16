@@ -16,14 +16,6 @@ var XLSX = require('xlsx');
 
 app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
-/*
-const {
-  Pool,
-  Client
-} = require('pg')
-
-const pool = new Pool(dbconnect);
-*/
 
 app.post('/day', function(req, res) {
   var day = req.body.DateString;
@@ -110,7 +102,12 @@ app.get('/sectors/:sector/:year', function(req, res) {
   res.send(scrapers.getSectors(req.params.sector,req.params.year));
 });
 
-//display path in swagger, not datamodel jet
+
+
+/*
+//openapi (swagger)
+*/
+
 app.get('/openapi', function(req, res) {
   var swagger = JSON.parse(swaggerTemplate);
   app._router.stack.forEach(function(layer){
@@ -169,6 +166,10 @@ function swaggerize(path){
   });
   return newPathParts.join('/');
 }
+
+/*
+Startup
+*/
 
 app.listen(3000, function() {
   console.log('Example app listening on port 3000!');

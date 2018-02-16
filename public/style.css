@@ -72,3 +72,12 @@ min-width:102px;
 //min-height:75%;
 bottom:0px;
 }
+
+.loading{
+position:absolute;
+top:200px;
+left:50px;
+font-size:40px;
+z-index:10;
+color:#d0d0d0;
+}

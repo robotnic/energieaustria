@@ -139,6 +139,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           date = dateString;
         }
         $scope.data = [];
+        $scope.ctrl.loading = true;
         var promises = [
           dataManager.loadData('AGPT',date , 1,$scope.ctrl.timetype,'area', null,reload),
           dataManager.loadData('AL', date,1,$scope.ctrl.timetype,'line',null, reload),
@@ -148,6 +149,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
         ];
 
         $q.all(promises).then(function(result){
+          $scope.ctrl.loading = false;
           result.forEach(function(list){
             $scope.data = $scope.data.concat(list);
           })
@@ -168,17 +170,18 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             key:'Transport',
             yAxis: '1',
             type: 'area',
+            color: 'darkbrown',
             values: JSON.parse(JSON.stringify(values)),
             seriesIndex: $scope.data.length
           };
           transport.values.forEach(function(value){
             if(value){
-            value.y = -4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
+            value.y = 4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
             }
           });
 
           $scope.data.splice(1, 0, p2g);
-//          $scope.data.push(transport);
+          $scope.data.push(transport);
           var surplus = 0;
           if ($scope.ctrl.keep) {
             surplus = $scope.ctrl.pumpsurplus;

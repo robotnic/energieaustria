@@ -13,6 +13,7 @@ angular.module('manipulate', [])
         console.log('-----pumpbonus----', surplus);
         var data = JSON.parse(JSON.stringify(origdata));
         var Power2Gas = null;
+        var Pumpspeicher = null;
         var meta = {
           free: {
             pump: 0,
@@ -32,6 +33,10 @@ angular.module('manipulate', [])
               if(chart.key === 'Power2Gas') {
                 Power2Gas = chart;
               }
+              if(chart.key === 'Pumpspeicher') {
+                Pumpspeicher = chart;
+              }
+ 
         });
         data.forEach(function(chart){
           if (chart.type === 'area') {
@@ -128,6 +133,8 @@ angular.module('manipulate', [])
                   chart.values[i].y = 0;
                   total += delta;
                 }
+console.log('DDD', delta);
+                Pumpspeicher.values[i].y += delta;
               }
             });
           }

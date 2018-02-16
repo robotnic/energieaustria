@@ -37,9 +37,8 @@ You can find it in the
 
 ![swagger](https://raw.githubusercontent.com/robotnic/energieaustria/master/doc/screenshots/swagger.png)
 
-# Implemetation state
+# Manipulations
 
-* draw chart
 * modify solar and wind
 * remove additional solar + wind from fossil
 * use the pumps
@@ -49,5 +48,27 @@ You can find it in the
 * diffentiate between Speicher and Pumpspeicher (todo)
 * Time shift Biomasse (todo)
 * Report (todo)
+* PV Sahara
+* Wind Offshore
+* Cost
 
+# The Goal
+* Cache everything to postgres - we scrape data, but we don't want to overload the data source
+* We guess data until more exact data are available
+* All guessed data are configurable
+* Define a future
+* Calculate the cost
+* Start a democratic process
+* Do the raumplanung
+* Calculate needed manpower
+* Educate manpower
+* Go for it
+
+# Possible Extensions
+* Sahara PV
+* Sahara HVDC
+* Norway Hydeo
+* Ostsee Wind
+* Batteries
+* Demand shift
 
