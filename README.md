@@ -25,6 +25,7 @@ There are some unstructured function to retrieve the data. Copyright is unclear.
 psql energy < config/energy.sql
 ```
 There are no initial data in the database. It's caching your requests.
+
 Feel free to host a live version.
 
 # Start
@@ -66,11 +67,15 @@ You can find it in the
 * Go for it
 
 # Possible Extensions
+## Trade
 * Sahara PV
 * Sahara HVDC
 * Norway Hydeo
 * Ostsee Wind
+## Arbitrage
 * Batteries
 * Demand shift
 * Include the grid
+## Visualization
+* Overall energy demand (0 CO2)
 * OSM based visualization (if power of individual power station is available)
