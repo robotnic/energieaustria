@@ -133,7 +133,6 @@ angular.module('manipulate', [])
                   chart.values[i].y = 0;
                   total += delta;
                 }
-console.log('DDD', delta);
                 Pumpspeicher.values[i].y += delta;
               }
             });

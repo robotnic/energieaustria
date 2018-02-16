@@ -68,7 +68,8 @@
         <md-button class="md-icon-button" aria-label="More" ng-click="reload()">
           <md-icon ng-bind="'cached'"></md-icon>
         </md-button>
-        <md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.minDate"></md-datepicker>
+        <md-datepicker ng-if="ctrl.timetype=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" md-mode="month"></md-datepicker>
+        <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.minDate" ></md-datepicker>
       </div>
     </md-toolbar>
    <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:20px;top:100px">
