@@ -5,6 +5,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
     $scope:{
       ctrl:'=',
       mutate:'=',
+      totals:'='
     },
     template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in totals"><td>{{k}}</td> <td>{{originalTotals[k]| number : 1}}</td><td>{{v - originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
     controller: function($scope, dataManager, $q, manipulator) {

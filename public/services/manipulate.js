@@ -8,9 +8,6 @@ angular.module('manipulate', [])
 
       }
       function manipulate(origdata, mutate, sources, surplus){
-        console.log('-----sources----', sources);
-        console.log('-----manipulate----', mutate);
-        console.log('-----pumpbonus----', surplus);
         var data = JSON.parse(JSON.stringify(origdata));
         var Power2Gas = null;
         var Pumpspeicher = null;
@@ -162,7 +159,6 @@ angular.module('manipulate', [])
           for(var o in order) {
             data.forEach(function(chart){
               if(chart.key === order[o]) {
-                console.log('reduce', chart);
                 recudeCO2(chart);
               }
             });

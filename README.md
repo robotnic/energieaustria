@@ -50,9 +50,6 @@ You can find it in the
 * diffentiate between Speicher and Pumpspeicher (todo)
 * Time shift Biomasse (todo)
 * Report (todo)
-* PV Sahara
-* Wind Offshore
-* Cost
 
 # The Goal
 * Cache everything to postgres - we scrape data, but we don't want to overload the data source

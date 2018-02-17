@@ -13,7 +13,8 @@
   },
   "Power2Gas": {
     "color": "pink",
-    "type": "loss"
+    "type": "loss",
+    "maxstorage":40000 
   },
   "Lauf- und Schwellwasser": {
     "color": "#0000ff",

@@ -49,7 +49,7 @@ display:inline-block;
 }
 
 md-tabs{
-margin-right:200px;
+margin-right:300px;
 }
 
 hydrostorage{
@@ -57,20 +57,27 @@ position:absolute;
 top:200px;
 right:20px;
 }
-hydrostorage .outer{
+.outer{
 border:1px solid lightblue;
 min-width:50px;
 min-height:250px;
 position:relative;
 }
 
-hydrostorage .inner{
+.inner{
 position:absolute;
 border-top:2px dotted white;
 background-color:lightblue;
-min-width:102px;
+min-width:100px;
 //min-height:75%;
 bottom:0px;
+}
+
+syngas {
+position:absolute;
+top:200px;
+right:150px;
+width:100px;
 }
 
 .loading{

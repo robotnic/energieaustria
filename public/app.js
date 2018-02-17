@@ -1,4 +1,4 @@
-var app = angular.module('plunker', ['charts','pie','hydrostorage', 'ngMaterial']);
+var app = angular.module('plunker', ['charts','pie','hydrostorage','syngas', 'ngMaterial']);
 
 app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {
@@ -31,18 +31,15 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   }
 
   function readMutation(mutateString){
-    console.log(mutateString);
     var mutate ={};
     var parts = mutateString.split('&');
     parts.forEach(function(part){
-      console.log(part.split('='));
       var name = part.split('=')[0]; 
       var value = part.split('=')[1]; 
       mutate[name]=parseInt(value); 
     });
     return mutate;
   }
-
 
   $scope.previouseDay=function(){
     var delta = 1;
