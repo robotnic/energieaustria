@@ -11,6 +11,7 @@ angular.module('manipulate', [])
         var data = JSON.parse(JSON.stringify(origdata));
         var Power2Gas = null;
         var Pumpspeicher = null;
+        var EV = null;
         var meta = {
           free: {
             pump: 0,
@@ -34,6 +35,9 @@ angular.module('manipulate', [])
                 Pumpspeicher = chart;
               }
  
+              if(chart.key === 'Transport') {
+                addEV(chart);
+              }
         });
         data.forEach(function(chart){
           if (chart.type === 'area') {
@@ -58,6 +62,12 @@ angular.module('manipulate', [])
           totals: totals,
           originalTotals: originalTotals,
           pumpsurplus: pumpsurplus
+        }
+
+        function addEV(EV){
+          EV.values.forEach(function(value){
+            value.y = 4 * mutate.Transport /100;
+          });
         }
 
         function calcTotal(chart){

@@ -2,7 +2,7 @@ var app = angular.module('plunker', ['charts','pie','hydrostorage','electrolysis
 
 app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {
-    date: '20171222',
+    date: new Date(),
     mindate: new Date('20150101'),
     timetype: 'day',
     layercode: '0111111111111111111111',

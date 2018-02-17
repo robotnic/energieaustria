@@ -5,19 +5,23 @@ angular.module('electrolysis', ['nvd3','energiecharts'])
     scope:{
       ctrl:'='
     },
-    template:`<h4>Electrolysis</h4>
+    template:`<h4>Power2Gas</h4>
     <div class="outer">
     <div class="inner" style="min-height:{{surplus}}%; background-color:rgba(0,255,0,0.3)">
 {{surplusGWh}} GWh
     </div>
     </div>
     </div>
+{{euro|currency:'€':0}}
     `,
     controller: function($scope, dataManager, $q, $http) {
       $scope.$watch('ctrl',function(){
-        update(); 
-        $scope.surplus = -$scope.ctrl.totals['Power2Gas'] / 400;  //40GWh Storage
-        $scope.surplusGWh = Math.round(-$scope.ctrl.totals.Power2Gas);
+        //update(); 
+        if($scope.ctrl.totals && $scope.ctrl.totals.Power2Gas) {
+          $scope.surplus = -$scope.ctrl.totals['Power2Gas'] / 400;  //40GWh Storage
+          $scope.surplusGWh = Math.round(-$scope.ctrl.totals.Power2Gas);
+          $scope.euro = Math.round(-$scope.ctrl.totals.Power2Gas * 1000 * 20 *0.7);  //todo: put constants to config
+        }
       }, true);
       $scope.surplus = $scope.ctrl.pumpsurplus;
       function update(){

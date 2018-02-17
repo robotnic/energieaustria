@@ -176,7 +176,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           };
           transport.values.forEach(function(value){
             if(value){
-            value.y = 4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
+              value.y = 0; //4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
             }
           });
 
