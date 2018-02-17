@@ -4,10 +4,9 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
   return {
     $scope:{
       ctrl:'=',
-      mutate:'=',
-      totals:'='
+      mutate:'='
     },
-    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in totals"><td>{{k}}</td> <td>{{originalTotals[k]| number : 1}}</td><td>{{v - originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
+    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{originalTotals[k]| number : 1}}</td><td>{{v - originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
     controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
@@ -191,7 +190,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           console.log('init', surplus, $scope);
           var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus);   //here the manipulation happens
           $scope.viewdata = manipulationResult.data;
-          $scope.totals = manipulationResult.totals;
+          $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
           $scope.originalTotals = manipulationResult.originalTotals;
           var hash = readHash();
@@ -211,7 +210,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           console.log('mutate', surplus);
           var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus);   //here the manipulation happens
           $scope.viewdata = manipulationResult.data;
-          $scope.totals = manipulationResult.totals;
+          $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
           if($scope.api){
             $scope.api.update();

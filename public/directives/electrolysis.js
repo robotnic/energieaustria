@@ -1,15 +1,14 @@
-angular.module('syngas', ['nvd3','energiecharts'])
+angular.module('electrolysis', ['nvd3','energiecharts'])
 
-.directive('syngas', function() {
+.directive('electrolysis', function() {
   return {
     scope:{
-      ctrl:'=',
-      totals:'='
+      ctrl:'='
     },
-    template:`<h4>Syngas</h4>
+    template:`<h4>Electrolysis</h4>
     <div class="outer">
     <div class="inner" style="min-height:{{surplus}}%; background-color:rgba(0,255,0,0.3)">
-{{surplusTWh}} TWh
+{{surplusGWh}} GWh
     </div>
     </div>
     </div>
@@ -17,8 +16,8 @@ angular.module('syngas', ['nvd3','energiecharts'])
     controller: function($scope, dataManager, $q, $http) {
       $scope.$watch('ctrl',function(){
         update(); 
-        $scope.surplus = -$scope.totals['Power2Gas'] / 400;  //40GWh Storage
-        $scope.surplusTWh = Math.round(-$scope.totals.Power2Gas / 100)/10;
+        $scope.surplus = -$scope.ctrl.totals['Power2Gas'] / 400;  //40GWh Storage
+        $scope.surplusGWh = Math.round(-$scope.ctrl.totals.Power2Gas);
       }, true);
       $scope.surplus = $scope.ctrl.pumpsurplus;
       function update(){
