@@ -132,6 +132,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       //load charts
 
       function init(dateString, reload){
+        $scope.options.chart.duration = 0;
         console.log('--init--', $scope.ctrl.layercode, dateString);
         var date = $scope.ctrl.date;
         setHash();
@@ -202,6 +203,13 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       //watch manipulation
 
       $scope.$watch('mutate',function(value){
+        if ($scope.ctrl.timetype === 'month') {
+          console.log('duration before',$scope.options.chart.duration);
+          $scope.options.chart.duration = 0;
+          console.log('duration after',$scope.options.chart.duration);
+        }else{
+          $scope.options.chart.duration = 500;
+        }
         if(typeof($scope.data)!=='undefined'){
           var surplus = 0;
           if ($scope.ctrl.keep) {
