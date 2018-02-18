@@ -55,9 +55,14 @@
           <input type="number" min="1" ng-model="mutate.Wind" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
          <md-input-container class="md-block" lex-gt-sm>
-          <md-tooltip md-direction="bottom">Electric Transport percentage</md-tooltip>
+          <md-tooltip md-direction="bottom">Electric Transport percentage. Replace Diesel and Benzin</md-tooltip>
           <label style="color:white">EV%</label> 
           <input type="number" min="0" ng-model="mutate.Transport" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+        </md-input-container>
+        <md-input-container class="md-block" lex-gt-sm>
+          <md-tooltip md-direction="bottom">Electrolysis max Power in GW</md-tooltip>
+          <label style="color:white">P2G</label> 
+          <input type="number" min="0" ng-model="mutate.Power2GasMax" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
  
         <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">

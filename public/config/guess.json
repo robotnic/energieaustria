@@ -29,6 +29,10 @@
     "Power2Gas":{
       "value":1,
       "unit":"€/W"
+    },
+    "fossileTransportPerYear":{
+      "value":3400000000,
+      "unit","€"
     }
     
   }

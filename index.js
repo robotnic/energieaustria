@@ -5,6 +5,7 @@ var moment = require('moment');
 var $q = require('q');
 var fs = require('fs');
 var scrapers = require('./scrapers.js');
+var installed = require('./scrapers/installed.js');
 var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
 var swaggerTemplate = fs.readFileSync('config/swaggertemplate.json', 'utf8');
 
@@ -57,6 +58,13 @@ console.log('DAYinMonth',year, month, daysInMonth);
 })
 
 
+app.get('/installed/:year', function(req, res) {
+  var year = req.params.year;
+  console.log(installed);
+  installed.load(year).then(function(response){
+    res.send(response);
+  });
+});
 
 
 app.get('/energy', function(req, res) {

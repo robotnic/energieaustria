@@ -12,7 +12,8 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.mutate = {
     Solar:1,
     Wind:1,
-    Transport:0.1
+    Transport:0,
+    Power2GasMax:0
   }
   console.log('hallo', $location.hash());
   var hashParts=$location.hash().split(';');
