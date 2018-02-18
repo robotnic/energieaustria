@@ -33,6 +33,7 @@
     <script src="directives/pie.js"></script>
     <script src="directives/hydrostorage.js"></script>
     <script src="directives/electrolysis.js"></script>
+    <script src="directives/delta.js"></script>
     <script src="app.js"></script>
   </head>
 
@@ -90,7 +91,7 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
     <md-tabs md-dynamic-height md-border-bottom md-selected="selectedIndex">
       <md-tab label="Chart">
           <chart ctrl="ctrl" totals="totals"></chart>
-<pre>{{totals}}</pre>
+<pre>{{ctrl|json}}</pre>
       </md-tab>
 
 <!--
@@ -102,6 +103,10 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
 -->
       <md-tab label="table">
         <md-content class="md-padding">
+          <delta ctrl="ctrl" ></delta>
+<br/> <br/> <br/> <br/> <br/> <br/>
+<br/> <br/> <br/> <br/> <br/> <br/>
+<br/> <br/> <br/> <br/> <br/> <br/>
 <table class="table">
 <tr>
 <th></th>

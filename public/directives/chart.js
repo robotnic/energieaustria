@@ -6,7 +6,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       ctrl:'=',
       mutate:'='
     },
-    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{originalTotals[k]| number : 1}}</td><td>{{v - originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
+    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table style="display:none"><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{ctrl.originalTotals[k]| number : 1}}</td><td>{{v - ctrl.originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
     controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
@@ -72,7 +72,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             },
             color: d3.scale.category10().range(),
             //useInteractiveGuideline: true,
-            duration: 0,
+            duration: 500,
             xAxis: {
               ticks:8,
               showMaxMin: false,
@@ -192,7 +192,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
-          $scope.originalTotals = manipulationResult.originalTotals;
+          $scope.ctrl.originalTotals = manipulationResult.originalTotals;
           var hash = readHash();
         },function(error){
           console.log(error);

@@ -59,9 +59,6 @@ angular.module('pie', ['nvd3','energiecharts'])
 
             }
         };
-        $option.chart.interactiveLayer.tooltip.contentGenerator(function(data) {
-    return 'this is my custom content';
-});
         
       }); 
     }
