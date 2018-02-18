@@ -5,9 +5,9 @@ angular.module('pie', ['nvd3','energiecharts'])
     scope:{
       year:'=',
       type:'=',
-      title:'=',
+      thetitle:'=',
     },
-      template:'<div><h3> <span ng-if="!title">{{type}} </span> <span ng-if="title">{{title}}</span> </h3><p>{{total}}; {{totalGWh}} TWh; ⌀{{power}}</p><nvd3 options="options" data="piedata" tooltipcontent="toolTipContentFunction()"></nvd3></div>',
+      template:'<div><h3> <span ng-if="thetitle">{{thetitle}}</span> </h3><p>{{total}}; {{totalGWh}} TWh; ⌀{{power}}</p><nvd3 options="options" data="piedata" tooltipcontent="toolTipContentFunction()"></nvd3></div>',
     controller: function($scope, dataManager, $q) {
       dataManager.getSector($scope.type,$scope.year).then(function(sector){
         $scope.piedata=[];
@@ -47,11 +47,21 @@ angular.module('pie', ['nvd3','energiecharts'])
                     }
                 },
                 showLegend : false,
-                tooltipContent: function(key){
-                  return 'haha'
+                tooltip: {
+                  contentGenerator: function(d) {
+//                    return "<p>test</p>" + JSON.stringify(d)
+                    var PJ = Math.round(d.data.y / 1000);
+                    var TWh = Math.round(d.data.y  * 0.000277778);
+                    var GW = Math.round(d.data.y  * 0.000277778 /365 /24 *1000);
+                    return '<h3>' + d.data.key + '</h3><p> ' + PJ + ' PJ</p><p> ' + TWh + ' TWh</p><p> ' + GW + ' GWØ</p>';
+                  }
                 }
+
             }
         };
+        $option.chart.interactiveLayer.tooltip.contentGenerator(function(data) {
+    return 'this is my custom content';
+});
         
       }); 
     }

@@ -212,6 +212,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
+          readHash();
           if($scope.api){
             $scope.api.update();
           }
@@ -243,8 +244,10 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
         for(var m in $scope.mutate){
           mutateString = mutateString + m + '=' + $scope.mutate[m] + '&';
         }; 
+        console.log(mutateString);
         mutateString = mutateString.slice(0, -1);
-        location.hash=moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code + mutateString;
+        console.log(mutateString);
+        location.hash='!#' + moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code + mutateString;
       }
 
       function readHash(){

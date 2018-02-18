@@ -1,0 +1,35 @@
+{
+  "efficiency":{
+    "electric": {
+      "value":16.06,
+      "unit":"kWh/100km"
+    },
+    "diesel":{
+      "value":5.72,
+      "unit":"liter/100km",
+      "kWhPerLiter":"12"
+    },
+    "benzin":{
+      "value":7.79,
+      "unit":"liter/100km",
+      "kWhPerLiter":"10"
+    },
+    "Power2GasEfficieny":{
+      "value":0.7
+    },
+  "Prices":{
+    "Gas":{
+      "value":20,
+      "unit":"€/MWh"
+    },
+    "PV":{
+      "value":1,
+      "unit":"€/Wp"
+    },
+    "Power2Gas":{
+      "value":1,
+      "unit":"€/W"
+    }
+    
+  }
+}

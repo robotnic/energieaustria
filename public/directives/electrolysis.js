@@ -12,7 +12,8 @@ angular.module('electrolysis', ['nvd3','energiecharts'])
     </div>
     </div>
     </div>
-{{euro|currency:'€':0}}
+{{euro|currency:'€':0}};
+{{euroProKWh}} €/kWh
     `,
     controller: function($scope, dataManager, $q, $http) {
       $scope.$watch('ctrl',function(){
@@ -21,6 +22,7 @@ angular.module('electrolysis', ['nvd3','energiecharts'])
           $scope.surplus = -$scope.ctrl.totals['Power2Gas'] / 400;  //40GWh Storage
           $scope.surplusGWh = Math.round(-$scope.ctrl.totals.Power2Gas);
           $scope.euro = Math.round(-$scope.ctrl.totals.Power2Gas * 1000 * 20 *0.7);  //todo: put constants to config
+          $scope.euroProKWh = 20 * 0.7 /1000;
         }
       }, true);
       $scope.surplus = $scope.ctrl.pumpsurplus;
