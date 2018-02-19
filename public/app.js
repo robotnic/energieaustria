@@ -1,12 +1,12 @@
-var app = angular.module('plunker', ['charts','pie','hydrostorage','delta', 'electrolysis', 'ngMaterial']);
+var app = angular.module('plunker', ['charts','pie','hydrostorage','delta','sum','bill', 'electrolysis', 'ngMaterial']);
 
 app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {
     date: new Date(),
-    mindate: new Date('20150101'),
+    mindate: new Date('2015-01-01'),
     timetype: 'day',
     layercode: '0111111111111111111111',
-    keep: true
+    keep: false
   }
   console.log($scope.ctrl);
   $scope.mutate = {
@@ -43,6 +43,7 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   }
 
   $scope.previouseDay=function(){
+    $scope.ctrl.keep = false;
     var delta = 1;
     switch($scope.ctrl.timetype){
       case 'week':
@@ -58,7 +59,8 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
     $scope.ctrl.myDate=moment($scope.ctrl.myDate).subtract(delta,'d');
   }
 
-  $scope.nextDay=function(){
+  $scope.nextDay=function(keep){
+    $scope.ctrl.keep = keep;
     var delta = 1;
     switch($scope.ctrl.timetype){
       case 'week':

@@ -7,14 +7,15 @@ module.exports = {
   }
 }
 
-var cache = null;
+var cache = {};
 
 function load(year, reload){
   var q = Q.defer();
-  if(cache && ! reload){
-    q.resolve(cache);
+  if(cache[year] && !reload){
+    q.resolve(cache[year]);
   } else {
     var url = "https://www.apg.at/transparency/IGCA/TableAndChart.aspx?Year=" + year;
+    console.log(url);
     request(url, function(err, response, body){
       if (err) {
 
@@ -23,8 +24,8 @@ function load(year, reload){
         var jsonString= body.substr(start);
         var end = jsonString.indexOf('}]\');') +2;
         var jsonString= jsonString.substr(0, end);
-        cache = JSON.parse(jsonString);
-        q.resolve(cache);
+        cache[year] = JSON.parse(jsonString);
+        q.resolve(cache[year]);
       }
     })
   };

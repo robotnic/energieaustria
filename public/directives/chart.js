@@ -192,12 +192,38 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus);   //here the manipulation happens
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
-          $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
           $scope.ctrl.originalTotals = manipulationResult.originalTotals;
+          $scope.ctrl.cumulativeTotals = {}
+          if (!$scope.ctrl.keep) {
+            $scope.ctrl.cumulativeTotals = {}
+          }
+          $scope.ctrl.cumulativeTotals = cumult($scope.ctrl.totals);
+          $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
           var hash = readHash();
         },function(error){
           console.log(error);
         });
+      }
+
+      function cumult(totals) {
+        if($scope.ctrl.cumulativeTotals){
+          var newtotals = $scope.ctrl.cumulativeTotals;
+        }else{
+          var newtotals = {
+            'Fuel':30
+          };
+        }
+        for(var t in totals){
+          if(t === 'Power2Gas' || t === 'Pumpspeicher' || t === 'Gas' || t === 'Kohle' || t ==='Transport'){
+            var delta = $scope.ctrl.totals[t] - $scope.ctrl.originalTotals[t];
+            if(newtotals[t]){
+              newtotals[t] = newtotals[t] - delta;
+            }else{
+              newtotals[t] =  - delta;
+            }
+          }
+        }
+        return newtotals;
       }
 
       //watch manipulation

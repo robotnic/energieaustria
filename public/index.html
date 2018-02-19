@@ -34,6 +34,8 @@
     <script src="directives/hydrostorage.js"></script>
     <script src="directives/electrolysis.js"></script>
     <script src="directives/delta.js"></script>
+    <script src="directives/sum.js"></script>
+    <script src="directives/bill.js"></script>
     <script src="app.js"></script>
   </head>
 
@@ -76,25 +78,29 @@
           <md-icon ng-bind="'cached'"></md-icon>
         </md-button>
         <md-datepicker ng-if="ctrl.timetype=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" md-mode="month"></md-datepicker>
-        <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.minDate" ></md-datepicker>
+        <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" ></md-datepicker>
       </div>
     </md-toolbar>
-   <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:20px;top:100px">
+   <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:200px;top:73px;z-index:100" layout="row">
       <md-radio-button value="day" class="md-primary">day</md-radio-button>
       <md-radio-button value="week"> week </md-radio-button>
       <md-radio-button value="month">month</md-radio-button>
     </md-radio-group>
-<md-button class="md-raised" style="position:absolute;right:10px;top:550px" ng-click="nextDay()">
+<md-button class="md-raised" style="position:absolute;right:10px;top:60px" ng-click="nextDay(true)">
 Keep {{-ctrl.pumpsurplus | number:1}} GWh 
 <md-icon ng-bind="'navigate_next'"></md-icon>
 </md-button>
 <div class="loading" ng-show="ctrl.loading">loading ...</div>
-
+<!--
     <hydrostorage date="ctrl.date" ctrl="ctrl"></hydrostorage>
     <electrolysis date="ctrl.date" ctrl="ctrl" totals="totals"></electrolysis>
+-->
 
+          <div style="position:absolute;top:200px;right:10px">
+          <sum ctrl="ctrl" sources="sources"></sum>
+          </div>
     <md-tabs md-dynamic-height md-border-bottom md-selected="selectedIndex">
-      <md-tab label="Chart">
+      <md-tab label="Power">
           <chart ctrl="ctrl" totals="totals"></chart>
 <pre>{{ctrl|json}}</pre>
       </md-tab>
@@ -106,9 +112,9 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
 </tr>
 </table>
 -->
-      <md-tab label="table">
+      <md-tab label="Energy">
         <md-content class="md-padding">
-          <delta ctrl="ctrl" ></delta>
+          <delta ctrl="ctrl" sources="sources"></delta>
 <br/> <br/> <br/> <br/> <br/> <br/>
 <br/> <br/> <br/> <br/> <br/> <br/>
 <br/> <br/> <br/> <br/> <br/> <br/>
@@ -170,6 +176,9 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
     <pie type="'Erneuerbare'" year="'2016'"></pie>
         </md-content>
       </md-tab>
+      <md-tab label="bill">
+          <bill ctrl="ctrl" sources="sources"></bill>
+    </md-tab>
     </md-tabs>
 <!--
 <pre>{{originalTotal|json}}</pre>
@@ -186,7 +195,6 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
 <!--
     <nvd3 options="options" data="data"></nvd3>
 -->
-<pre>{{ctrl|json}}</pre>
   </body>
 
 </html>
