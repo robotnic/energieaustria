@@ -1,4 +1,4 @@
-var app = angular.module('plunker', ['charts','pie','hydrostorage','delta','sum','bill', 'electrolysis', 'ngMaterial']);
+var app = angular.module('plunker', ['charts','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial']);
 
 app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {
@@ -29,6 +29,9 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   }
   if(hashParts[3]){
     $scope.mutate=readMutation(hashParts[3]);
+  }
+  if(hashParts[4]){
+    $scope.activeTab=hashParts[4];
   }
 
   function readMutation(mutateString){

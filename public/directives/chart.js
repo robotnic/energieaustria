@@ -4,7 +4,8 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
   return {
     $scope:{
       ctrl:'=',
-      mutate:'='
+      mutate:'=',
+      activeTab:'='
     },
     template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table style="display:none"><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{ctrl.originalTotals[k]| number : 1}}</td><td>{{v - ctrl.originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
     controller: function($scope, dataManager, $q, manipulator) {
@@ -66,13 +67,14 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             height: 650,
             margin : {
                 top: 170,
-                right: 30,
+                right: 80,
                 bottom: 100,
-                left: 30
+                left: 60
             },
             color: d3.scale.category10().range(),
             //useInteractiveGuideline: true,
             duration: 500,
+            yLabel:'soso',
             xAxis: {
               ticks:8,
               showMaxMin: false,
@@ -96,12 +98,14 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             yAxis1: {
                 tickFormat: function(d){
                     return d3.format(',.1f')(d);
-                }
+                },
+                axisLabel:'GW'
             },
             yAxis2: {
                 tickFormat: function(d){
                     return d3.format(',.1f')(d);
-                }
+                },
+                axisLabel:'€/MWh'
             },
             legend: {
               dispatch: {
@@ -193,10 +197,12 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.originalTotals = manipulationResult.originalTotals;
+          /*
           $scope.ctrl.cumulativeTotals = {}
           if (!$scope.ctrl.keep) {
             $scope.ctrl.cumulativeTotals = {}
           }
+          */
           $scope.ctrl.cumulativeTotals = cumult($scope.ctrl.totals);
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
           var hash = readHash();
@@ -206,20 +212,20 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       }
 
       function cumult(totals) {
-        if($scope.ctrl.cumulativeTotals){
+        if($scope.ctrl.cumulativeTotals && $scope.ctrl.keep){
           var newtotals = $scope.ctrl.cumulativeTotals;
         }else{
           var newtotals = {
-            'Fuel':30
+            'Benzin & Diesel':30,
           };
         }
         for(var t in totals){
           if(t === 'Power2Gas' || t === 'Pumpspeicher' || t === 'Gas' || t === 'Kohle' || t ==='Transport'){
             var delta = $scope.ctrl.totals[t] - $scope.ctrl.originalTotals[t];
             if(newtotals[t]){
-              newtotals[t] = newtotals[t] - delta;
+              newtotals[t] = newtotals[t] + delta;
             }else{
-              newtotals[t] =  - delta;
+              newtotals[t] =  + delta;
             }
           }
         }
@@ -281,7 +287,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
         console.log(mutateString);
         mutateString = mutateString.slice(0, -1);
         console.log(mutateString);
-        location.hash='!#' + moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code + mutateString;
+        location.hash='!#' + moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code + mutateString + ';' + $scope.activeTab;
       }
 
       function readHash(){

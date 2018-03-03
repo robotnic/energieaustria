@@ -11,8 +11,6 @@ angular.module('delta', ['nvd3','energiecharts'])
     controller: function($scope, dataManager, $q) {
       console.log($scope.ctrl,$scope.totals, $scope.sources, '----');
       $scope.$watch('ctrl',function(){
-        console.log('DELTA', $scope.ctrl.totals);
-        console.log('ODELTA', $scope.ctrl.originalTotals);
         $scope.data.length = 0;
         $scope.data2.length = 0;
         populate('totals');
@@ -29,7 +27,6 @@ angular.module('delta', ['nvd3','energiecharts'])
         
 
         fueltype = 'fossil';
-        console.log('populate', $scope.ctrl.totals);
         var chart = {
             "key": type,
             "color": colors[type],

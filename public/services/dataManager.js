@@ -15,6 +15,9 @@ angular.module('energiecharts',[])
     },
     getHydroStorage:function(year, monthNumber){
       return getHydroStorage(year, monthNumber);
+    },
+    getInstalled:function(year) {
+      return getInstalled(year);
     }
     
   }
@@ -23,6 +26,16 @@ angular.module('energiecharts',[])
   var hydroStorage = null;
   var timetype = 'day';
   var hydroPromises = [];
+
+  function getInstalled(year) {
+    var q = $q.defer();
+    $http.get('/installed/'+year).then(function(response){
+      q.resolve(response.data);
+    },function(error){
+      q.reject(error);
+    });
+    return q.promise;
+  }
 
   function getHydroStorage(year, monthNumber){
     var q = $q.defer();

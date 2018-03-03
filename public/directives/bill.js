@@ -5,7 +5,8 @@ angular.module('bill', ['nvd3','energiecharts'])
     scope:{
       ctrl:'=',
       totals:'=',
-      sources:'='
+      sources:'=',
+      mutate:'='
     },
     template:`
 <md-list ng-cloak style="max-width:800px">
@@ -14,7 +15,6 @@ angular.module('bill', ['nvd3','energiecharts'])
   <md-list-item ng-repeat="(k,v) in matrix" ng-if="v.delta != 0">
     <p style="width:200px">{{k}}</p>
     <div class="md-secondar" style="width:150px;text-align:right"> {{v.originalTotals|number:1}} </div>
-    <div class="md-secondar" style="width:250px;text-align:right"> {{v.priceDeltaOriginalTotals|currency:'€'}} </div>
     <div class="md-secondar" style="width:150px;text-align:right"> {{v.totals|number:1}} </div>
     <div class="md-secondar" style="width:150px;text-align:right"> {{v.delta|number:1}} </div>
     <div class="md-secondar" style="width:150px;text-align:right"> {{v.price|number:1}} </div>
@@ -29,6 +29,16 @@ angular.module('bill', ['nvd3','energiecharts'])
     <div class="md-secondary" style="width:220px;text-align:right"> {{total|currency:'€'}} </div>
   </md-list-item>
   <md-divider></md-divider>
+  <md-list-item class="secondary-button-padding">
+    <p>Benzin Diesel </p>
+    <div class="md-secondary" style="width:220px;text-align:right"> {{benzin()|currency:'€'}} </div>
+  </md-list-item>
+  <md-divider></md-divider>
+  <md-list-item class="secondary-button-padding">
+    <p><strong>Total</strong></p>
+    <div class="md-secondary" style="width:220px;text-align:right"> {{total + benzin()|currency:'€'}} </div>
+  </md-list-item>
+<
 <!--
   <md-subheader class="md-no-sticky">Investments</md-subheader>
 <md-list-item class="secondary-button-padding">
@@ -63,6 +73,25 @@ Solar
           };
         }
       },true);
+
+      $scope.benzin = function(){
+        var total=4300000000;
+        var result = 0;
+        switch($scope.ctrl.timetype){
+          case "day":
+              result = total /365;
+              break; 
+          case "week":
+              result = total /52;
+              break; 
+          case "month":
+              result = total /12;
+              break; 
+
+        }
+        result =  - result * $scope.mutate.Transport / 100;
+        return result;
+      }
       
       function calcPrice(t, energy){
         var energyprice = $scope.sources[t].energyprice || 20;

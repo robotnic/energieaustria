@@ -36,6 +36,7 @@
     <script src="directives/delta.js"></script>
     <script src="directives/sum.js"></script>
     <script src="directives/bill.js"></script>
+    <script src="directives/installed.js"></script>
     <script src="app.js"></script>
   </head>
 
@@ -99,7 +100,7 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
           <div style="position:absolute;top:200px;right:10px">
           <sum ctrl="ctrl" sources="sources"></sum>
           </div>
-    <md-tabs md-dynamic-height md-border-bottom md-selected="selectedIndex">
+    <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab">
       <md-tab label="Power">
           <chart ctrl="ctrl" totals="totals"></chart>
 <pre>{{ctrl|json}}</pre>
@@ -177,8 +178,12 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
         </md-content>
       </md-tab>
       <md-tab label="bill">
-          <bill ctrl="ctrl" sources="sources"></bill>
+          <bill ctrl="ctrl" sources="sources" mutate="mutate"></bill>
+      </md-tab>
+      <md-tab label="installed">
+          <installed ctrl="ctrl" sources="sources" mutate="mutate" activeTab="activeTab"></installed>
     </md-tab>
+ 
     </md-tabs>
 <!--
 <pre>{{originalTotal|json}}</pre>
