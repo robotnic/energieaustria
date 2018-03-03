@@ -74,7 +74,7 @@ You can find it in the
 * We guess data until more exact data are available
 * All guessed data are configurable
 * Define a future
-* All views are deeplink able [if not submit an issue|https://github.com/robotnic/energyaustria/issue]
+* All views are deeplink able [if not submit an issue](https://github.com/robotnic/energyaustria/issue)
 * Calculate the cost
 * Start a democratic process
 * Do the raumplanung
