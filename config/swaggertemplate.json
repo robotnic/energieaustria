@@ -62,7 +62,62 @@
           "example": "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"
         }
       }
+    },
+    "sources":{
+      "properties":{
+        "energySource":{
+          "$id":"/energie/source",
+          "type":"string",
+          "title":"Energy Source",
+          "example":"Wind"
+        },
+        "maxpower":{
+          "unit":"GW",
+          "title":"maximum power",
+          "example":3
+        }
+      }
+    },
+    "costs":{
+      "properties":{
+        "name":{
+           "type":"string",
+           "title":"Energy Source",
+           "name":"grid scale battery" 
+        },
+        "type":{
+          "example":"Wind"
+        },
+        "amount":
+         {
+            "type":"number"
+         }
+
+      }
+    },
+    "shortlink":{
+      "properties":{
+        "name":{
+           "type":"string",
+           "title":"My future",
+           "example":"spoe" 
+        },
+        "hash": {
+            "type":"string",
+            "example":"2017-10-18;week;11111111111111111;Solar=21&Wind=5&Transport=100&Power2GasMax=0;3"
+        },
+        "ceated_at":{
+           "type":"Date",
+           "example":"2007-08-31T16:47+00:00",
+           "description":"set on server side"
+        },
+         "author": {
+            "type":"string",
+            "example":"TU Wien, Labor für Energieplanung "
+         }
+      }
     }
+
 
 
   }

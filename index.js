@@ -18,7 +18,7 @@ var XLSX = require('xlsx');
 app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
-app.post('/day', function(req, res) {
+app.post('/chart/day', function(req, res) {
   var day = req.body.DateString;
   var pid = req.body.PID;
   var resolution = req.body.Resolution;
@@ -28,7 +28,7 @@ app.post('/day', function(req, res) {
   });
 });
 
-app.post('/week', function(req, res) {
+app.post('/chart/week', function(req, res) {
   var day = req.body.DateString;
   var pid = req.body.PID;
   var resolution = '60M';
@@ -39,7 +39,7 @@ app.post('/week', function(req, res) {
 
 })
 
-app.post('/month', function(req, res) {
+app.post('/chart/month', function(req, res) {
   var day = req.body.DateString;
   var pid = req.body.PID;
   var resolution = '60M';
@@ -58,7 +58,7 @@ console.log('DAYinMonth',year, month, daysInMonth);
 })
 
 
-app.get('/installed/:year', function(req, res) {
+app.get('/data/installed/:year', function(req, res) {
   var year = req.params.year;
   console.log(installed);
   installed.load(year).then(function(response){
@@ -67,7 +67,7 @@ app.get('/installed/:year', function(req, res) {
 });
 
 
-app.get('/energy', function(req, res) {
+app.get('/data/energy', function(req, res) {
   var day = req.body.DateString;
   var pid = req.body.PID;
   var resolution = '60M';
@@ -80,7 +80,7 @@ app.get('/energy', function(req, res) {
 });
 
 
-app.get('/statistics', function(req, res) {
+app.get('/data/statistics', function(req, res) {
   scrapers.loadStatistics().then(function(responses) {
     res.send(responses);
   }, function(error) {
@@ -89,7 +89,7 @@ app.get('/statistics', function(req, res) {
 });
 
 
-app.get('/hydrostorage', function(req, res) {
+app.get('/data/hydrostorage', function(req, res) {
   scrapers.loadStorage().then(function(responses) {
     res.send(responses);
   }, function(error) {
@@ -98,17 +98,44 @@ app.get('/hydrostorage', function(req, res) {
 });
 
 
-app.get('/sectors', function(req, res) {
+app.get('/data/sectors', function(req, res) {
   res.send(scrapers.getSectors());
 });
-app.get('/sectors/:sector', function(req, res) {
+app.get('/data/sectors/:sector', function(req, res) {
   console.log(req.params.sector);
   res.send(scrapers.getSectors(req.params.sector));
 });
 
-app.get('/sectors/:sector/:year', function(req, res) {
+app.get('/data/sectors/:sector/:year', function(req, res) {
   res.send(scrapers.getSectors(req.params.sector,req.params.year));
 });
+
+
+app.get('/default', function(req, res) {
+  res.send(config.getConfiguration(req.params.sector,req.params.year));
+});
+app.get('/default/:id', function(req, res) {
+  res.send(config.getConfiguration(req.params.sector,req.params.year));
+});
+app.delete('/default/:id', function(req, res) {
+  res.send(config.getConfiguration(req.params.sector,req.params.year));
+});
+app.post('/default', function(req, res) {
+  res.send(config.postConfiguration(req.params.sector,req.params.year));
+});
+app.get('/shortlink', function(req, res) {
+  res.send(shortlink.getConfiguration(req.params.sector,req.params.year));
+});
+
+app.get('/shortlink/:name', function(req, res) {
+  res.send(shortlink.getConfiguration(req.params.sector,req.params.year));
+});
+app.post('/shortlink', function(req, res) {
+  res.send(shortlink.postConfiguration(req.params.sector,req.params.year));
+});
+
+
+
 
 
 
@@ -119,46 +146,95 @@ app.get('/sectors/:sector/:year', function(req, res) {
 app.get('/openapi', function(req, res) {
   var swagger = JSON.parse(swaggerTemplate);
   app._router.stack.forEach(function(layer){
-  if(layer.route){
-    var path = layer.route.path;
-    var swaggerpath = swaggerize(layer.route.path);
-    swagger.paths[swaggerpath] = {};
-    for(var m in layer.route.methods){
-      var def = {
-        parameters:[{
-          "in":"query",
-          "name":"reload",
-          "type":"boolean"
-        }]
+    if(layer.route){
+      var path = layer.route.path;
+      var swaggerpath = swaggerize(layer.route.path);
+      var method = layer.route.stack[0].method;
+      if (!swagger.paths[swaggerpath]) {
+        swagger.paths[swaggerpath] = {};
       }
-      if(m === 'post'){
-        def.parameters.push( {
-          "name": "apg",
-          "in": "body",
-          "description": "Query APG",
-          "schema": {
-            "$ref": "#/definitions/apgquery"
-          }
-        })
-      }
-      var pathParts = path.split('/');
-      pathParts.forEach(function(part){
-        if (part[0] === ':') {
-          var name = part.substr(1);
-          def.parameters.push({
-            "name": name,
-            "in": "path",
-            "required": true,
-            "type": "string"
-          });
+      //for(var m in layer.route.methods){
+        var def = {
+          parameters:[{
+            "in":"query",
+            "name":"reload",
+            "type":"boolean"
+          }],
+          tags: []
         }
-      });
-      swagger.paths[swaggerpath][m]=def;
+        /*
+        if(method === 'post'){
+          def.parameters.push( {
+            "name": "apg",
+            "in": "body",
+            "description": "Query APG",
+            "schema": {
+              "$ref": "#/definitions/apgquery"
+            }
+          })
+        }
+*/
+        addPostParams(path, method, def.parameters);
+        var pathParts = path.split('/');
+        pathParts.forEach(function(part){
+          if (part[0] === ':') {
+            var name = part.substr(1);
+            def.parameters.push({
+              "name": name,
+              "in": "path",
+              "required": true,
+              "type": "string"
+            });
+          }
+        });
+        def.tags.push(pathParts[1]);
+        swagger.paths[swaggerpath][method]=def;
+      //}
     }
-  }
   });
   res.send(swagger);
 });
+
+function addPostParams(path, method, parameters) {
+      console.log("path", path);
+      switch (path) {
+        case "/chart/day":
+        case "/chart/month":
+        case "/chart/week":
+          parameters.push( {
+            "name": "apg",
+            "in": "body",
+            "description": "Query APG",
+            "schema": {
+              "$ref": "#/definitions/apgquery"
+            }
+          })
+          break;
+        case "/defaults":
+          parameters.push( {
+            "name": "config",
+            "in": "body",
+            "description": "Query APG",
+            "schema": {
+              "$ref": "#/definitions/sources"
+            }
+          })
+          break;
+        case "/shortlink":
+          parameters.push( {
+            "name": "config",
+            "in": "body",
+            "description": "Query APG",
+            "schema": {
+              "$ref": "#/definitions/shortlink"
+            }
+          })
+          break;
+ 
+ 
+      }
+ 
+}
 
 function swaggerize(path){
   // /aaa/:bbb/:ccc -> /aaa/{bbb}/{ccc}

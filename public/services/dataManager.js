@@ -29,7 +29,7 @@ angular.module('energiecharts',[])
 
   function getInstalled(year) {
     var q = $q.defer();
-    $http.get('/installed/'+year).then(function(response){
+    $http.get('/data/installed/'+year).then(function(response){
       q.resolve(response.data);
     },function(error){
       q.reject(error);
@@ -43,7 +43,7 @@ angular.module('energiecharts',[])
       q.resolve(hydroStorage[year][monthNumber]);
     } else {
       if(hydroPromises.length === 0){
-        $http.get('/hydrostorage').then(function(storage){
+        $http.get('/data/hydrostorage').then(function(storage){
           hydroStorage = storage.data; 
           try{
             var value = hydroStorage[year][monthNumber];
@@ -81,7 +81,7 @@ angular.module('energiecharts',[])
   };
 
   function getSector(type,year){
-    var url='http://localhost:3000/sectors/' + type + '/' + year;
+    var url='/data/sectors/' + type + '/' + year;
 //    var url='http://localhost:3000/sectors/Gesamtenergiebilanz/2016
     var q = $q.defer();
     $http.get(url).then(function(response){
@@ -104,7 +104,7 @@ angular.module('energiecharts',[])
       query.AdditionalFilter = "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all";
     }
     data.length = 0;
-    var url ='/' + timetype;
+    var url ='/chart/' + timetype;
     if (reload) {
       url+='?reload=true';
     }

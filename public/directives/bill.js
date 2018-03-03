@@ -12,6 +12,15 @@ angular.module('bill', ['nvd3','energiecharts'])
 <md-list ng-cloak style="max-width:800px">
 
   <md-subheader class="md-sticky">Milchmächen Rechnung</md-subheader>
+  <md-list-item>
+    <p style="width:300px"> </p>
+    <div class="md-secondar" style="width:150px;text-align:left"> orignal (GWh)</div>
+    <div class="md-secondar" style="width:150px;text-align:left"> total (GWh)</div>
+    <div class="md-secondar" style="width:150px;text-align:left"> delta </div>
+    <div class="md-secondar" style="width:150px;text-align:left"> price (€/MWh)</div>
+    <div class="md-secondar" style="width:150px;text-align:left"> delta price </div>
+  </md-list-item>
+  <md-divider></md-divider>
   <md-list-item ng-repeat="(k,v) in matrix" ng-if="v.delta != 0">
     <p style="width:200px">{{k}}</p>
     <div class="md-secondar" style="width:150px;text-align:right"> {{v.originalTotals|number:1}} </div>
