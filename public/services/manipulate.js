@@ -2,12 +2,12 @@ angular.module('manipulate', [])
 
 .factory('manipulator', function() {
       return {
-        manipulate: function(data, mutate, sources, surplus) {
-          return manipulate(data, mutate, sources, surplus);
+        manipulate: function(data, mutate, sources, surplus, timetype) {
+          return manipulate(data, mutate, sources, surplus, timetype);
         }
 
       }
-      function manipulate(origdata, mutate, sources, surplus){
+      function manipulate(origdata, mutate, sources, surplus, timetype){
         console.log(mutate);
         var data = JSON.parse(JSON.stringify(origdata));
         var Power2Gas = null;
@@ -31,16 +31,16 @@ angular.module('manipulate', [])
                 Pumpspeicher = chart;
               }
  
-              if(chart.key === 'Transport') {
-                addEV(chart);
-              }
         });
         data.forEach(function(chart){
           if (chart.type === 'area') {
             originalTotals[chart.key]=calcTotal(chart);  //duration missing
             if(chart.key === 'Pumpspeicher'){
-              originalTotals['pump up']=0; //calcUpDown(chart,'up');
-              originalTotals['pump down']=0 //calcUpDown(chart,'down');
+              originalTotals['pump up']=calcUpDown(chart,'up');
+              originalTotals['pump down']=calcUpDown(chart,'down');
+            }
+            if(chart.key === 'Transport'){
+//              originalTotals['Transport']= 4* mutate.Transport ;
             }
    
           }
@@ -58,6 +58,9 @@ angular.module('manipulate', [])
                 console.log('Multiplier Wind', multiplier, mutate.Wind);
               }
               addRenewalbles(chart, multiplier);
+              if(chart.key === 'Transport') {
+                addEV(chart);
+              }
           }
         });
         reduceFossiles();
@@ -94,6 +97,9 @@ angular.module('manipulate', [])
             }
  
           });
+          if(timetype === 'day'){
+            total = total /4;
+          }
           console.log('-----------',total);
           return total;
         }
@@ -115,6 +121,9 @@ angular.module('manipulate', [])
             total = total/4;
           }
           */
+          if(timetype === 'day'){
+            total = total /4;
+          }
           return total;
         }
 

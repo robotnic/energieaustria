@@ -140,7 +140,6 @@ var compareObj = function(obj1, obj2) {
             },
             yAxis1: {
                 tickFormat: function(d){
-console.log('yAxis');
                     return d3.format(',.1f')(d);
                 },
                 axisLabel:'GW'
@@ -152,6 +151,9 @@ console.log('yAxis');
                 axisLabel:'€/MWh'
             },
             legend: {
+              margin:{
+                left:0
+              },
               dispatch: {
                   stateChange: function(e) {
                     legendStateChanged();
@@ -222,7 +224,7 @@ console.log('yAxis');
             key:'Transport',
             yAxis: '1',
             type: 'area',
-            color: 'darkbrown',
+            color: '#FF7522',
             values: JSON.parse(JSON.stringify(values)),
             seriesIndex: $scope.data.length
           };
@@ -240,7 +242,7 @@ console.log('yAxis');
             console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
           }
           console.log('init', surplus, $scope);
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus);   //here the manipulation happens
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl.timetype);   //here the manipulation happens
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.originalTotals = manipulationResult.originalTotals;
@@ -296,7 +298,7 @@ console.log('yAxis');
             surpulus = $scope.ctrl.pumpsurplus;
           }
           console.log('mutate', surplus);
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus);   //here the manipulation happens
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl.timetype);   //here the manipulation happens
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
@@ -333,9 +335,7 @@ console.log('yAxis');
         for(var m in $scope.mutate){
           mutateString = mutateString + m + '=' + $scope.mutate[m] + '&';
         }; 
-        console.log(mutateString);
         mutateString = mutateString.slice(0, -1);
-        console.log(mutateString);
         location.hash='!#' + moment($scope.ctrl.myDate).format('YYYY-MM-DD', 'eb', true)+';'+$scope.ctrl.timetype + ';' + code + mutateString + ';' + $scope.activeTab;
       }
 

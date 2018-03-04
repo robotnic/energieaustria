@@ -1,6 +1,6 @@
 {
   "Transport": {
-    "color":"#00000070",
+    "color":"orange",
     "type":"fossile",
     "co2":"1500",
     "energyprice":"80"
