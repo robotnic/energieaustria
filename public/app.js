@@ -10,8 +10,8 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   }
   console.log($scope.ctrl);
   $scope.mutate = {
-    Solar:1,
-    Wind:1,
+    Solar:0,
+    Wind:0,
     Transport:0,
     Power2GasMax:0
   }

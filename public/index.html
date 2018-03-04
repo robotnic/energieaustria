@@ -48,14 +48,14 @@
         </a>
         <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}</h2>
         <md-input-container class="md-block">
-          <md-tooltip md-direction="bottom">Multiply installed PV</md-tooltip>
+          <md-tooltip md-direction="bottom">Add {{mutate.Solar}} GWp Photovoltic</md-tooltip>
           <label style="color:white">Solar</label> 
-          <input type="number" min="1" ng-model="mutate.Solar" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+          <input type="number" min="0" ng-model="mutate.Solar" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
         <md-input-container class="md-block" lex-gt-sm>
-          <md-tooltip md-direction="bottom">Multiply installed Wind</md-tooltip>
+          <md-tooltip md-direction="bottom">Add {{mutate.Wind}} GW Wind</md-tooltip>
           <label style="color:white">Wind</label> 
-          <input type="number" min="1" ng-model="mutate.Wind" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+          <input type="number" min="0" ng-model="mutate.Wind" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
          <md-input-container class="md-block" lex-gt-sm>
           <md-tooltip md-direction="bottom">Electric Transport percentage. Replace Diesel and Benzin</md-tooltip>

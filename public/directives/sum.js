@@ -42,7 +42,7 @@ angular.module('sum', ['nvd3','energiecharts'])
       }
 
       function populate(type){
-        var use = ["Benzin & Diesel", "Pumpspeicher", "Power2Gas", "Kohle", "Gas", "Transport"];
+        var use = ["Benzin & Diesel", "Pumpspeicher","pump down","pump up", "Power2Gas", "Kohle", "Gas", "Transport"];
         var colors = {
           "totals":"green",
           "originalTotals":"lightgreen",
@@ -134,14 +134,15 @@ angular.module('sum', ['nvd3','energiecharts'])
         };
                  
     function color(a){
-      if($scope.sources && $scope.sources[a.label]){
-          var color = $scope.sources[a.label].color;
-          if(a.series === 1){
-            color = '#00000030';
-          }
-          return color;
+      var color = '#ff000030';
+      if(a.series === 1){
+        color = '#00000030';
+      }else{
+        if($scope.sources && $scope.sources[a.label]){
+            color = $scope.sources[a.label].color;
+        }
       }
-      return '#ff0000';
+      return color;
     }
     $scope.data = [];
     $scope.data2 = [];

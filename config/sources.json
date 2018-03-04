@@ -1,9 +1,9 @@
 {
   "Transport": {
-    "color":"gold",
+    "color":"#00000070",
     "type":"fossile",
     "co2":"1500",
-    "energyprice":"50"
+    "energyprice":"80"
   },
 
   "Pumpspeicher": {

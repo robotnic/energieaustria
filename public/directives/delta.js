@@ -112,16 +112,19 @@ angular.module('delta', ['nvd3','energiecharts'])
             }
         };
                  
+
     function color(a){
-      if($scope.sources && $scope.sources[a.label]){
-          var color = $scope.sources[a.label].color;
-          if(a.series === 1){
-            color = '#00000030';
-          }
-          return color;
+      var color = '#ff000070';
+      if(a.series === 1){
+        color = '#00000030';
+      }else{
+        if($scope.sources && $scope.sources[a.label]){
+            color = $scope.sources[a.label].color;
+        }
       }
-      return '#ff0000';
+      return color;
     }
+
     $scope.data = [];
     $scope.data2 = [];
      }

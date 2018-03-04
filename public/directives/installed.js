@@ -3,29 +3,53 @@ angular.module('installed', ['nvd3','energiecharts'])
 .directive('installed', function() {
   return {
     scope:{
-      year:'=',
+      ctrl:'=',
+      mutate:'=',
     },
       template:`installed capacity {{year}}
 <nvd3 options="options" data="installedcapacity" api="api"></nvd3>
 `,
     controller: function($scope, dataManager, $q) {
-
+      console.log('installed');
+      var installed = {};
+      $scope.$watch('ctrl.date',function(){
+        console.log('year changed', $scope.ctrl.date);
+        $scope.year = $scope.ctrl.date.substring(0,4);
+        console.log($scope.year, installed);
+        $scope.mutate.normalizePV = 2696;
+        $scope.mutate.normalizeWind = 1031;
+        if(installed[$scope.year] && installed[$scope.year]['Solar']){
+          console.log($scope.year, installed[$scope.year]['Wind'], installed['2017']['Solar']);
+          $scope.mutate.normalizePV = installed[$scope.year]['Solar'];
+          $scope.mutate.normalizeWind = installed[$scope.year]['Wind'];
+        }
+      });
       function loadYear(year){
-        var installed = {
+        var template = {
                 key: year,
                 values: [ ]
         }
 
         dataManager.getInstalled(year).then(function(response){
-          console.log('installed',response);
           response.forEach(function(item){
-            installed.values.push({
+            template.values.push({
               label:item.Title,
               value:item.Value 
             });
-            $scope.installedcapacity.push(installed);
+            //nvd3
+            $scope.installedcapacity.push(template);
+            //simpler format
+            if(!installed[year]){
+              installed[year] = {};
+            }
+            installed[year][item.Title] = item.Value;
           });
         });
+        if(installed[$scope.year]){
+          console.log('gefunedn',installed[$scope.year]['Solar']);
+          $scope.mutate.normalizePV = installed[$scope.year]['Solar'];
+          $scope.mutate.normalizeWind = installed[$scope.year]['Wind'];
+        }
       }
       console.log('load year');
       loadYear('2017');

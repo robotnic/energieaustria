@@ -9,7 +9,7 @@ angular.module('bill', ['nvd3','energiecharts'])
       mutate:'='
     },
     template:`
-<md-list ng-cloak style="max-width:800px">
+<md-list ng-cloak style="max-width:800px" ng-style="ctrl.loading && {opacity:0.5}">
 
   <md-subheader class="md-sticky">Milchmächen Rechnung</md-subheader>
   <md-list-item>
@@ -78,8 +78,10 @@ Solar
             priceDelta: priceDelta,
             priceTotals: priceDeltaTotals,
             priceDeltaOriginalTotals: priceDeltaOriginalTotals,
-            price: $scope.sources[t].energyprice || 20
           };
+          if($scope.sources[t]){
+            $scope.matrix[t].price = $scope.sources[t].energyprice || 20
+          }
         }
       },true);
 
@@ -103,8 +105,10 @@ Solar
       }
       
       function calcPrice(t, energy){
-        var energyprice = $scope.sources[t].energyprice || 20;
-        return energyprice * energy * 1000;
+        if($scope.sources[t]){
+          var energyprice = $scope.sources[t].energyprice || 20;
+          return energyprice * energy * 1000;
+        }
       } 
     }
   }

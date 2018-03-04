@@ -24,11 +24,6 @@ angular.module('manipulate', [])
         var originalTotals = {};
         var totals = {};
         data.forEach(function(chart){
-          if (chart.type === 'area') {
-            originalTotals[chart.key]=calcTotal(chart);  //duration missing
-          }
-        });
-        data.forEach(function(chart){
               if(chart.key === 'Power2Gas') {
                 Power2Gas = chart;
               }
@@ -42,7 +37,26 @@ angular.module('manipulate', [])
         });
         data.forEach(function(chart){
           if (chart.type === 'area') {
+            originalTotals[chart.key]=calcTotal(chart);  //duration missing
+            if(chart.key === 'Pumpspeicher'){
+              originalTotals['pump up']=0; //calcUpDown(chart,'up');
+              originalTotals['pump down']=0 //calcUpDown(chart,'down');
+            }
+   
+          }
+        });
+ 
+        data.forEach(function(chart){
+          if (chart.type === 'area') {
               var multiplier = mutate[chart.key] || 1;
+              if(chart.key === 'Solar'){
+                multiplier = (mutate[chart.key] * 1000  + mutate.normalizePV ) / mutate.normalizePV;
+                console.log('Multiplier Solar', multiplier, mutate.Solar, mutate.normalizePV);
+              }
+              if(chart.key === 'Wind'){
+                multiplier = (mutate[chart.key] * 1000 + mutate.normalizeWind ) / mutate.normalizeWind;
+                console.log('Multiplier Wind', multiplier, mutate.Wind);
+              }
               addRenewalbles(chart, multiplier);
           }
         });
@@ -55,6 +69,10 @@ angular.module('manipulate', [])
           if (chart.type === 'area') {
             totals[chart.key]=calcTotal(chart);
           }
+          if(chart.key === 'Pumpspeicher'){
+            totals['pump up']=calcUpDown(chart,'up');
+            totals['pump down']=calcUpDown(chart,'down');
+          }
         });
         pumpsurplus = totals['Pumpspeicher'] - originalTotals['Pumpspeicher'];
         console.log('PUMPSURPLUS',pumpsurplus);
@@ -65,9 +83,24 @@ angular.module('manipulate', [])
           pumpsurplus: pumpsurplus
         }
 
+        function calcUpDown(chart,direction){
+          var total = 0;
+          chart.values.forEach(function(value){
+            if(direction === 'up' && value.y < 0){
+              total += value.y;
+            }
+            if(direction === 'down' && value.y > 0){
+              total += value.y;
+            }
+ 
+          });
+          console.log('-----------',total);
+          return total;
+        }
+
         function addEV(EV){
           EV.values.forEach(function(value){
-            value.y = 4 * mutate.Transport /100;
+            value.y = 4 * mutate.Transport /100;  //4GW continues for all transport (guess)
           });
         }
 

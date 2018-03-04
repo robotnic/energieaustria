@@ -47,10 +47,10 @@ var compareObj = function(obj1, obj2) {
       //time navigation
 
       $scope.$watch('viewdata',function(newvalue, oldvalue, scope){
-    $scope.result = compareObj(newvalue, oldvalue);
+//    $scope.result = compareObj(newvalue, oldvalue);
 
-        console.log('viewdata',newvalue, oldvalue);
-        console.log('compare',$scope.result);
+ //       console.log('viewdata',newvalue, oldvalue);
+  //      console.log('compare',$scope.result);
 /*
         $scope.yourObjectOneJsonView = ObjectDiff.objToJsonView(newvalue);
         $scope.yourObjectTwoJsonView = ObjectDiff.objToJsonView(oldvalue);
