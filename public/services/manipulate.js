@@ -8,6 +8,7 @@ angular.module('manipulate', [])
 
       }
       function manipulate(origdata, mutate, sources, surplus){
+        console.log(mutate);
         var data = JSON.parse(JSON.stringify(origdata));
         var Power2Gas = null;
         var Pumpspeicher = null;

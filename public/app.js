@@ -35,12 +35,13 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   }
 
   function readMutation(mutateString){
+    console.log('readMutate');
     var mutate ={};
     var parts = mutateString.split('&');
     parts.forEach(function(part){
       var name = part.split('=')[0]; 
       var value = part.split('=')[1]; 
-      mutate[name]=parseInt(value); 
+      mutate[name]=parseFloat(value); 
     });
     return mutate;
   }

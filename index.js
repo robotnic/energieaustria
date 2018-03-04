@@ -18,6 +18,15 @@ var XLSX = require('xlsx');
 app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
+app.get('/default',function(req, res) {
+  fs.readFile(__dirname + '/config/sources.json', "utf8", function(err, data){
+      if(err) throw err;
+      res.send(data);
+  });
+});
+
+
+
 app.post('/chart/day', function(req, res) {
   var day = req.body.DateString;
   var pid = req.body.PID;
@@ -60,7 +69,6 @@ console.log('DAYinMonth',year, month, daysInMonth);
 
 app.get('/data/installed/:year', function(req, res) {
   var year = req.params.year;
-  console.log(installed);
   installed.load(year).then(function(response){
     res.send(response);
   });
@@ -102,7 +110,6 @@ app.get('/data/sectors', function(req, res) {
   res.send(scrapers.getSectors());
 });
 app.get('/data/sectors/:sector', function(req, res) {
-  console.log(req.params.sector);
   res.send(scrapers.getSectors(req.params.sector));
 });
 
@@ -111,18 +118,6 @@ app.get('/data/sectors/:sector/:year', function(req, res) {
 });
 
 
-app.get('/default', function(req, res) {
-  res.send(config.getConfiguration(req.params.sector,req.params.year));
-});
-app.get('/default/:id', function(req, res) {
-  res.send(config.getConfiguration(req.params.sector,req.params.year));
-});
-app.delete('/default/:id', function(req, res) {
-  res.send(config.getConfiguration(req.params.sector,req.params.year));
-});
-app.post('/default', function(req, res) {
-  res.send(config.postConfiguration(req.params.sector,req.params.year));
-});
 app.get('/shortlink', function(req, res) {
   res.send(shortlink.getConfiguration(req.params.sector,req.params.year));
 });
@@ -196,42 +191,33 @@ app.get('/openapi', function(req, res) {
 });
 
 function addPostParams(path, method, parameters) {
-      console.log("path", path);
-      switch (path) {
-        case "/chart/day":
-        case "/chart/month":
-        case "/chart/week":
-          parameters.push( {
-            "name": "apg",
-            "in": "body",
-            "description": "Query APG",
-            "schema": {
-              "$ref": "#/definitions/apgquery"
-            }
-          })
-          break;
-        case "/defaults":
-          parameters.push( {
-            "name": "config",
-            "in": "body",
-            "description": "Query APG",
-            "schema": {
-              "$ref": "#/definitions/sources"
-            }
-          })
-          break;
-        case "/shortlink":
-          parameters.push( {
-            "name": "config",
-            "in": "body",
-            "description": "Query APG",
-            "schema": {
-              "$ref": "#/definitions/shortlink"
-            }
-          })
-          break;
- 
- 
+      if(method === 'post' || method === 'put') {
+        switch (path) {
+          case "/chart/day":
+          case "/chart/month":
+          case "/chart/week":
+            parameters.push( {
+              "name": "apg",
+              "in": "body",
+              "description": "Query APG",
+              "schema": {
+                "$ref": "#/definitions/apgquery"
+              }
+            })
+            break;
+          case "/shortlink":
+            parameters.push( {
+              "name": "config",
+              "in": "body",
+              "description": "Query APG",
+              "schema": {
+                "$ref": "#/definitions/shortlink"
+              }
+            })
+            break;
+   
+   
+        }
       }
  
 }

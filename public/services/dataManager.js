@@ -65,7 +65,7 @@ angular.module('energiecharts',[])
 
   colors=null;
 
-  $http.get('config/sources.json').then(function(response){
+  $http.get('/default').then(function(response){
     colors = response.data;
   }, function(error){
     console.log(error);
@@ -177,7 +177,7 @@ angular.module('energiecharts',[])
       }
       value = value.toString();
       value = parseFloat(value.replace('.',''));
-      value = parseInt(value)/1000;
+      value = (value)/1000;
       if(valueCallback){
         value = valueCallback(value);
       }

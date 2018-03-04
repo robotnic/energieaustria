@@ -19,11 +19,54 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       $scope.reload = function(){
         init(null, true);
       }
+function isEmpty( o ) {
+    for ( var p in o ) { 
+        if ( o.hasOwnProperty( p ) ) { return false; }
+    }
+    return true;
+}
 
+var compareObj = function(obj1, obj2) { 
+  var ret = {},rett; 
+  for(var i in obj2) { 
+      rett = {};  
+      if (typeof obj2[i] === 'object'){
+          rett = compareObj (obj1[i], obj2[i]) ;
+          if (!isEmpty(rett) ){
+           ret[i]= rett
+          }              
+       }else{
+           if(!obj1 || !obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) { 
+              ret[i] = obj2[i]; 
+      } 
+   }
+  } 
+  return ret; 
+}; 
       
       //time navigation
 
+      $scope.$watch('viewdata',function(newvalue, oldvalue, scope){
+    $scope.result = compareObj(newvalue, oldvalue);
+
+        console.log('viewdata',newvalue, oldvalue);
+        console.log('compare',$scope.result);
+/*
+        $scope.yourObjectOneJsonView = ObjectDiff.objToJsonView(newvalue);
+        $scope.yourObjectTwoJsonView = ObjectDiff.objToJsonView(oldvalue);
+
+        // you can directly diff your objects js now or parse a Json to object and diff
+        var diff = ObjectDiff.diffOwnProperties($scope.yourObjectOne, $scope.yourObjectTwo);
+        
+        // you can directly diff your objects including prototype properties and inherited properties using `diff` method
+        var diffAll = ObjectDiff.diff($scope.yourObjectOne, $scope.yourObjectTwo);
+
+        // gives a full object view with Diff highlighted
+        $scope.diffValue = ObjectDiff.toJsonView(diff);
+*/
+      }, true);
       $scope.$watch('ctrl',function(newvalue, oldvalue, scope){
+        console.log('ctrl');
         if(newvalue.myDate){
           var date=moment($scope.ctrl.myDate).startOf($scope.ctrl.timetype);
           DateString=moment(date).format('YYYYMMDD');
@@ -72,7 +115,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
                 left: 60
             },
             color: d3.scale.category10().range(),
-            //useInteractiveGuideline: true,
+            useInteractiveGuideline: true,
             duration: 500,
             yLabel:'soso',
             xAxis: {
@@ -97,6 +140,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             },
             yAxis1: {
                 tickFormat: function(d){
+console.log('yAxis');
                     return d3.format(',.1f')(d);
                 },
                 axisLabel:'GW'
@@ -114,8 +158,10 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
                   }
               }
             },
+/*
             tooltip: {
               contentGenerator: function(d) { 
+                console.log(d);
                 var yValue = d.series[0].value;
                 if(d.series[0].values){
                   d.series[0].values.forEach(function(value){
@@ -129,6 +175,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
                 return time + '<h3>' + name + ': ' + yValue + '</h3>';
               }
             }
+*/
 
         }
       };
@@ -235,6 +282,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       //watch manipulation
 
       $scope.$watch('mutate',function(value){
+        console.log('mutate',value);
         if ($scope.ctrl.timetype === 'month') {
           console.log('duration before',$scope.options.chart.duration);
           $scope.options.chart.duration = 0;
@@ -264,6 +312,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       //Deeplinking
 
       function legendStateChanged(){
+        console.log('legend');
         var legendState = {};
         $scope.ctrl.layercode = '';
         $scope.viewdata.forEach(function(item) {
@@ -291,6 +340,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       }
 
       function readHash(){
+        console.log('readHash');
         var layercode= $scope.ctrl.layercode + '';
         for(var i = 0; i< layercode.length;i++){
           if($scope.ctrl.layercode[i] === '0' && $scope.viewdata[i]){
