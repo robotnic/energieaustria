@@ -16,12 +16,15 @@ angular.module('installed', ['nvd3','energiecharts'])
         console.log('year changed', $scope.ctrl.date);
         $scope.year = $scope.ctrl.date.substring(0,4);
         console.log($scope.year, installed);
-        $scope.mutate.normalizePV = 2696;
-        $scope.mutate.normalizeWind = 1031;
+        $scope.ctrl.normalize ={
+          Solar: 2696,
+          Wind: 1031,
+          Power2Gas: 0
+        }
         if(installed[$scope.year] && installed[$scope.year]['Solar']){
           console.log($scope.year, installed[$scope.year]['Wind'], installed['2017']['Solar']);
-          $scope.mutate.normalizePV = installed[$scope.year]['Solar'];
-          $scope.mutate.normalizeWind = installed[$scope.year]['Wind'];
+          $scope.ctrl.normalize.Solar = installed[$scope.year]['Solar'];
+          $scope.ctrl.normalize.Wind = installed[$scope.year]['Wind'];
         }
       });
       function loadYear(year){
@@ -47,8 +50,12 @@ angular.module('installed', ['nvd3','energiecharts'])
         });
         if(installed[$scope.year]){
           console.log('gefunedn',installed[$scope.year]['Solar']);
-          $scope.mutate.normalizePV = installed[$scope.year]['Solar'];
-          $scope.mutate.normalizeWind = installed[$scope.year]['Wind'];
+          $scope.ctrl.normalize ={
+            Solar : installed[$scope.year]['Solar'],
+            Wind : installed[$scope.year]['Wind'],
+            Power2Gas : 1
+          }
+          //$scope.mutate.normalizeWind = installed[$scope.year]['Wind'];
         }
       }
       console.log('load year');

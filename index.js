@@ -19,7 +19,7 @@ app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 app.get('/default',function(req, res) {
-  fs.readFile(__dirname + '/config/sources.json', "utf8", function(err, data){
+  fs.readFile(__dirname + '/config/default.json', "utf8", function(err, data){
       if(err) throw err;
       res.send(data);
   });

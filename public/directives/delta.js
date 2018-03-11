@@ -7,17 +7,52 @@ angular.module('delta', ['nvd3','energiecharts'])
       totals:'=',
       sources:'='
     },
-    template:'    <nvd3 options="options" data="data"></nvd3>All values are in GWh',
+    template:'    <nvd3 options="options" data="data"></nvd3>',
     controller: function($scope, dataManager, $q) {
       console.log($scope.ctrl,$scope.totals, $scope.sources, '----');
       $scope.$watch('ctrl',function(){
+        console.log("---------------------------------------------engergy");
+        console.log($scope.ctrl.totals);
         $scope.data.length = 0;
         $scope.data2.length = 0;
-        populate('totals');
-        populate('originalTotals');
-        populate('cumulativeTotals');
+        var types = ['original','modified'];
+        for(var t in $scope.ctrl.totals){
+          var total =  $scope.ctrl.totals[t];
+          var delta = total.modified.sum - total.original.sum;
+console.log(delta);
+          if(delta){
+              var chart = {
+                "key": t,
+                "color": 'red',
+                "values": []
+              }
+            types.forEach(function(type){
+              //console.log(t,total.original.sum, total.modified.sum, total.delta);
+              if(total[type]){
+            
+                var color = $scope.sources[t].color
+                if(type === 'original'){
+                  color = '#00000030';
+                }
+                console.log(t,type,total[type]); 
+                var value = {
+                  "label":t ,
+                  "value":total[type].sum,
+                  "color":color
+                }
+                chart.values.push(value);
+              }
+              chart.values.push(value);
+              console.log(chart);
+              $scope.data.push(chart);
+            });
+          }
+        }
+        //populate('totals');
+        //populate('originalTotals');
+        //populate('cumulativeTotals');
       },true);
-
+/*
       function populate(type){
         var colors = {
           "totals":"green",
@@ -45,13 +80,14 @@ angular.module('delta', ['nvd3','energiecharts'])
           $scope.data.push(chart);
         }
       }
+*/
 
 
         $scope.options = {
             chart: {
                 type: 'discreteBarChart',
                 height: 450,
-                width: 650,
+                width: 850,
                 margin:{
                   left:150,
                   bottom:150
@@ -67,7 +103,7 @@ angular.module('delta', ['nvd3','energiecharts'])
                     rotateLabels:-45
                 },
                 yAxis: {
-                    axisLabel: 'Values',
+                    axisLabel: 'GWh',
                     tickFormat: function(d){
                         return d3.format(',.2f')(d);
                     }
@@ -103,7 +139,7 @@ angular.module('delta', ['nvd3','energiecharts'])
                 yAxis: {
                     axisLabel: 'Values',
                     tickFormat: function(d){
-                        return d3.format(',.2f')(d);
+                        return d3.format(',.1f')(d);
                     }
                 },
                 color:function(a){

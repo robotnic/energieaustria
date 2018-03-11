@@ -109,7 +109,7 @@ var compareObj = function(obj1, obj2) {
             type: 'multiChart',
             height: 650,
             margin : {
-                top: 170,
+                top: 120,
                 right: 80,
                 bottom: 100,
                 left: 60
@@ -152,7 +152,8 @@ var compareObj = function(obj1, obj2) {
             },
             legend: {
               margin:{
-                left:0
+                left:-700,
+                bottom:200
               },
               dispatch: {
                   stateChange: function(e) {
@@ -224,7 +225,7 @@ var compareObj = function(obj1, obj2) {
             key:'Transport',
             yAxis: '1',
             type: 'area',
-            color: '#FF7522',
+            color: '#FF4500',
             values: JSON.parse(JSON.stringify(values)),
             seriesIndex: $scope.data.length
           };
@@ -235,14 +236,15 @@ var compareObj = function(obj1, obj2) {
           });
 
           $scope.data.splice(1, 0, p2g);
-          $scope.data.push(transport);
+          $scope.data.splice(6,0,transport);
           var surplus = 0;
           if ($scope.ctrl.keep) {
             surplus = $scope.ctrl.pumpsurplus;
             console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
           }
           console.log('init', surplus, $scope);
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl.timetype);   //here the manipulation happens
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
+console.log(manipulationResult);
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.originalTotals = manipulationResult.originalTotals;
@@ -298,7 +300,8 @@ var compareObj = function(obj1, obj2) {
             surpulus = $scope.ctrl.pumpsurplus;
           }
           console.log('mutate', surplus);
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl.timetype);   //here the manipulation happens
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
+          console.log(manipulationResult);
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
