@@ -1,4 +1,10 @@
 {
+  "Curtailment": {
+    "color": "black",
+    "type": "loss",
+    "energyprice":"0"
+  },
+ 
   "Pumpspeicher": {
     "color": "lime",
     "minpower": -1.9,
@@ -12,13 +18,8 @@
     "type": "loss",
     "maxstorage":40000,
     "energyprice":"5",
-    "minpower":-1
+    "minpower":-2
  
-  },
-  "curtailment": {
-    "color": "black",
-    "type": "loss",
-    "energyprice":"0"
   },
   "Lauf- und Schwellwasser": {
     "color": "#0000ff",
@@ -44,7 +45,8 @@
     "color": "red",
     "type": "fossil",
     "co2": "500",
-    "energyprice":"30"
+    "energyprice":"30",
+    "minpower":0
   },
   "Biomasse": {
     "color": "#f4a460",

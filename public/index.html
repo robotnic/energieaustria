@@ -28,8 +28,12 @@
 
 
     <script src="services/dataManager.js"></script>
-    <script src="services/manipulate.js"></script>
+    <script src="services/manipulate/index.js"></script>
+    <script src="services/manipulate/createchart.js"></script>
+    <script src="services/manipulate/loadshift.js"></script>
+    <script src="services/manipulate/timeshift.js"></script>
     <script src="directives/chart.js"></script>
+    <script src="directives/diffchart.js"></script>
     <script src="directives/pie.js"></script>
     <script src="directives/hydrostorage.js"></script>
     <script src="directives/electrolysis.js"></script>
@@ -63,7 +67,7 @@
           <input type="number" min="0" max="100" step="5" ng-model="mutate.Transport" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
         <md-input-container class="md-block" lex-gt-sm>
-          <md-tooltip md-direction="bottom">Electrolysis max Power in GW</md-tooltip>
+          <md-tooltip md-direction="bottom">Electrolysis max Power {{mutate.Power2Gas}} GW</md-tooltip>
           <label style="color:white">P2G</label> 
           <input type="number" min="0" ng-model="mutate.Power2Gas" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
         </md-input-container>
@@ -98,13 +102,22 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
 -->
 
           <div style="position:absolute;top:200px;right:10px">
+<!--
           <sum ctrl="ctrl" sources="sources"></sum>
+-->
           </div>
-    <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab">
+    <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab" x="{{activeTab}}">
       <md-tab label="Power">
-          <chart ctrl="ctrl" totals="totals"></chart>
+      <chart ctrl="ctrl" totals="totals" viewdata="viewdata" ></chart>
+
 <pre>{{ctrl|json}}</pre>
       </md-tab>
+<!--
+      <md-tab label="Diff">
+      <diffchart ctrl="ctrl" totals="totals" viewdata="data" ></diffchart>
+      </md-tab>
+-->
+
 
 <!--
 <table>
@@ -178,7 +191,7 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
         </md-content>
       </md-tab>
       <md-tab label="bill">
-          <bill ctrl="ctrl" sources="sources" mutate="mutate"></bill>
+          <bill ctrl="ctrl" sources="sources" mutate="mutate" totals="totals"></bill>
       </md-tab>
       <md-tab label="installed">
           <installed ctrl="ctrl" sources="sources" mutate="mutate" activeTab="activeTab"></installed>

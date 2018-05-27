@@ -17,8 +17,8 @@ angular.module('installed', ['nvd3','energiecharts'])
         $scope.year = $scope.ctrl.date.substring(0,4);
         console.log($scope.year, installed);
         $scope.ctrl.normalize ={
-          Solar: 2696,
-          Wind: 1031,
+          Wind:  2696,
+          Solar: 1031,
           Power2Gas: 0
         }
         if(installed[$scope.year] && installed[$scope.year]['Solar']){

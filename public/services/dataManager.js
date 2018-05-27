@@ -1,12 +1,9 @@
 angular.module('energiecharts',[])
 .factory('dataManager',function($http, $q){
   var api = {
-    loadData:function(pid, dateString, axis, timetype, type, valueCallback, reload){
-      return loadData(pid, dateString, axis, timetype, type, valueCallback, reload);
-    },
-    getSources:function(){
-      return colors;
-    },
+    loadCharts: loadCharts,
+    loadData:loadData,
+    getSources: getSources,
     loadExcels:function(){
       return loadExcels();
     },
@@ -34,6 +31,23 @@ angular.module('energiecharts',[])
     },function(error){
       q.reject(error);
     });
+    return q.promise;
+  }
+
+  colors=null;
+  function getSources(){
+    var q=$q.defer();
+      if(colors){
+        q.resolve(colors);
+      }else{
+      $http.get('/default').then(function(response){
+        colors = response.data;
+        q.resolve(colors);
+      }, function(error){
+        console.log(error);
+        q.reject(error);
+      });
+    }
     return q.promise;
   }
 
@@ -91,6 +105,40 @@ angular.module('energiecharts',[])
     });
     return q.promise;
   }
+
+  function loadCharts(dateString, ctrl, reload){
+    var q = $q.defer();
+    console.log('--init--', ctrl.layercode, dateString);
+    var date = ctrl.date;
+    if(dateString){
+      date = dateString;
+    }
+    var data = [];
+    ctrl.loading = true;
+    var promises = [
+      loadData('AGPT',date , 1,ctrl.timetype,'area', null,reload),
+      loadData('AL', date,1,ctrl.timetype,'line',null, reload),
+      loadData('EXAAD1P', date,2,ctrl.timetype,'line',  function(y){            
+        return y*1000;
+      }, reload)
+    ];
+
+    $q.all(promises).then(function(result){
+      ctrl.loading = false;
+      result.forEach(function(list){
+        data = data.concat(list);
+      })
+      var values=[];
+      data[0].values.forEach(function(value){
+        values.push({x:value.x,y:0});
+      })
+      q.resolve(data);
+    }, function(error){
+      q.reject(error);
+    });
+    return q.promise;
+  }
+
 
 
   function loadData(pid, dateString, axis, timetype, type, valueCallback, reload){
@@ -172,7 +220,6 @@ angular.module('energiecharts',[])
 
     function parseValue(value){
       if(!value){
-        console.log('nix value');
         value=0
       }
       value = value.toString();

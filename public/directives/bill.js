@@ -64,7 +64,9 @@ Solar
         $scope.priceOriginalTotal = 0;
         $scope.priceTotal = 0;
         for(var t in $scope.ctrl.totals){
-          var delta = $scope.ctrl.totals[t] - $scope.ctrl.originalTotals[t];
+if($scope.ctrl.totals[t].original){
+          //var delta = $scope.ctrl.originalTotals[t] - $scope.ctrl.totals[t] ;
+          var delta = -$scope.ctrl.totals[t].original.sum + $scope.ctrl.totals[t].modified.sum
           var priceDelta = calcPrice(t,delta) || 20;
           var priceDeltaTotals = calcPrice(t,$scope.ctrl.totals[t]);
           var priceDeltaOriginalTotals = calcPrice(t,$scope.ctrl.originalTotals[t]);
@@ -72,14 +74,15 @@ Solar
           $scope.priceTotal += priceDeltaTotals;
           $scope.priceOriginalTotal += priceDeltaOriginalTotals;
           $scope.matrix[t]={
-            originalTotals: $scope.ctrl.originalTotals[t],
-            totals: $scope.ctrl.totals[t],
+            originalTotals: $scope.ctrl.totals[t].original.sum,
+            totals: $scope.ctrl.totals[t].modified.sum,
             delta: delta,
             priceDelta: priceDelta,
             priceTotals: priceDeltaTotals,
             priceDeltaOriginalTotals: priceDeltaOriginalTotals,
           };
-          if($scope.sources[t]){
+}
+          if($scope.sources[t] && $scope.matrix[t]){
             $scope.matrix[t].price = $scope.sources[t].energyprice || 20
           }
         }

@@ -3,6 +3,7 @@ angular.module('manipulate', [])
   .factory('manipulator', function() {
     return {
       manipulate: function(data, mutate, sources, surplus, ctrl) {
+        console.log('mutate', mutate);
         return mutate2(data, mutate, sources, surplus, ctrl);
       }
 
@@ -15,42 +16,104 @@ angular.module('manipulate', [])
       var total = {}
       var originalTotals = [];
       var pumpsurplus = [];
+
+      var mm = {
+        config:{
+          "Pumpspeicher":{
+            "min":-1.9,
+            "max":4
+          },
+          "Speicher":{
+            "min"0:
+            "max":2
+          },
+          "Power2Gas":{
+            "min"0:
+            "max":2
+          },
+          "Transport":{
+            "EV":0.5,
+            "power":4
+          },
+          "Power2Heat":{
+            "power":5
+          }, 
+          "PV":{
+            "add":1
+          }
+          "Wind":{
+            "add":1
+          }
+        },
+        
+        loadShift:{
+          "from":['PV','Wind'],
+          "to": ["Gas", "Transport", "Speicher", "Pumpspeicher", "Biomasse", "Power2Gas"]
+          "createCharts":["Delta","Füllstand"]
+        },
+        timeShift:{
+          "from":["Speicher","Pumpspeicher", "Biomasse"],
+          "to": ["Kohle", "Gas", "Transport"]
+          "createCharts":["Delta"]
+        }
+      }
+
       var m = {
         "title": "add renewable",
         "mutations": [{
             "add": {
               "type": "Solar",
-              "GWp": mutate.Solar
-            },
-            "to": ["curtailment"]
+              "GWp": mutate.Solar,
+              "to": ["curtailment"]
+            }
           },
           {
             "add": {
               "type": "Wind",
-              "GWp": mutate.Wind
-            },
-            "to": ["curtailment"]
+              "GWp": mutate.Wind,
+              "to": ["curtailment"]
+            }
           },
           {
             "from": "curtailment",
-            "to": ["Kohle", "Gas", "Transport", "curtailment"]
+            "to": ["Kohle"]
           },
           {
             "from": "curtailment",
-            "to": ["Speicher", "curtailment"]
+            "to": ["Gas", "Transport", "curtailment","Speicher", "Pumpspeicher", "Power2Gas"]
           },
+ 
           {
-            "from": "curtailment",
-            "to": ["Pumpspeicher", "curtailment"]
+            "shift": "Pumpspeicher",
+            "to": ["Kohle", "Gas", "Transport"]
           },
+ 
           {
-            "from": "curtailment",
-            "to": ["Power2Gas"]
+            "shift": "Speicher",
+            "to": ["Kohle", "Gas", "Transport"]
           }
+ 
         ]
+      }
+      console.log('SOURCES', sources, mutate);
+      if(sources){
+        sources['Power2Gas'].minpower = -mutate['Power2Gas'];
       }
       m.mutations.forEach(function(mutation) {
         createMissingCharts(mutation);
+      });
+      data.forEach(function(chart) {
+        if(chart.key === 'Transport'){
+            chart.values.forEach(function(item){
+              item.y = 4 * parseFloat(mutate.Transport) / 100;
+            })
+        }
+        if(chart.key === 'Leistung [MW]'){
+          chart.values.forEach(function(item){
+            item.y = item.y + 4 * parseFloat(mutate.Transport) / 100;
+          })
+          console.log('LEISTINMG', chart);
+        }
       });
       data.forEach(function(chart) {
         calcTotal(chart, 'original');
@@ -61,17 +124,62 @@ angular.module('manipulate', [])
             console.log('-----------------------ADD ' + chart.key + '------------------------');
             add(chart, mutation);
           }
-          if (chart && mutation.from === chart.key) {
+          if (chart && mutation.from === chart.key && !mutation.add) {
             from(chart, mutation);
           }
-
+          if (chart && mutation.shift){
+            shift(chart, mutation);
+          }
         });
-      });
+      })
 
+        data.forEach(function(chart) {
+          calcTotal(chart, 'modified');
+        });
+
+
+ 
+      function shift(chart, mutation) {
+        if(mutation.to.indexOf(chart.key) !== -1 && mutation.shift){
+          console.log('----------shift', mutation.shift);
+          var toChart = null;
+          data.forEach(function(chart2){
+            if(chart2.key === mutation.shift){
+              fromChart = chart2;
+              //console.log('toChart',to);
+            }
+          });
+          mutation.to.forEach(function(to){
+            var i =0;
+            var freePower = 0;
+            console.log(mutation.shift,to, total[mutation.shift].values);
+            for(var k in total[mutation.shift].values){
+              var value = total[mutation.shift].values[k];
+              console.log(k,value);
+              freePower -= value;
+              console.log(freePower);
+              var origY = chart.values[i].y;
+              if(freePower < 0){
+                  chart.values[i].y += freePower;
+                  if(chart.values[i].y < 0){
+                    chart.values[i].y = 0;
+                  }
+              };
+              var delta = origY - chart.values[i].y;
+                //fromChart.values[i].y += delta;
+              freePower -= delta;
+              fromChart.values[i].y -= delta;
+              i++;
+            }
+          });
+        }
+        
+      }
 
       function from(chart, mutation) {
         var from = null;
         var to = {};
+        console.log(mutation);
         mutation.to.forEach(function(name) {
           to[name] = {};
         });
@@ -80,7 +188,6 @@ angular.module('manipulate', [])
             from = chart;
           }
           if (to[chart.key]) {
-            console.log('...doch');
             to[chart.key] = chart;
           }
           if(!total[chart.key]){
@@ -105,32 +212,35 @@ angular.module('manipulate', [])
                     //todo
                   }
                   delta -= to[name].values[i].y
-                  addToTotal(name,'delta',delta);
+                  addToTotal(name,'delta',delta,i,to[name].values[i].x);
                   from.values[i].y += delta;
                 });
               }
             });
           }
+        })
+        /*
+        data.forEach(function(chart) {
           calcTotal(chart, 'modified');
         });
-        console.log("TOTAL", total);
+        */
 
-        function addToTotal(name, type, delta){
+        function addToTotal(name, type, delta,i,x){
           if(!total[name]){
-            total[name]={}
+            total[name]={values:{}}
           }
-          if(!total[name][type]){
-            total[name][type] = 0;
+          if(!total[name].values[x]){
+            total[name].values[x] = 0;
           }
- 
-          total[name][type] += delta;
+          total[name].values[x] += delta;
         }
       }
+
 
       function calcTotal(chart, prop){
         if(chart.type !== 'area')return;
         if(!total[chart.key]){
-          total[chart.key] = {}
+          total[chart.key] = {values:{}}
         }
         if(!total[chart.key][prop]){
           total[chart.key][prop] = {
@@ -179,8 +289,7 @@ angular.module('manipulate', [])
           console.log('mutttt', mutation.add, mutation.to, multiplier);
           var found = null;
           data.forEach(function(chart) {
-            if (mutation.to.indexOf(chart.key) !== -1) {
-              console.log("beeindruckend");
+            if (mutation.add.to.indexOf(chart.key) !== -1 ) {
               found = true;
               to[chart.key] = chart;
             }

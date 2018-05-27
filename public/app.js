@@ -1,4 +1,4 @@
-var app = angular.module('plunker', ['charts','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial']);
+var app = angular.module('plunker', ['charts','diffcharts','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial']);
 
 app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {
@@ -13,6 +13,7 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
     Solar:0,
     Wind:0,
     Transport:0,
+    Power2Gas:0,
     Power2GasMax:0
   }
   console.log('hallo', $location.hash());

@@ -28,7 +28,7 @@ angular.module('sum', ['nvd3','energiecharts'])
           var part = $scope.ctrl[partName]
           var sum = $scope.ctrl[sumName]
           for(var p in part){
-            if(sum[p]){
+            if(sum[p] && part[p] > 0.001){
               sum[p] += part[p];
             }else{
               sum[p]=part[p]
@@ -72,6 +72,10 @@ angular.module('sum', ['nvd3','energiecharts'])
         });
         */
         chart.values = chart.values.filter(function(item){
+          console.log('item', item);
+          if(item.value.modified){
+            item.value = item.value.modified.sum;
+          }
           if(use.indexOf(item.label) === -1){
             return false;
           }else{

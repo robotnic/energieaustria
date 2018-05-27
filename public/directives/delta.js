@@ -9,18 +9,18 @@ angular.module('delta', ['nvd3','energiecharts'])
     },
     template:'    <nvd3 options="options" data="data"></nvd3>',
     controller: function($scope, dataManager, $q) {
-      console.log($scope.ctrl,$scope.totals, $scope.sources, '----');
       $scope.$watch('ctrl',function(){
         console.log("---------------------------------------------engergy");
         console.log($scope.ctrl.totals);
         $scope.data.length = 0;
-        $scope.data2.length = 0;
         var types = ['original','modified'];
         for(var t in $scope.ctrl.totals){
+          var delta = 0;
           var total =  $scope.ctrl.totals[t];
-          var delta = total.modified.sum - total.original.sum;
-console.log(delta);
-          if(delta){
+          if(total.modified && total.original){
+            var delta = total.modified.sum - total.original.sum;
+          }
+          if(delta && Math.abs(delta) > 0.00001){
               var chart = {
                 "key": t,
                 "color": 'red',
@@ -34,7 +34,6 @@ console.log(delta);
                 if(type === 'original'){
                   color = '#00000030';
                 }
-                console.log(t,type,total[type]); 
                 var value = {
                   "label":t ,
                   "value":total[type].sum,
@@ -43,7 +42,6 @@ console.log(delta);
                 chart.values.push(value);
               }
               chart.values.push(value);
-              console.log(chart);
               $scope.data.push(chart);
             });
           }
@@ -114,40 +112,6 @@ console.log(delta);
 
             }
         };
- 
-        $scope.options2 = {
-            chart: {
-                type: 'discreteBarChart',
-                height: 380,
-                width: 380,
-                margin:{
-                  left:150,
-                  bottom:150
-                },
-                x: function(d){
-                  return d.label;
-                },
-                y: function(d){return d.value;},
-                //yErr: function(d){ return [-Math.abs(d.value * Math.random() * 0.3), Math.abs(d.value * Math.random() * 0.3)] },
-                showControls: true,
-                showValues: true,
-                duration: 500,
-                xAxis: {
-                    showMaxMin: false,
-                    rotateLabels:-45
-                },
-                yAxis: {
-                    axisLabel: 'Values',
-                    tickFormat: function(d){
-                        return d3.format(',.1f')(d);
-                    }
-                },
-                color:function(a){
-                  return color(a);
-                }
-            }
-        };
-                 
 
     function color(a){
       var color = '#ff000070';
@@ -162,7 +126,6 @@ console.log(delta);
     }
 
     $scope.data = [];
-    $scope.data2 = [];
      }
   }
 });

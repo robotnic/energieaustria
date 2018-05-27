@@ -5,7 +5,8 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
     $scope:{
       ctrl:'=',
       mutate:'=',
-      activeTab:'='
+      activeTab:'=',
+      viewdata:'='
     },
     template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table style="display:none"><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{ctrl.originalTotals[k]| number : 1}}</td><td>{{v - ctrl.originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
     controller: function($scope, dataManager, $q, manipulator) {
@@ -19,52 +20,9 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       $scope.reload = function(){
         init(null, true);
       }
-function isEmpty( o ) {
-    for ( var p in o ) { 
-        if ( o.hasOwnProperty( p ) ) { return false; }
-    }
-    return true;
-}
-
-var compareObj = function(obj1, obj2) { 
-  var ret = {},rett; 
-  for(var i in obj2) { 
-      rett = {};  
-      if (typeof obj2[i] === 'object'){
-          rett = compareObj (obj1[i], obj2[i]) ;
-          if (!isEmpty(rett) ){
-           ret[i]= rett
-          }              
-       }else{
-           if(!obj1 || !obj1.hasOwnProperty(i) || obj2[i] !== obj1[i]) { 
-              ret[i] = obj2[i]; 
-      } 
-   }
-  } 
-  return ret; 
-}; 
-      
+          
       //time navigation
 
-      $scope.$watch('viewdata',function(newvalue, oldvalue, scope){
-//    $scope.result = compareObj(newvalue, oldvalue);
-
- //       console.log('viewdata',newvalue, oldvalue);
-  //      console.log('compare',$scope.result);
-/*
-        $scope.yourObjectOneJsonView = ObjectDiff.objToJsonView(newvalue);
-        $scope.yourObjectTwoJsonView = ObjectDiff.objToJsonView(oldvalue);
-
-        // you can directly diff your objects js now or parse a Json to object and diff
-        var diff = ObjectDiff.diffOwnProperties($scope.yourObjectOne, $scope.yourObjectTwo);
-        
-        // you can directly diff your objects including prototype properties and inherited properties using `diff` method
-        var diffAll = ObjectDiff.diff($scope.yourObjectOne, $scope.yourObjectTwo);
-
-        // gives a full object view with Diff highlighted
-        $scope.diffValue = ObjectDiff.toJsonView(diff);
-*/
-      }, true);
       $scope.$watch('ctrl',function(newvalue, oldvalue, scope){
         console.log('ctrl');
         if(newvalue.myDate){
@@ -186,105 +144,34 @@ var compareObj = function(obj1, obj2) {
       //load charts
 
       function init(dateString, reload){
-        $scope.options.chart.duration = 0;
-        console.log('--init--', $scope.ctrl.layercode, dateString);
-        var date = $scope.ctrl.date;
-        setHash();
-        if(dateString){
-          date = dateString;
-        }
-        $scope.data = [];
-        $scope.ctrl.loading = true;
-        var promises = [
-          dataManager.loadData('AGPT',date , 1,$scope.ctrl.timetype,'area', null,reload),
-          dataManager.loadData('AL', date,1,$scope.ctrl.timetype,'line',null, reload),
-          dataManager.loadData('EXAAD1P', date,2,$scope.ctrl.timetype,'line',  function(y){            
-            return y*1000;
-          }, reload)
-        ];
-
-        $q.all(promises).then(function(result){
-          $scope.ctrl.loading = false;
-          result.forEach(function(list){
-            $scope.data = $scope.data.concat(list);
-          })
-          $scope.sources = dataManager.getSources();
-          var values=[];
-          $scope.data[0].values.forEach(function(value){
-            values.push({x:value.x,y:0});
-          })
-          var p2g = {
-            key:'Power2Gas',
-            yAxis: '1',
-            color: 'pink',
-            type: 'area',
-            values: values,
-            seriesIndex: $scope.data.length
-          };
-          var transport = {
-            key:'Transport',
-            yAxis: '1',
-            type: 'area',
-            color: '#FF4500',
-            values: JSON.parse(JSON.stringify(values)),
-            seriesIndex: $scope.data.length
-          };
-          transport.values.forEach(function(value){
-            if(value){
-              value.y = 0; //4 * $scope.mutate.Transport/100;   //4GW für Transport - reiner Schätzwert
+        dataManager.getSources().then(function(sources){;
+          $scope.sources = sources;
+          console.log("$scope.sources",$scope.sources);
+          dataManager.loadCharts(dateString, $scope.ctrl, reload).then(function(data){
+            $scope.data = data;
+            var values=[];
+            $scope.data[0].values.forEach(function(value){
+              values.push({x:value.x,y:0});
+            })
+            var surplus = 0;
+            if ($scope.ctrl.keep) {
+              surplus = $scope.ctrl.pumpsurplus;
+              console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
             }
+            console.log('init', surplus, $scope);
+            var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
+  console.log(manipulationResult);
+            $scope.viewdata = manipulationResult.data;
+            $scope.ctrl.totals = manipulationResult.totals;
+            $scope.ctrl.originalTotals = manipulationResult.originalTotals;
+            var hash = readHash();
+          },function(error){
+            console.log(error);
           });
-
-          $scope.data.splice(1, 0, p2g);
-          $scope.data.splice(6,0,transport);
-          var surplus = 0;
-          if ($scope.ctrl.keep) {
-            surplus = $scope.ctrl.pumpsurplus;
-            console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
-          }
-          console.log('init', surplus, $scope);
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
-console.log(manipulationResult);
-          $scope.viewdata = manipulationResult.data;
-          $scope.ctrl.totals = manipulationResult.totals;
-          $scope.ctrl.originalTotals = manipulationResult.originalTotals;
-          /*
-          $scope.ctrl.cumulativeTotals = {}
-          if (!$scope.ctrl.keep) {
-            $scope.ctrl.cumulativeTotals = {}
-          }
-          */
-          $scope.ctrl.cumulativeTotals = cumult($scope.ctrl.totals);
-          $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
-          var hash = readHash();
-        },function(error){
-          console.log(error);
         });
       }
 
-      function cumult(totals) {
-        if($scope.ctrl.cumulativeTotals && $scope.ctrl.keep){
-          var newtotals = $scope.ctrl.cumulativeTotals;
-        }else{
-          var newtotals = {
-            'Benzin & Diesel':30,
-          };
-        }
-        for(var t in totals){
-          if(t === 'Power2Gas' || t === 'Pumpspeicher' || t === 'Gas' || t === 'Kohle' || t ==='Transport'){
-            var delta = $scope.ctrl.totals[t] - $scope.ctrl.originalTotals[t];
-            if(newtotals[t]){
-              newtotals[t] = newtotals[t] + delta;
-            }else{
-              newtotals[t] =  + delta;
-            }
-          }
-        }
-        return newtotals;
-      }
-
       //watch manipulation
-
       $scope.$watch('mutate',function(value){
         console.log('mutate',value);
         if ($scope.ctrl.timetype === 'month') {
@@ -299,7 +186,7 @@ console.log(manipulationResult);
           if ($scope.ctrl.keep) {
             surpulus = $scope.ctrl.pumpsurplus;
           }
-          console.log('mutate', surplus);
+          console.log('mutate2', surplus);
           var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
           console.log(manipulationResult);
           $scope.viewdata = manipulationResult.data;
