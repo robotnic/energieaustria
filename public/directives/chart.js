@@ -6,7 +6,8 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       ctrl:'=',
       mutate:'=',
       activeTab:'=',
-      viewdata:'='
+      viewdata:'=',
+      data:'='
     },
     template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table style="display:none"><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{ctrl.originalTotals[k]| number : 1}}</td><td>{{v - ctrl.originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
     controller: function($scope, dataManager, $q, manipulator) {
@@ -24,7 +25,6 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       //time navigation
 
       $scope.$watch('ctrl',function(newvalue, oldvalue, scope){
-        console.log('ctrl');
         if(newvalue.myDate){
           var date=moment($scope.ctrl.myDate).startOf($scope.ctrl.timetype);
           DateString=moment(date).format('YYYYMMDD');
@@ -146,7 +146,6 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       function init(dateString, reload){
         dataManager.getSources().then(function(sources){;
           $scope.sources = sources;
-          console.log("$scope.sources",$scope.sources);
           dataManager.loadCharts(dateString, $scope.ctrl, reload).then(function(data){
             $scope.data = data;
             var values=[];
@@ -160,7 +159,6 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
             }
             console.log('init', surplus, $scope);
             var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
-  console.log(manipulationResult);
             $scope.viewdata = manipulationResult.data;
             $scope.ctrl.totals = manipulationResult.totals;
             $scope.ctrl.originalTotals = manipulationResult.originalTotals;
@@ -173,7 +171,6 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
 
       //watch manipulation
       $scope.$watch('mutate',function(value){
-        console.log('mutate',value);
         if ($scope.ctrl.timetype === 'month') {
           console.log('duration before',$scope.options.chart.duration);
           $scope.options.chart.duration = 0;
@@ -186,7 +183,6 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           if ($scope.ctrl.keep) {
             surpulus = $scope.ctrl.pumpsurplus;
           }
-          console.log('mutate2', surplus);
           var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
           console.log(manipulationResult);
           $scope.viewdata = manipulationResult.data;

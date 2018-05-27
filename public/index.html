@@ -108,15 +108,13 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
           </div>
     <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab" x="{{activeTab}}">
       <md-tab label="Power">
-      <chart ctrl="ctrl" totals="totals" viewdata="viewdata" ></chart>
+      <chart ctrl="ctrl" totals="totals" viewdata="viewdata" data="data"></chart>
 
 <pre>{{ctrl|json}}</pre>
       </md-tab>
-<!--
       <md-tab label="Diff">
-      <diffchart ctrl="ctrl" totals="totals" viewdata="data" ></diffchart>
+      <diffchart ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></diffchart>
       </md-tab>
--->
 
 
 <!--

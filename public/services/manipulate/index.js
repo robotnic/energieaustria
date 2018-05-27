@@ -14,39 +14,6 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       console.log('-----------mutate createCharts', mutate);
       var data = JSON.parse(JSON.stringify(originalData));
       var mm = {
-        config:{
-          "Pumpspeicher":{
-            "min":-1.9,
-            "max":4
-          },
-          "Speicher":{
-            "min":0,
-            "max":2
-          },
-          "Power2Gas":{
-            "min":0,
-            "max":2,
-            "power":0
-          },
-          "Transport":{
-            "EV":0.5,
-            "power":0
-          },
-          "Power2Heat":{
-            "power":0
-          },
-          "Solar":{
-            "add":10
-          },
-          "Wind":{
-            "add":1
-          },
-          "Curtailment":{
-            "min":-10000000000,
-            "power":0
-          }
-        },
-
         loadShift:{
           "from":['Solar','Wind'],
           "to": ["Kohle","Gas", "Transport", "Speicher", "Biomasse", "Pumpspeicher",  "Power2Gas"],
@@ -58,7 +25,10 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
           "createCharts":["Delta"]
         }
       }
-      console.log("sources", sources);
+      mm.config = JSON.parse(JSON.stringify(sources));
+
+      mm.config.Transport.power = mm.config.Transport.power * mutate.Transport /100;
+      mm.config.Power2Gas.min = -mutate.Power2Gas;
       createCharts.create(data, mm.config);
       return loadshift.shift(data, mm, mutate, sources, ctrl);
     }

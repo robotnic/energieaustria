@@ -15,18 +15,17 @@ angular.module('LoadShift',[])
 
 
   function shift(data, mm, mutation, sources, ctrl){
-    var curtailmentChart=null;
     chartsByName={};
     data.forEach(function(chart){
       chartsByName[chart.key] = chart;
-      if(chart.key === 'Curtailment') {
-        curtailmentChart=chart;
-      }
     });
-    console.log('malzeit', mm, curtailmentChart);
     mm.loadShift.from.forEach(function(from){
       add(from, mutation, ctrl);
     });
+    data.forEach(function(chart){
+      chartsByName[chart.key] = chart;
+    });
+ 
     realShift2();
     return {
         data: data
@@ -34,10 +33,13 @@ angular.module('LoadShift',[])
 
 
     function realShift2(){
-      curtailmentChart.values.forEach(function(value,i){
+      chartsByName['Curtailment'].values.forEach(function(value,i){
         mm.loadShift.to.forEach(function(to){
-          var minpower = sources[to].minpower || 0;
           if(chartsByName[to]) {
+            var minpower = 0;
+            if(mm.config[to]){
+              minpower = mm.config[to].min|| 0;
+            }
             var fossil = chartsByName[to].values[i];
             if(value.y < 0){
               var oldFossilY = fossil.y;
@@ -58,35 +60,26 @@ angular.module('LoadShift',[])
       var to = {}; 
       var type = chartString;
       var multiplier = 1; 
-      if (ctrl.normalize[type]) { 
-        multiplier = (mutation[type] * 1000 + ctrl.normalize[type]) / ctrl.normalize[type]; //not sure if correct 
+      if (ctrl.normalize[chartString]) { 
+        multiplier = (mutation[chartString] * 1000 + ctrl.normalize[chartString]) / ctrl.normalize[chartString]; //not sure if correct 
       } 
-      if (ctrl.normalize[type]) { 
-        var found = null; 
-        data.forEach(function(chart) { 
-          if (mutation[chart.key]) { 
-            found = true; 
-            to[chart.key] = chart; 
-          } 
-        }); 
-        for (var name in to) { 
-          addRenewalbles(to[name], multiplier, curtailmentChart) 
-        } 
-      } 
+      addRenewalbles(chartsByName[chartString], multiplier) 
     } 
 
 
-    function addRenewalbles(chart, multiplier, Curtailment) {
+    function addRenewalbles(chart, multiplier) {
       var total = 0;
-      chart.values.forEach(function(value, i) {
-        var oldValue = value.y;
-        value.y = value.y * multiplier;
-        var delta = value.y - oldValue;
-        if (curtailmentChart.values[i]) {
-          Curtailment.values[i].y -= delta;
-        }
-        total += delta;
-      });
+      if(multiplier !== 1){
+        chart.values.forEach(function(value, i) {
+          var oldValue = value.y;
+          value.y = value.y * multiplier;
+          var delta = value.y - oldValue;
+          if (chartsByName.Curtailment.values[i]) {
+            chartsByName.Curtailment.values[i].y -= delta;
+          }
+          total += delta;
+        });
+      }
       if (total) {
         console.log('Unused Energie', chart.key, total, multiplier);
       }

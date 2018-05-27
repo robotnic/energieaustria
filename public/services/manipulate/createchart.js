@@ -15,7 +15,9 @@ angular.module('CreateCharts',[])
       chartByName[chart.key] = chart;
     });
     for(var name in config) {
-      createChart(chartByName['Wind'], name);
+      if(typeof(config[name].power) === 'number'){
+        createChart(chartByName['Wind'], name);
+      }
     };
     return data;
 
@@ -23,7 +25,6 @@ angular.module('CreateCharts',[])
 
     function createChart(basedOn, name) {
       var source = config[name];
-
       var chart =  chartByName[name];
       if(!chartByName[name]){
         chart = { //todo rename variable
@@ -35,8 +36,9 @@ angular.module('CreateCharts',[])
           seriesIndex: data.length
         };
       }
+//      chartByName[name] = chart;
       var y = config[name].power;
-      if((typeof(y) === 'number') && chart.values){
+      if(!isNaN(y)  && chart.values){
         chart.values.length = 0;
         basedOn.values.forEach(function(value) {
           chart.values.push({
@@ -45,8 +47,10 @@ angular.module('CreateCharts',[])
           });
         })
         if(data.indexOf(chart) === -1){
-          if(chart.key === 'Curtailment'){
+          if(chart.key === 'Curtailment' || chart.key === 'Power2Gas'){
             data.unshift(chart);  //ugly workaround
+          }else{
+            data.push(chart);  //ugly workaround
           }
       
         }

@@ -2,13 +2,18 @@
   "Curtailment": {
     "color": "black",
     "type": "loss",
-    "energyprice":"0"
+    "energyprice":"0",
+    "power":0,
+    "min":-999999999,
+    "max":0
   },
  
   "Pumpspeicher": {
     "color": "lime",
     "minpower": -1.9,
+    "min": -1.9,
     "maxpower": 3.4,
+    "max": 3.4,
     "type": "pump",
     "energyprice":"60"
 
@@ -18,7 +23,10 @@
     "type": "loss",
     "maxstorage":40000,
     "energyprice":"5",
-    "minpower":-2
+    "minpower":-2,
+    "min":-2,
+    "max":0,
+    "power":0
  
   },
   "Lauf- und Schwellwasser": {
@@ -39,7 +47,8 @@
     "color":"orangered",
     "type":"fossile",
     "co2":"1500",
-    "energyprice":"80"
+    "energyprice":"80",
+    "power":4
   },
   "Gas": {
     "color": "red",
@@ -72,7 +81,9 @@
   "Speicher": {
     "color": "purple",
     "minpower": 0,
+    "min": 0,
     "maxpower": 2,
+    "max": 2,
     "type": "storage"
   },
   "Solar": {

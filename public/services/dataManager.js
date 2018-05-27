@@ -53,26 +53,52 @@ angular.module('energiecharts',[])
 
   function getHydroStorage(year, monthNumber){
     var q = $q.defer();
-    if(hydroStorage && hydroStorage[year] && hydroStorage[year][monthNumber]){
-      q.resolve(hydroStorage[year][monthNumber]);
-    } else {
-      if(hydroPromises.length === 0){
-        $http.get('/data/hydrostorage').then(function(storage){
-          hydroStorage = storage.data; 
-          try{
-            var value = hydroStorage[year][monthNumber];
-            hydroPromises.forEach(function(qq){
-              qq.resolve(value);
-            });
-          }catch(e){
-            hydroPromises.forEach(function(qq){
-              qq.reject(e);
-            });
-          }
-        });
-        hydroPromises.push(q);
+
+    if(year){  //overkill
+      if(hydroStorage && hydroStorage[year] && hydroStorage[year][monthNumber]){
+        q.resolve(hydroStorage[year][monthNumber]);
+      } else {
+        if(hydroPromises.length === 0){
+          $http.get('/data/hydrostorage').then(function(storage){
+            hydroStorage = storage.data; 
+            try{
+              var value = hydroStorage[year][monthNumber];
+              hydroPromises.forEach(function(qq){
+                qq.resolve(value);
+              });
+            }catch(e){
+              hydroPromises.forEach(function(qq){
+                qq.reject(e);
+              });
+            }
+          });
+          hydroPromises.push(q);
+        }
+      }
+    }else{
+      if(hydroStorage){
+        q.resolve(hydroStorage);
+      } else {
+        if(hydroPromises.length === 0){
+          $http.get('/data/hydrostorage').then(function(storage){
+            hydroStorage = storage.data; 
+            try{
+              var value = hydroStorage;
+              hydroPromises.forEach(function(qq){
+                qq.resolve(value);
+              });
+            }catch(e){
+              hydroPromises.forEach(function(qq){
+                qq.reject(e);
+              });
+            }
+          });
+          hydroPromises.push(q);
+        }
       }
     }
+ 
+
     return q.promise;
   }
 //  getHydroStorage('2017','0');

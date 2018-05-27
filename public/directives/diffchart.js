@@ -2,15 +2,39 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
 
 .directive('diffchart', function() {
   return {
-    $scope:{
+    scope:{
       ctrl:'=',
       mutate:'=',
       activeTab:'=',
-      viewdata:'='
+      viewdata:'=',
+      origdata:'=',
+      data:'='
     },
-    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3>',
+    template:'<br/><nvd3 options="options" data="delta" api="api"></nvd3>',
     controller: function($scope, dataManager, $q, manipulator) {
       //nvd3
+
+
+      $scope.$watch('viewdata',function(){
+        $scope.delta = makeDelta($scope.viewdata, $scope.data);
+        console.log('delta',$scope.delta);
+      });
+
+      function makeDelta(viewdata, data) {
+        var delta = JSON.parse(JSON.stringify(viewdata));
+        console.log('viewdata',viewdata, data);
+        viewdata.forEach(function(chart,i){
+          data.forEach(function(oldchart,j){
+            if(chart.key === oldchart.key){
+              delta[i].type='line';
+              chart.values.forEach(function(value,j){
+                delta[i].values[j].y = value.y - oldchart.values[j].y;
+              });
+            }
+          });
+        });
+        return delta;
+      }
 
       $scope.options = {
         chart: {
