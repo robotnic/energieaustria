@@ -4,19 +4,10 @@ angular.module('energiecharts',[])
     loadCharts: loadCharts,
     loadData:loadData,
     getSources: getSources,
-    loadExcels:function(){
-      return loadExcels();
-    },
-    getSector:function(type, year){
-      return getSector(type,year);
-    },
-    getHydroStorage:function(year, monthNumber){
-      return getHydroStorage(year, monthNumber);
-    },
-    getInstalled:function(year) {
-      return getInstalled(year);
-    }
-    
+    loadExcels: loadExcels,
+    getSector: getSector,
+    getHydroStorage: getHydroStorage,
+    getInstalled: getInstalled
   }
 
   var data = [];

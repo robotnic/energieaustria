@@ -1,249 +1,278 @@
 <!DOCTYPE html>
 <html ng-app="plunker">
 
-  <head>
-    <meta charset="utf-8" />
-    <title>Energie Österreich</title>
-    <script>document.write('<base href="' + document.location + '" />');</script>
-    <link rel="stylesheet" href="style.css" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<head>
+  <meta charset="utf-8" />
+  <title>Energie Österreich</title>
+  <script>
+    document.write('<base href="' + document.location + '" />');
+  </script>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css">
+  <link rel="stylesheet" href="bower_components/nvd3/build/nv.d3.css">
 
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.6.8/angular-locale_de-at.js"></script>
- 
-    <script src="bower_components/d3/d3.js"></script>
-    <script src="bower_components/nvd3/build/nv.d3.js"></script> <!-- or use another assembly -->
-    <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.6.8/angular-locale_de-at.js"></script>
 
-    <script src="bower_components/moment/moment.js"></script>
-    <script src="bower_components/angular-moment/angular-moment.js"></script>
-    <script src="bower_components/angular-aria/angular-aria.js"></script>
-    <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-material/angular-material.js"></script>
+  <script src="bower_components/d3/d3.js"></script>
+  <script src="bower_components/nvd3/build/nv.d3.js"></script>
+  <!-- or use another assembly -->
+  <script src="bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
+
+  <script src="bower_components/moment/moment.js"></script>
+  <script src="bower_components/angular-moment/angular-moment.js"></script>
+  <script src="bower_components/angular-aria/angular-aria.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/angular-material/angular-material.js"></script>
 
 
-    <script src="services/dataManager.js"></script>
-    <script src="services/manipulate/index.js"></script>
-    <script src="services/manipulate/createchart.js"></script>
-    <script src="services/manipulate/loadshift.js"></script>
-    <script src="services/manipulate/timeshift.js"></script>
-    <script src="directives/chart.js"></script>
-    <script src="directives/diffchart.js"></script>
-    <script src="directives/pie.js"></script>
-    <script src="directives/hydrostorage.js"></script>
-    <script src="directives/electrolysis.js"></script>
-    <script src="directives/delta.js"></script>
-    <script src="directives/sum.js"></script>
-    <script src="directives/bill.js"></script>
-    <script src="directives/installed.js"></script>
-    <script src="app.js"></script>
-  </head>
+  <script src="services/dataManager.js"></script>
+  <script src="services/manipulate/index.js"></script>
+  <script src="services/manipulate/createchart.js"></script>
+  <script src="services/manipulate/loadshift.js"></script>
+  <script src="services/manipulate/timeshift.js"></script>
+  <script src="directives/config.js"></script>
+  <script src="directives/chart.js"></script>
+  <script src="directives/diffchart.js"></script>
+  <script src="directives/pie.js"></script>
+  <script src="directives/hydrostorage.js"></script>
+  <script src="directives/electrolysis.js"></script>
+  <script src="directives/delta.js"></script>
+  <script src="directives/sum.js"></script>
+  <script src="directives/bill.js"></script>
+  <script src="directives/installed.js"></script>
+  <script src="app.js"></script>
+</head>
 
-  <body ng-controller="MainCtrl">
-    <md-toolbar class="md-hue-2">
-      <div class="md-toolbar-tools">
-        <a href="/">
+<body ng-controller="MainCtrl">
+  <md-toolbar class="md-hue-2">
+    <div class="md-toolbar-tools">
+      <a href="/">
         <img src="images/logo.png" style="height:36px;"/>
         </a>
-        <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}</h2>
-        <md-input-container class="md-block">
-          <md-tooltip md-direction="bottom">Add {{mutate.Solar}} GWp Photovoltic. This equals to {{mutate.Solar*0.4|number:1}} photovoltaic panels per Austrian.</md-tooltip>
-          <label style="color:white">Solar</label> 
-          <input type="number" min="0" ng-model="mutate.Solar" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
-        </md-input-container>
-        <md-input-container class="md-block" lex-gt-sm>
-          <md-tooltip md-direction="bottom">Add {{mutate.Wind}} GW Wind. This equals to {{mutate.Wind*200|number:0}} big Windturbines.</md-tooltip>
-          <label style="color:white">Wind</label> 
-          <input type="number" min="0" ng-model="mutate.Wind" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
-        </md-input-container>
-         <md-input-container class="md-block" lex-gt-sm>
-          <md-tooltip md-direction="bottom">Electric Transport percentage. Replace Diesel and Benzin</md-tooltip>
-          <label style="color:white">EV%</label> 
-          <input type="number" min="0" max="100" step="5" ng-model="mutate.Transport" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
-        </md-input-container>
-        <md-input-container class="md-block" lex-gt-sm>
-          <md-tooltip md-direction="bottom">Electrolysis max Power {{mutate.Power2Gas}} GW</md-tooltip>
-          <label style="color:white">P2G</label> 
-          <input type="number" min="0" ng-model="mutate.Power2Gas" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
-        </md-input-container>
- 
-        <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
-          <md-icon ng-bind="'navigate_before'"></md-icon>
-        </md-button>
-        <md-button class="md-icon-button" aria-label="Favorite" ng-click="nextDay()">
-          <md-icon ng-bind="'navigate_next'"></md-icon>
-        </md-button>
+      <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}</h2>
+      <md-input-container class="md-block">
+        <md-tooltip md-direction="bottom">Add {{mutate.Solar}} GWp Photovoltic. This equals to {{mutate.Solar*0.4|number:1}} photovoltaic panels per Austrian.</md-tooltip>
+        <label style="color:white">Solar</label>
+        <input type="number" min="0" ng-model="mutate.Solar" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+      <md-input-container class="md-block" lex-gt-sm>
+        <md-tooltip md-direction="bottom">Add {{mutate.Wind}} GW Wind. This equals to {{mutate.Wind*200|number:0}} big Windturbines.</md-tooltip>
+        <label style="color:white">Wind</label>
+        <input type="number" min="0" ng-model="mutate.Wind" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+      <md-input-container class="md-block" lex-gt-sm>
+        <md-tooltip md-direction="bottom">Electric Transport percentage. Replace Diesel and Benzin</md-tooltip>
+        <label style="color:white">EV%</label>
+        <input type="number" min="0" max="100" step="5" ng-model="mutate.Transport" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+      <md-input-container class="md-block" lex-gt-sm>
+        <md-tooltip md-direction="bottom">Electrolysis max Power {{mutate.Power2Gas}} GW</md-tooltip>
+        <label style="color:white">P2G</label>
+        <input type="number" min="0" ng-model="mutate.Power2Gas" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
 
-        <md-button class="md-icon-button" aria-label="More" ng-click="reload()">
-          <md-icon ng-bind="'cached'"></md-icon>
-        </md-button>
-        <md-datepicker ng-if="ctrl.timetype=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" md-mode="month"></md-datepicker>
-        <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" ></md-datepicker>
-      </div>
-    </md-toolbar>
-   <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:200px;top:73px;z-index:100" layout="row">
-      <md-radio-button value="day" class="md-primary">day</md-radio-button>
-      <md-radio-button value="week"> week </md-radio-button>
-      <md-radio-button value="month">month</md-radio-button>
-    </md-radio-group>
-<md-button class="md-raised" style="position:absolute;right:10px;top:60px" ng-click="nextDay(true)">
-Keep {{-ctrl.pumpsurplus | number:1}} GWh 
-<md-icon ng-bind="'navigate_next'"></md-icon>
-</md-button>
-<div class="loading" ng-show="ctrl.loading">loading ...</div>
-<!--
+      <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
+        <md-icon ng-bind="'navigate_before'"></md-icon>
+      </md-button>
+      <md-button class="md-icon-button" aria-label="Favorite" ng-click="nextDay()">
+        <md-icon ng-bind="'navigate_next'"></md-icon>
+      </md-button>
+
+      <md-button class="md-icon-button" aria-label="More" ng-click="reload()">
+        <md-icon ng-bind="'cached'"></md-icon>
+      </md-button>
+      <md-datepicker ng-if="ctrl.timetype=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" md-mode="month"></md-datepicker>
+      <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate"></md-datepicker>
+    </div>
+  </md-toolbar>
+  <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:200px;top:73px;z-index:100" layout="row">
+    <md-radio-button value="day" class="md-primary">day</md-radio-button>
+    <md-radio-button value="week"> week </md-radio-button>
+    <md-radio-button value="month">month</md-radio-button>
+  </md-radio-group>
+  <md-button class="md-raised" style="position:absolute;right:10px;top:60px" ng-click="nextDay(true)">
+    Keep {{-ctrl.pumpsurplus | number:1}} GWh
+    <md-icon ng-bind="'navigate_next'"></md-icon>
+  </md-button>
+  <div class="loading" ng-show="ctrl.loading">loading ...</div>
+  <!--
     <hydrostorage date="ctrl.date" ctrl="ctrl"></hydrostorage>
     <electrolysis date="ctrl.date" ctrl="ctrl" totals="totals"></electrolysis>
 -->
 
-          <div style="position:absolute;top:200px;right:10px">
-<!--
+  <div style="position:absolute;top:200px;right:10px">
+    <!--
           <sum ctrl="ctrl" sources="sources"></sum>
 -->
-          </div>
-    <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab" x="{{activeTab}}">
-      <md-tab label="Power">
+  </div>
+  <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab" x="{{activeTab}}">
+    <md-tab label="Power">
       <chart ctrl="ctrl" totals="totals" viewdata="viewdata" data="data"></chart>
 
-<pre>{{ctrl|json}}</pre>
-      </md-tab>
-      <md-tab label="Diff">
+      <pre>{{ctrl|json}}</pre>
+    </md-tab>
+    <md-tab label="Diff">
       <diffchart ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></diffchart>
-      </md-tab>
+    </md-tab>
 
 
-<!--
+    <!--
 <table>
 <tr ng-repeat="(key,value) in free">
 <td>{{key}}</td><td> {{value|number:2}} GWh</td>
 </tr>
 </table>
 -->
-      <md-tab label="Energy">
-        <md-content class="md-padding">
-          <delta ctrl="ctrl" sources="sources"></delta>
-<br/> <br/> <br/> <br/> <br/> <br/>
-<br/> <br/> <br/> <br/> <br/> <br/>
-<br/> <br/> <br/> <br/> <br/> <br/>
-<table class="table">
-<tr>
-<th></th>
-<th>Original GWh</th>
-<th>Delta in GWh</th>
-<th>Ist in GWh</th>
-<th> Ø in GW</th>
-<th>Type</th>
-<th>min GW</th>
-<th>max GW</th>
-</td>
-</tr>
-<tr ng-repeat="(key,value) in sources">
-<td>{{key}}</td>
-<td><span ng-if="originalTotal"> {{originalTotal[key]|number:0}} </span></td>
-<td><span ng-if="free[key]">{{free[key]|number:0}} </span></td>
-<td><span ng-if="total[key]">{{total[key]|number:0}} </span></td>
-<td><span ng-if="total[key]">{{total[key]/30/34|number:2}} </span></td>
-<td><span ng-if="sources[key].type">{{sources[key].type}} </span></td>
-<td><span ng-if="sources[key].minpower">{{sources[key].minpower}} </span></td>
-<td><span ng-if="sources[key].maxpower">{{sources[key].maxpower}} </span></td>
+    <md-tab label="Energy">
+      <md-content class="md-padding">
+        <delta ctrl="ctrl" sources="sources"></delta>
+        <br/> <br/> <br/> <br/> <br/> <br/>
+        <br/> <br/> <br/> <br/> <br/> <br/>
+        <br/> <br/> <br/> <br/> <br/> <br/>
+        <table class="table">
+          <tr>
+            <th></th>
+            <th>Original GWh</th>
+            <th>Delta in GWh</th>
+            <th>Ist in GWh</th>
+            <th> Ø in GW</th>
+            <th>Type</th>
+            <th>min GW</th>
+            <th>max GW</th>
+            </td>
+          </tr>
+          <tr ng-repeat="(key,value) in sources">
+            <td>{{key}}</td>
+            <td><span ng-if="originalTotal"> {{originalTotal[key]|number:0}} </span></td>
+            <td><span ng-if="free[key]">{{free[key]|number:0}} </span></td>
+            <td><span ng-if="total[key]">{{total[key]|number:0}} </span></td>
+            <td><span ng-if="total[key]">{{total[key]/30/34|number:2}} </span></td>
+            <td><span ng-if="sources[key].type">{{sources[key].type}} </span></td>
+            <td><span ng-if="sources[key].minpower">{{sources[key].minpower}} </span></td>
+            <td><span ng-if="sources[key].maxpower">{{sources[key].maxpower}} </span></td>
 
-</tr>
-</table>
-{{sources|json}}
-        </md-content>
-      </md-tab>
-
-
-      <md-tab label="Statistics">
-        <md-content class="md-padding">
- 
+          </tr>
+        </table>
+        {{sources|json}}
+      </md-content>
+    </md-tab>
 
 
-    <pie type="'Tabelle1'" year="'Summe'" thetitle="'Total'" mutate="mutate"></pie>
-<!--
+    <md-tab label="Statistics">
+      <md-content class="md-padding">
+
+
+
+        <pie type="'Tabelle1'" year="'Summe'" thetitle="'Total'" mutate="mutate"></pie>
+        <!--
 <p>Diese Tabelle zeigt den Energieverbrauch der Endverbraucher. Umwandlungsverluste sind bereits abgezogen. Ungefähr 1/4 der Energie geht durch Umwandlung verloren. </p>
 <p>Das betrifft vor allem die Elektrische Energie die durch Verbrennung gewonnen wird. (~%50 Verlust)</p>
 <p>Ungefähr ein drittel der Energie beziehen wir in der Form von Erdölprodukten. Die 110TWh könnten durch elektische 30TWh ersetzt werden.
 -->
-    <pie type="'Tabelle1'" year="'Traktion'" thetitle="'Verkehr'" mutate="mutate"></pie>
-<!--PKW, LKW, Flugzeuge, Eisenbahn, Straßenbahn, ...-->
-    <pie type="'Tabelle1'" year="'Raumheizung und Klimaanlagen'" thetitle="'Raumheizung und Klimaanlagen'" mutate="mutate"></pie>
-    <pie type="'Tabelle1'" year="'Dampferzeugung'" thetitle="'Dampferzeugung'" mutate="mutate"></pie>
-    <pie type="'Tabelle1'" year="'Industrieöfen'" thetitle="'Industrieöfen'" mutate="mutate"></pie>
-    <pie type="'Tabelle1'" year="'Standmotoren'" thetitle="'Standmotoren'" mutate="mutate"></pie>
-    <pie type="'Tabelle1'" year="'Beleuchtung und EDV'" thetitle="'Beleuchtung und EDV'" mutate="mutate"></pie>
-<h4>Maßnahmen</h4>
-<p>Transport elektrifizieren</p>
-<p>Häuser dämmen</p>
-<hr/>
-    <pie type="'Gesamtenergiebilanz'" year="'2016'"></pie>
-    <pie type="'Erdölbilanz'" year="'2016'"></pie>
-    <pie type="'Gasbilanz'" year="'2016'"></pie>
-    <pie type="'Kohlebilanz'" year="'2016'"></pie>
-    <pie type="'Erneuerbare'" year="'2016'"></pie>
-        </md-content>
-      </md-tab>
-      <md-tab label="bill">
-          <bill ctrl="ctrl" sources="sources" mutate="mutate" totals="totals"></bill>
-      </md-tab>
-      <md-tab label="installed">
-          <installed ctrl="ctrl" sources="sources" mutate="mutate" activeTab="activeTab"></installed>
+        <pie type="'Tabelle1'" year="'Traktion'" thetitle="'Verkehr'" mutate="mutate"></pie>
+        <!--PKW, LKW, Flugzeuge, Eisenbahn, Straßenbahn, ...-->
+        <pie type="'Tabelle1'" year="'Raumheizung und Klimaanlagen'" thetitle="'Raumheizung und Klimaanlagen'" mutate="mutate"></pie>
+        <pie type="'Tabelle1'" year="'Dampferzeugung'" thetitle="'Dampferzeugung'" mutate="mutate"></pie>
+        <pie type="'Tabelle1'" year="'Industrieöfen'" thetitle="'Industrieöfen'" mutate="mutate"></pie>
+        <pie type="'Tabelle1'" year="'Standmotoren'" thetitle="'Standmotoren'" mutate="mutate"></pie>
+        <pie type="'Tabelle1'" year="'Beleuchtung und EDV'" thetitle="'Beleuchtung und EDV'" mutate="mutate"></pie>
+        <h4>Maßnahmen</h4>
+        <p>Transport elektrifizieren</p>
+        <p>Häuser dämmen</p>
+        <hr/>
+        <pie type="'Gesamtenergiebilanz'" year="'2016'"></pie>
+        <pie type="'Erdölbilanz'" year="'2016'"></pie>
+        <pie type="'Gasbilanz'" year="'2016'"></pie>
+        <pie type="'Kohlebilanz'" year="'2016'"></pie>
+        <pie type="'Erneuerbare'" year="'2016'"></pie>
+      </md-content>
+    </md-tab>
+    <md-tab label="bill">
+      <bill ctrl="ctrl" sources="sources" mutate="mutate" totals="totals"></bill>
+    </md-tab>
+    <md-tab label="installed">
+      <installed ctrl="ctrl" sources="sources" mutate="mutate" activeTab="activeTab"></installed>
     </md-tab>
     <md-tab label="Publish">
-<md-card>
-    <md-card-title><h4>Publish your settings</h4></md-card-title>
+      <md-card>
+        <md-card-title>
+          <h4>Publish your settings</h4>
+        </md-card-title>
 
-    <md-card-content>
+        <md-card-content>
 
-<p>Your are happy with your result and want to publish your settings.</p>
-<form name="userForm">
+          <p>Your are happy with your result and want to publish your settings.</p>
+          <form name="userForm">
 
-        <div layout-gt-xs="row">
-          <md-input-container class="md-block" flex-gt-xs>
-            <label>Shortname</label>
-            <input ng-model="user.company" disabled>
-          </md-input-container>
+            <div layout-gt-xs="row">
+              <md-input-container class="md-block" flex-gt-xs>
+                <label>Shortname</label>
+                <input ng-model="user.company" disabled>
+              </md-input-container>
 
-        </div>
+            </div>
 
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>Author</label>
-            <input ng-model="user.firstName">
-          </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Author</label>
+              <input ng-model="user.firstName">
+            </md-input-container>
 
-          <md-input-container class="md-block" flex-gt-sm>
-            <label>Description</label>
-            <input ng-model="theMax">
-          </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+              <label>Description</label>
+              <input ng-model="theMax">
+            </md-input-container>
 
-</form>
+          </form>
 
 
-    </md-card-content>
-<md-card-actions>
-      <button md-button align="start" (click)="save()">
+        </md-card-content>
+        <md-card-actions>
+          <button md-button align="start" (click)="save()">
        Submit 
       </button>
-    </md-card-actions>
-</md-card>
-<md-card>
-    <md-card-title><h4>Published </h4></md-card-title>
-    <md-card-content>
-<table  ng-cloak>
-  <tr><td>spoe</td><td>40% Drneuerbare bis 2030</td><td>12. Dez. 2018</td></tr>
-  <tr><td>global2000</td><td>Power2Gas 100% 2050</td></tr>
-  <tr><td>ursi69</td><td>Auch ein kleiner Versuch meinerseits</td></tr>
-</table>
-    </md-card-content>
-</md-card>
-    </md-tab> 
-    </md-tabs>
-<!--
+        </md-card-actions>
+      </md-card>
+      <md-card>
+        <md-card-title>
+          <h4>Published </h4>
+        </md-card-title>
+        <md-card-content>
+          <table ng-cloak>
+            <tr>
+              <td>spoe</td>
+              <td>40% Drneuerbare bis 2030</td>
+              <td>12. Dez. 2018</td>
+            </tr>
+            <tr>
+              <td>global2000</td>
+              <td>Power2Gas 100% 2050</td>
+            </tr>
+            <tr>
+              <td>ursi69</td>
+              <td>Auch ein kleiner Versuch meinerseits</td>
+            </tr>
+          </table>
+        </md-card-content>
+      </md-card>
+   </md-tab>
+
+    <md-tab label="Config">
+      <md-card>
+        <md-card-title>
+          <h4>Config </h4>
+        </md-card-title>
+        <md-card-content>
+          <config></config>
+        </md-card-content>
+      </md-card>
+    </md-tab>
+  </md-tabs>
+  <!--
 <pre>{{originalTotal|json}}</pre>
 <pre>{{total|json}}</pre>
 <pre>{{free|json}}</pre>
@@ -255,9 +284,9 @@ Keep {{-ctrl.pumpsurplus | number:1}} GWh
     </div>
 -->
 
-<!--
+  <!--
     <nvd3 options="options" data="data"></nvd3>
 -->
-  </body>
+</body>
 
 </html>

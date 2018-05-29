@@ -93,3 +93,9 @@ delta{
 margin-left:80px;
 display:block;
 }
+
+.config input {
+padding-right:20px;
+width:100px;
+}
+
