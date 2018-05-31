@@ -8,6 +8,8 @@ var $q = require('q');
 var fs = require('fs');
 var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
 
+var cookie = null;
+
 console.log(dbconnect);
 var XLSX = require('xlsx');
 
@@ -486,6 +488,7 @@ function getChart(day, pid, resolution, reload) {
     text: 'select * from chart where day = $1 AND pid = $2 AND resolution = $3 LIMIT 1',
     values: [day, pid, resolution]
   }
+  getCookie().then(function(cookie){
   pool.query(select)
     .then(function(result) {
       if (result.rows[0] && !reload) {
@@ -495,7 +498,8 @@ function getChart(day, pid, resolution, reload) {
           method: 'POST',
           url: 'https://www.apg.at/transparency/WebMethods/ChartsEtc.aspx/GetChartData',
           headers: {
-            'User-Agent': 'request'
+            'User-Agent': 'https://github.com/robotnic/energyaustria',
+            'Cookie':cookie
           },
           json: {
             "PID": pid,
@@ -527,6 +531,7 @@ function getChart(day, pid, resolution, reload) {
       }
     })
     .catch(e => console.error(e.stack))
+  });
   return q.promise;
 }
 
@@ -541,4 +546,17 @@ function insertToChart(day, body, pid, resolution) {
 
 }
 
+function getCookie(){
+  var q=$q.defer();
+  if (cookie){
+    q.resolve(cookie);  
+  }else{
+    var url="https://www.apg.at";
+    request(url,function(error,response,body){
+      cookie = response.headers['set-cookie'][0].split(';')[0];
+      console.log(cookie);
+    });
+  }
+  return q.promise
 
+}

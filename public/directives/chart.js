@@ -158,7 +158,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
               console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
             }
             console.log('init', surplus, $scope);
-            var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
+            var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, $scope.ctrl);   //here the manipulation happens
             $scope.viewdata = manipulationResult.data;
             $scope.ctrl.totals = manipulationResult.totals;
             $scope.ctrl.originalTotals = manipulationResult.originalTotals;
