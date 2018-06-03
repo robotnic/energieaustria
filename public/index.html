@@ -38,6 +38,7 @@
   <script src="directives/config.js"></script>
   <script src="directives/chart.js"></script>
   <script src="directives/diffchart.js"></script>
+  <script src="directives/filllevel.js"></script>
   <script src="directives/pie.js"></script>
   <script src="directives/hydrostorage.js"></script>
   <script src="directives/electrolysis.js"></script>
@@ -55,6 +56,15 @@
         <img src="images/logo.png" style="height:36px;"/>
         </a>
       <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}</h2>
+      <md-input-container class="md-block">
+  <md-radio-group ng-model="ctrl.timetype" tyle="position:absolute;right:200px;top:73px;z-index:100" layout="row">
+    <md-radio-button value="day" class="md-primary">day</md-radio-button>
+    <md-radio-button value="week"> week </md-radio-button>
+    <md-radio-button value="month">month</md-radio-button>
+  </md-radio-group>
+ 
+      </md-input-container>
+<!--
       <md-input-container class="md-block">
         <md-tooltip md-direction="bottom">Add {{mutate.Solar}} GWp Photovoltic. This equals to {{mutate.Solar*0.4|number:1}} photovoltaic panels per Austrian.</md-tooltip>
         <label style="color:white">Solar</label>
@@ -75,6 +85,7 @@
         <label style="color:white">P2G</label>
         <input type="number" min="0" ng-model="mutate.Power2Gas" style="width:50px;color:white" ng-model-options='{ debounce: 200 }'>
       </md-input-container>
+-->
 
       <md-button class="md-icon-button" aria-label="Favorite" ng-click="previouseDay()">
         <md-icon ng-bind="'navigate_before'"></md-icon>
@@ -90,11 +101,35 @@
       <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate"></md-datepicker>
     </div>
   </md-toolbar>
+  <div style="position:absolute;right:00px;top:123px;z-index:100">
+    <md-input-container class="md-block">
+        <md-tooltip md-direction="bottom">Add {{mutate.Solar}} GWp Photovoltic. This equals to {{mutate.Solar*0.4|number:1}} photovoltaic panels per Austrian.</md-tooltip>
+        <label >Solar</label>
+        <input type="number" min="0" ng-model="mutate.Solar" style="width:50px;" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+      <md-input-container class="md-block" lex-gt-sm>
+        <md-tooltip md-direction="bottom">Add {{mutate.Wind}} GW Wind. This equals to {{mutate.Wind*200|number:0}} big Windturbines.</md-tooltip>
+        <label >Wind</label>
+        <input type="number" min="0" ng-model="mutate.Wind" style="width:50px;" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+      <md-input-container class="md-block" lex-gt-sm>
+        <md-tooltip md-direction="bottom">Electric Transport percentage. Replace Diesel and Benzin</md-tooltip>
+        <label >EV%</label>
+        <input type="number" min="0" max="100" step="5" ng-model="mutate.Transport" style="width:50px;" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+      <md-input-container class="md-block" lex-gt-sm>
+        <md-tooltip md-direction="bottom">Electrolysis max Power {{mutate.Power2Gas}} GW</md-tooltip>
+        <label >P2G</label>
+        <input type="number" min="0" ng-model="mutate.Power2Gas" style="width:50px;" ng-model-options='{ debounce: 200 }'>
+      </md-input-container>
+  </div>
+<!--
   <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:200px;top:73px;z-index:100" layout="row">
     <md-radio-button value="day" class="md-primary">day</md-radio-button>
     <md-radio-button value="week"> week </md-radio-button>
     <md-radio-button value="month">month</md-radio-button>
   </md-radio-group>
+-->
   <md-button class="md-raised" style="position:absolute;right:10px;top:60px" ng-click="nextDay(true)">
     Keep {{-ctrl.pumpsurplus | number:1}} GWh
     <md-icon ng-bind="'navigate_next'"></md-icon>
@@ -113,12 +148,14 @@
   <md-tabs md-dynamic-height md-border-bottom md-selected="activeTab" x="{{activeTab}}">
     <md-tab label="Power">
       <chart ctrl="ctrl" totals="totals" viewdata="viewdata" data="data"></chart>
-
-      <pre>{{ctrl|json}}</pre>
     </md-tab>
     <md-tab label="Diff">
       <diffchart ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></diffchart>
     </md-tab>
+    <md-tab label="Fill Level">
+      <filllevel ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></filllevel>
+    </md-tab>
+
 
 
     <!--

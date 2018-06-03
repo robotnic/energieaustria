@@ -1,4 +1,4 @@
-var app = angular.module('plunker', ['charts','config','diffcharts','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial']);
+var app = angular.module('plunker', ['charts','config','diffcharts','filllevel','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial']);
 
 app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
   $scope.ctrl = {

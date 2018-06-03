@@ -9,7 +9,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       viewdata:'=',
       data:'='
     },
-    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><table style="display:none"><tr><th></th><th>Original GWh</th><th>Delta GWh</th></tr><tr ng-repeat="(k,v) in ctrl.totals"><td>{{k}}</td> <td>{{ctrl.originalTotals[k]| number : 1}}</td><td>{{v - ctrl.originalTotals[k]| number : 1}}</td><td>{{v| number : 1}}</td></table>pumpsurplus:{{pumpsurplus}}',
+    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3>',
     controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
@@ -56,11 +56,28 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           
 
           }
+          if($scope.api){ 
+            setTimeout(function(){
+              console.log('$scope.api', $scope.api);
+              $scope.api.updateWithData($scope.viewdata);
+            },10000);
+          }
         }
       },true);
 
       
       //nvd3
+
+$scope.config = {
+    visible: true, // default: true
+    extended: false, // default: false
+    disabled: false, // default: false
+    refreshDataOnly: false, // default: true
+    deepWatchOptions: true, // default: true
+    deepWatchData: true, // default: true
+    deepWatchDataDepth: 2, // default: 2
+    debounce: 10 // default: 10
+};
 
       $scope.options = {
         chart: {
@@ -73,6 +90,16 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
                 left: 60
             },
             color: d3.scale.category10().range(),
+            zoom:{
+       enabled: true,
+        scale: 0,
+        scaleExtent: [1, 100],
+        translate: [0, 0],
+        useFixedDomain: false,
+        useNiceScale: false,
+        horizontalOff: false,
+        verticalOff: true,
+            },
             useInteractiveGuideline: true,
             duration: 500,
             yLabel:'soso',
@@ -157,7 +184,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
               surplus = $scope.ctrl.pumpsurplus;
               console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
             }
-            console.log('init', surplus, $scope);
+            console.log('init', surplus, $scope.ctrl);
             var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, $scope.ctrl);   //here the manipulation happens
             $scope.viewdata = manipulationResult.data;
             $scope.ctrl.totals = manipulationResult.totals;
@@ -183,14 +210,15 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
           if ($scope.ctrl.keep) {
             surpulus = $scope.ctrl.pumpsurplus;
           }
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, surplus, $scope.ctrl);   //here the manipulation happens
+          console.log('init2', $scope.ctrl);
+          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, $scope.ctrl);   //here the manipulation happens
           console.log(manipulationResult);
           $scope.viewdata = manipulationResult.data;
           $scope.ctrl.totals = manipulationResult.totals;
           $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
           readHash();
           if($scope.api){
-            $scope.api.update();
+            //$scope.api.refresh();
           }
           setHash();
         }

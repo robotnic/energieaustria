@@ -429,9 +429,8 @@ function getEnergy() {
 }
 
 function parseEnergy(data) {
-  console.log(data);
   var energy = [];
-  for (var i = 2015; i < 2018; i++) {
+  for (var i = 2015; i < 2020; i++) {
     var val = 'val' + (i - 2015 + 1);
     data.chartData.forEach(function(week) {
       energy.push({

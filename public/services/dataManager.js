@@ -12,6 +12,7 @@ angular.module('energiecharts',[])
 
   var data = [];
   var hydroStorage = null;
+  var energy = null;
   var timetype = 'day';
   var hydroPromises = [];
 
@@ -41,6 +42,7 @@ angular.module('energiecharts',[])
     }
     return q.promise;
   }
+
 
   function getHydroStorage(year, monthNumber){
     var q = $q.defer();
@@ -135,9 +137,9 @@ angular.module('energiecharts',[])
     var promises = [
       loadData('AGPT',date , 1,ctrl.timetype,'area', null,reload),
       loadData('AL', date,1,ctrl.timetype,'line',null, reload),
-      loadData('EXAAD1P', date,2,ctrl.timetype,'line',  function(y){            
-        return y*1000;
-      }, reload)
+//      loadData('EXAAD1P', date,2,ctrl.timetype,'line',  function(y){            
+//        return y*1000;
+//      }, reload)
     ];
 
     $q.all(promises).then(function(result){

@@ -1,6 +1,6 @@
-angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
+angular.module('filllevel', ['nvd3','energiecharts','manipulate'])
 
-.directive('diffchart', function() {
+.directive('filllevel', function() {
   return {
     scope:{
       ctrl:'=',
@@ -10,38 +10,26 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
       origdata:'=',
       data:'='
     },
-    template:'<br/><nvd3 options="options" data="delta" api="api"></nvd3>',
+    template:'<br/><nvd3 options="options" data="fillLevels" api="api"></nvd3>',
     controller: function($scope, dataManager, $q, manipulator) {
       //nvd3
 
 
       $scope.$watch('viewdata',function(){
-        $scope.delta = makeDelta($scope.viewdata, $scope.data);
-        //console.log('delta',$scope.delta);
-      }, true);
-
-      function makeDelta(viewdata, data) {
-        var delta = JSON.parse(JSON.stringify(viewdata));
-        //console.log('viewdata',viewdata, data);
-        viewdata.forEach(function(chart,i){
-          data.forEach(function(oldchart,j){
-            if(chart.key === oldchart.key) {
-              delta[i].type='line';
-              chart.values.forEach(function(value,j){
-                delta[i].values[j].y = value.y - oldchart.values[j].y;
-              });
-            }
-          });
+        //$scope.delta = makeDelta($scope.viewdata, $scope.data);
+        $scope.fillLevels = manipulator.getFillLevels(['Pumpspeicher','Speicher','Biomasse','Power2Gas']);
+        $scope.fillLevels.forEach(function(chart){
+          chart.type = 'line';
         });
-        return delta;
-      }
+        console.log('filllevel',$scope.fillLevels);
+      }, true);
 
       $scope.options = {
         chart: {
             type: 'multiChart',
             height: 650,
             margin : {
-                top: 120,
+                top: 320,
                 right: 80,
                 bottom: 100,
                 left: 60
@@ -74,13 +62,7 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
                 tickFormat: function(d){
                     return d3.format(',.1f')(d);
                 },
-                axisLabel:'GW'
-            },
-            yAxis2: {
-                tickFormat: function(d){
-                    return d3.format(',.1f')(d);
-                },
-                axisLabel:'€/MWh'
+                axisLabel:'GWh'
             },
             legend: {
               margin:{

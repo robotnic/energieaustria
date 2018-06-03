@@ -15,6 +15,7 @@ angular.module('LoadShift',[])
 
 
   function shift(data, mm, mutation, sources, ctrl){
+console.log(ctrl);
     chartsByName={};
     data.forEach(function(chart){
       chartsByName[chart.key] = chart;
@@ -57,6 +58,7 @@ angular.module('LoadShift',[])
     }
 
     function add(chartString, mutation, ctrl) { 
+console.log('ctrl',ctrl);
       var to = {}; 
       var type = chartString;
       var multiplier = 1; 

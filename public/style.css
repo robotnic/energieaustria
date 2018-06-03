@@ -99,3 +99,6 @@ padding-right:20px;
 width:100px;
 }
 
+md-list-item:hover{
+background-color:#efefef;
+}

@@ -15,7 +15,8 @@
     "maxpower": 3.4,
     "max": 3.4,
     "type": "pump",
-    "energyprice":"60"
+    "energyprice":"60",
+    "efficiency":0.85
 
   },
   "Power2Gas": {
@@ -26,7 +27,8 @@
     "minpower":-2,
     "min":-2,
     "max":0,
-    "power":0
+    "power":0,
+    "efficiency":0.7
  
   },
   "Lauf- und Schwellwasser": {
@@ -47,7 +49,7 @@
     "color":"orangered",
     "type":"fossil",
     "co2":"1500",
-    "energyprice":"80",
+    "energyprice":50,
     "power":4
   },
   "Gas": {
@@ -55,13 +57,14 @@
     "type": "fossil",
     "co2": "500",
     "energyprice":"30",
-    "minpower":0
+    "minpower":0,
+    "efficiency":0.5
   },
   "Biomasse": {
     "color": "#f4a460",
     "type": "renewable",
     "min":0,
-    "max":1,
+    "max":2,
     "energyprice":"120"
 
   },
