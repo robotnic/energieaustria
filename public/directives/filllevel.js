@@ -13,16 +13,20 @@ angular.module('filllevel', ['nvd3','energiecharts','manipulate'])
     template:'<br/><nvd3 options="options" data="fillLevels" api="api"></nvd3>',
     controller: function($scope, dataManager, $q, manipulator) {
       //nvd3
+      dataManager.getHydroStorage().then(function(hydro){
+        console.log('hydro',hydro);
+        init(hydro);
+      });
 
-
-      $scope.$watch('viewdata',function(){
-        //$scope.delta = makeDelta($scope.viewdata, $scope.data);
-        $scope.fillLevels = manipulator.getFillLevels(['Pumpspeicher','Speicher','Biomasse','Power2Gas']);
-        $scope.fillLevels.forEach(function(chart){
-          chart.type = 'line';
-        });
-        console.log('filllevel',$scope.fillLevels);
-      }, true);
+      function init(hydro){
+        $scope.$watch('viewdata',function(){
+          $scope.fillLevels = manipulator.getFillLevels(['Pumpspeicher','Speicher','Biomasse','Power2Gas'], hydro);
+          $scope.fillLevels.forEach(function(chart){
+            chart.type = 'line';
+          });
+          console.log('filllevel',$scope.fillLevels);
+        }, true);
+      }
 
       $scope.options = {
         chart: {

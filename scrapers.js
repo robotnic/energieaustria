@@ -6,11 +6,9 @@ var request = require('request');
 var moment = require('moment');
 var $q = require('q');
 var fs = require('fs');
-var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
 
 var cookie = null;
 
-console.log(dbconnect);
 var XLSX = require('xlsx');
 
 module.exports={
@@ -40,9 +38,18 @@ const {
   Pool,
   Client
 } = require('pg')
-
-const pool = new Pool(dbconnect);
-
+var pool = null;
+if (process.env.DATABASE_URL) {
+  const { Pool } = require('pg');
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  });
+}else{
+  console.log('local db');
+  var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
+  pool = new Pool(dbconnect);
+}
 
 function getSectors(sector, year){
   if(!sector && !year){
@@ -142,9 +149,7 @@ function getItems(stat, a, b, xAxis) {
     var c = s[0];
     var sx = parseInt(s.substring(1));
     if (sx && a <= sx && sx <= b) {
-      console.log(s, c, sx);
       if (c === 'A') {
-        console.log(stat[s].v);
         title = stat[s].v;
         rows[title] = {};
       } else {
@@ -487,7 +492,8 @@ function getChart(day, pid, resolution, reload) {
     text: 'select * from chart where day = $1 AND pid = $2 AND resolution = $3 LIMIT 1',
     values: [day, pid, resolution]
   }
-  getCookie().then(function(cookie){
+  console.log(select);
+//  getCookie().then(function(cookie){
   pool.query(select)
     .then(function(result) {
       if (result.rows[0] && !reload) {
@@ -497,8 +503,7 @@ function getChart(day, pid, resolution, reload) {
           method: 'POST',
           url: 'https://www.apg.at/transparency/WebMethods/ChartsEtc.aspx/GetChartData',
           headers: {
-            'User-Agent': 'https://github.com/robotnic/energyaustria',
-            'Cookie':cookie
+            'User-Agent': 'https://github.com/robotnic/energyaustria'
           },
           json: {
             "PID": pid,
@@ -508,6 +513,7 @@ function getChart(day, pid, resolution, reload) {
             "AdditionalFilter": "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"
           }
         }
+        console.log(options);
         request(options, function(error, response, body) {
           if (error) {
             q.reject(error);
@@ -528,8 +534,8 @@ function getChart(day, pid, resolution, reload) {
           }
         });
       }
-    })
-    .catch(e => console.error(e.stack))
+ //   })
+ //   .catch(e => console.error(e.stack))
   });
   return q.promise;
 }

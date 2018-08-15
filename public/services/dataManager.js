@@ -52,7 +52,7 @@ angular.module('energiecharts',[])
         q.resolve(hydroStorage[year][monthNumber]);
       } else {
         if(hydroPromises.length === 0){
-          $http.get('/data/hydrostorage').then(function(storage){
+          $http.get('/data/energy').then(function(storage){
             hydroStorage = storage.data; 
             try{
               var value = hydroStorage[year][monthNumber];
@@ -73,7 +73,7 @@ angular.module('energiecharts',[])
         q.resolve(hydroStorage);
       } else {
         if(hydroPromises.length === 0){
-          $http.get('/data/hydrostorage').then(function(storage){
+          $http.get('/data/energy').then(function(storage){
             hydroStorage = storage.data; 
             try{
               var value = hydroStorage;

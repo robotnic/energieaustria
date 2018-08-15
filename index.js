@@ -6,12 +6,15 @@ var $q = require('q');
 var fs = require('fs');
 var scrapers = require('./scrapers.js');
 var installed = require('./scrapers/installed.js');
-var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
+//var dbconnect = JSON.parse(fs.readFileSync('config/dbconnect.json', 'utf8'));
 var swaggerTemplate = fs.readFileSync('config/swaggertemplate.json', 'utf8');
+
+const PORT = process.env.PORT || 5000
+
 
 var app = express();
 
-console.log(dbconnect);
+//console.log(dbconnect);
 var XLSX = require('xlsx');
 
 
@@ -241,8 +244,8 @@ function swaggerize(path){
 Startup
 */
 
-app.listen(3000, function() {
-  console.log('Example app listening on port 3000!');
+app.listen(PORT, function() {
+  console.log('Example app listening on port ' + 5000 + '!');
 });
 
 

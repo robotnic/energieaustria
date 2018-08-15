@@ -7,6 +7,7 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
     var timeShiftedDataByName = null;
     var allTotals = null;
     var callbacks = [];
+    var thisCtrl = null;
 
     return {
       manipulate: manipulate,
@@ -18,6 +19,7 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
     }
 
     function manipulate(originalData, mutate, sources, ctrl) {
+      thisCtrl = ctrl;
       console.log('---', originalData);
       data = JSON.parse(JSON.stringify(originalData));
       var mm = {
@@ -64,7 +66,6 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       if(!data || !timeShiftedData.data)return;
       
       timeShiftedDataByName = {};
-      console.log('---bring the totals---');
       timeShiftedData.data.forEach(function(chart){
         timeShiftedDataByName[chart.key] = chart;
       });
@@ -99,38 +100,60 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       return original;
     }
 
-    function getFillLevels(chartnames){
+    function getFillLevels(chartnames, hydro){
       var data = [];
       chartnames.forEach(function(chartname,i){
-        var chart = getFillLevel(chartname);
+        var chart = getFillLevel(chartname, hydro);
         delete chart.seriesIndex;
         data.push(chart);
       });
       return data;
-    }
-    function getFillLevel(chartname){
-      console.log(timeShiftedDataByName[chartname]);
-      var modifiedChart = timeShiftedDataByName[chartname];
-      var originalChart = null;
-      viewInit.forEach(function(chart){
-        if(chart.key === chartname){
-          originalChart = chart;
-        }
-      });
-      var newChart = JSON.parse(JSON.stringify(originalChart));
-      console.log(originalChart, modifiedChart, newChart);
-      var sum = 0;
-      originalChart.values.forEach(function(value,i){
-        var delta = value.y - modifiedChart.values[i].y;
-        if(delta){
-          sum += delta;
-        }
-        newChart.values[i].y = sum;
-        if(newChart.values[i].y < 0.000001){
-          newChart.values[i].y = 0;
-        }
-      });
-      return newChart;
+
+      function getFillLevel(chartname){
+        console.log(timeShiftedDataByName[chartname]);
+        var modifiedChart = timeShiftedDataByName[chartname];
+        var originalChart = null;
+        viewInit.forEach(function(chart){
+          if(chart.key === chartname){
+            originalChart = chart;
+          }
+        });
+        var newChart = JSON.parse(JSON.stringify(originalChart));
+        console.log(originalChart, modifiedChart, newChart);
+        var sum = 0;
+        originalChart.values.forEach(function(value,i){
+          var delta = value.y - modifiedChart.values[i].y;
+          if(delta){
+            sum += delta;
+          }
+          newChart.values[i].y = sum;
+          if(newChart.values[i].y < 0.000001){
+            newChart.values[i].y = 0;
+          }
+          if(newChart.key === 'Pumpspeicher'){
+            newChart.values[i].y = fill(newChart.values[i], 0.4);
+          }
+          if(newChart.key === 'Speicher'){
+            newChart.values[i].y = fill(newChart.values[i], 0.6);
+          }
+        });
+        return newChart;
+      }
+
+      function fill(value, factor){
+        if(!hydro)return value.y;
+        var level = 0;
+        var m =moment(value.x);
+      
+        console.log(m.year(), m.week());
+        hydro.forEach(function(hydroWeek){
+          if(hydroWeek.year === m.year() && hydroWeek.week === m.week()){
+            level = hydroWeek.value;
+          }
+        });
+        console.log(m.year(), m.week(), level);
+        return value.y + level /1000 * factor;
+      }
     }
   })
 
