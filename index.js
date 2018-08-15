@@ -121,7 +121,7 @@ app.get('/data/sectors/:sector/:year', function(req, res) {
 });
 
 app.get('/createtables', function(req, res) {
-  res.send(scrapers.createTables();
+  res.send(scrapers.createTables());
 });
 
 
