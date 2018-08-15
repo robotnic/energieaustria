@@ -30,7 +30,7 @@ module.exports={
   getSectors: function(sector,year){
     return getSectors(sector,year)
   },
-  createTable: createTable
+  createTables: createTables
 }
 
 
