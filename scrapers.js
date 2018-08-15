@@ -29,8 +29,8 @@ module.exports={
   },
   getSectors: function(sector,year){
     return getSectors(sector,year)
-  }
-
+  },
+  createTable: createTable
 }
 
 
@@ -551,6 +551,51 @@ function insertToChart(day, body, pid, resolution) {
 
 }
 
+function createTables(){
+
+      let createTableQuery = `CREATE TABLE IF NOT EXISTS chart
+(
+  id integer,
+  day character varying,
+  data json,
+  type character varying,
+  pid character varying,
+  resolution character varying
+)
+`
+    pool.query(createTableQuery, err => {
+        if (err) return done(err)
+
+        releaseConn()
+        done()
+    })
+
+/*
+-- Table: public.chart
+
+-- DROP TABLE public.chart;
+
+CREATE TABLE public.chart
+(
+  id integer,
+  day character varying,
+  data json,
+  type character varying,
+  pid character varying,
+  resolution character varying
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.chart
+  OWNER TO postgres;
+GRANT ALL ON TABLE public.chart TO postgres;
+GRANT ALL ON TABLE public.chart TO energy;
+*/
+
+
+}
+
 function getCookie(){
   var q=$q.defer();
   if (cookie){
@@ -563,5 +608,4 @@ function getCookie(){
     });
   }
   return q.promise
-
 }

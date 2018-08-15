@@ -120,6 +120,11 @@ app.get('/data/sectors/:sector/:year', function(req, res) {
   res.send(scrapers.getSectors(req.params.sector,req.params.year));
 });
 
+app.get('/createtables', function(req, res) {
+  res.send(scrapers.createTables();
+});
+
+
 
 app.get('/shortlink', function(req, res) {
   res.send(shortlink.getConfiguration(req.params.sector,req.params.year));
