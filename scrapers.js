@@ -30,7 +30,8 @@ module.exports={
   getSectors: function(sector,year){
     return getSectors(sector,year)
   },
-  createTables: createTables
+  createTables: createTables,
+  getStorage: getStorage
 }
 
 
@@ -540,6 +541,19 @@ function getChart(day, pid, resolution, reload) {
   return q.promise;
 }
 
+function getStorage(year){
+  var q = $q.defer();
+  var url = 'https://www.energy-charts.de/energy/year_storage_' + year + '.json';
+  request(url, function(error, response, body){
+    if (error) {
+      q.reject(error);
+    }else {
+      q.resolve(body);
+    }
+  });
+  return q.promise;
+}
+
 function insertToChart(day, body, pid, resolution) {
   const query2 = {
     text: 'INSERT INTO chart(day, data, pid, resolution) VALUES($1, $2, $3, $4)',
@@ -552,48 +566,46 @@ function insertToChart(day, body, pid, resolution) {
 }
 
 function createTables(){
-var q = $q.defer();
-let createTableQuery = `CREATE TABLE IF NOT EXISTS chart
-(
-  id integer,
-  day character varying,
-  data json,
-  type character varying,
-  pid character varying,
-  resolution character varying
-)
-`
-    pool.query(createTableQuery, err => {
-        if (err) return done(err)
+  //var promises = [createTableChart(), createTableStorage];  //not needed can not cache
+  var promises = [createTableChart()];
+  return $q.all(promises);
+}
 
-        done()
-        q.resolve('table created');
-    })
-return q.promise;
-/*
--- Table: public.chart
+function createTableChart(){
+  var all = [];
+  var q = $q.defer();
+  //charts
+  let createTableQuery = `CREATE TABLE IF NOT EXISTS chart
+  (
+    id integer,
+    day character varying,
+    data json,
+    type character varying,
+    pid character varying,
+    resolution character varying
+  )
+  `
+  pool.query(createTableQuery, err => {
+    if (err) return done(err)
+    q.resolve('table created');
+  })
+  return q.promise;
+}
 
--- DROP TABLE public.chart;
+function createTableStorage(){
+  //storage
+  let createTableQuery = `CREATE TABLE IF NOT EXISTS storage
+  (
+    id integer,
+    data json,
+  )
+  pool.query(createTableQuery, err => {
+    if (err) return done(err)
+    q.resolve('table created');
+  })
 
-CREATE TABLE public.chart
-(
-  id integer,
-  day character varying,
-  data json,
-  type character varying,
-  pid character varying,
-  resolution character varying
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE public.chart
-  OWNER TO postgres;
-GRANT ALL ON TABLE public.chart TO postgres;
-GRANT ALL ON TABLE public.chart TO energy;
-*/
-
-
+ `
+  return q.promise;
 }
 
 function getCookie(){

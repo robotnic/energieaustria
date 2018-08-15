@@ -120,6 +120,15 @@ app.get('/data/sectors/:sector/:year', function(req, res) {
   res.send(scrapers.getSectors(req.params.sector,req.params.year));
 });
 
+app.get('/storage/:year', function(req, res) {
+  scrapers.getStorage(req.params.year).then(function(data){
+    res.send(data);
+  });
+});
+
+
+
+
 app.get('/createtables', function(req, res) {
   res.send(scrapers.createTables());
 });

@@ -7,6 +7,7 @@ angular.module('energiecharts',[])
     loadExcels: loadExcels,
     getSector: getSector,
     getHydroStorage: getHydroStorage,
+    getFillLevel: getFillLevel,
     getInstalled: getInstalled
   }
 
@@ -112,6 +113,26 @@ angular.module('energiecharts',[])
     }
     return color;
   };
+
+  function getFillLevel(year) {
+    var q = $q.defer();
+    var url = '/storage/' + year;
+    $http.get(url).then(function(response){
+      var values = [];
+      var data = response.data[1];
+      data.values.forEach(function(item){
+        values.push({
+          x: item[0],
+          y: item[1],
+        });
+      });
+      data.values = values;
+      q.resolve(data);
+    }, function(error) {
+      q.reject(error);
+    });
+    return q.promise;
+  }
 
   function getSector(type,year){
     var url='/data/sectors/' + type + '/' + year;

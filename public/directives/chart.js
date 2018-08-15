@@ -9,7 +9,7 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
       viewdata:'=',
       data:'='
     },
-    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3>',
+    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><pre>{{viewdata|json}}',
     controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
