@@ -566,7 +566,6 @@ let createTableQuery = `CREATE TABLE IF NOT EXISTS chart
     pool.query(createTableQuery, err => {
         if (err) return done(err)
 
-        releaseConn()
         done()
         q.resolve('table created');
     })
