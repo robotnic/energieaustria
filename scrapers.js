@@ -552,8 +552,8 @@ function insertToChart(day, body, pid, resolution) {
 }
 
 function createTables(){
-
-      let createTableQuery = `CREATE TABLE IF NOT EXISTS chart
+var q = $q.defer();
+let createTableQuery = `CREATE TABLE IF NOT EXISTS chart
 (
   id integer,
   day character varying,
@@ -568,8 +568,9 @@ function createTables(){
 
         releaseConn()
         done()
+        q.resolve('table created');
     })
-
+return q.promise;
 /*
 -- Table: public.chart
 
