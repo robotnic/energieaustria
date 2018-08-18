@@ -1,7 +1,7 @@
 REST mit angular-nvd3 frontend. 
 Die Daten werden aus diversen (copyright?) Quellen bezogen und in einer Postgres gelagert. 
 
-[https://pure-brook-68563.herokuapp.com/](live on heroku)
+(live on heroku)[https://pure-brook-68563.herokuapp.com/]
 
 Hier kann man sehen wie die Stromerzeugung ausschauen würde, wenn man PV *10 und Wind *3 einstellt
 ![modified chart](https://raw.githubusercontent.com/robotnic/energieaustria/master/doc/screenshots/energyaustriaexmaplechart.png)
