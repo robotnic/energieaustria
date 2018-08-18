@@ -158,9 +158,9 @@ angular.module('energiecharts',[])
     var promises = [
       loadData('AGPT',date , 1,ctrl.timetype,'area', null,reload),
       loadData('AL', date,1,ctrl.timetype,'line',null, reload),
-//      loadData('EXAAD1P', date,2,ctrl.timetype,'line',  function(y){            
-//        return y*1000;
-//      }, reload)
+      loadData('EXAAD1P', date,2,ctrl.timetype,'line',  function(y){            
+        return y*1000;
+      }, reload)
     ];
 
     $q.all(promises).then(function(result){
@@ -217,6 +217,7 @@ angular.module('energiecharts',[])
       for(var c in colors){
         data.d.ResponseData[1].DataStreams.forEach(function(item,index){
           if(item.YAxisTitle === c){
+            console.log('push',c, charts);
             charts.push(parseChart(item, timestamps,index, axis, type));
           }
         });

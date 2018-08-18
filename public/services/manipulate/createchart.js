@@ -48,7 +48,7 @@ angular.module('CreateCharts',[])
         })
         if(data.indexOf(chart) === -1){
           if(chart.key === 'Curtailment' || chart.key === 'Power2Gas'){
-            data.unshift(chart);  //ugly workaround
+            data.splice(1, 0, chart);  //ugly workaround
           }else{
             data.push(chart);  //ugly workaround
           }

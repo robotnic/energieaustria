@@ -20,7 +20,6 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
 
     function manipulate(originalData, mutate, sources, ctrl) {
       thisCtrl = ctrl;
-      console.log('---', originalData);
       data = JSON.parse(JSON.stringify(originalData));
       var mm = {
         loadShift:{
@@ -43,7 +42,6 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       viewInit = JSON.parse(JSON.stringify(data));
       var loadShiftedData = loadshift.shift(data, mm, mutate, sources, ctrl);
       timeShiftedData = timeshift.shift(viewInit, loadShiftedData.data,  mm.config, mm.timeShift);
-      console.log('tSD',timeShiftedData)
       callbacks.forEach(function(callback){
         callback(getTotals());
       });
@@ -110,7 +108,6 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       return data;
 
       function getFillLevel(chartname){
-        console.log(timeShiftedDataByName[chartname]);
         var modifiedChart = timeShiftedDataByName[chartname];
         var originalChart = null;
         viewInit.forEach(function(chart){
@@ -119,7 +116,6 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
           }
         });
         var newChart = JSON.parse(JSON.stringify(originalChart));
-        console.log(originalChart, modifiedChart, newChart);
         var sum = 0;
         originalChart.values.forEach(function(value,i){
           var delta = value.y - modifiedChart.values[i].y;
@@ -145,13 +141,11 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
         var level = 0;
         var m =moment(value.x);
       
-        console.log(m.year(), m.week());
         hydro.forEach(function(hydroWeek){
           if(hydroWeek.year === m.year() && hydroWeek.week === m.week()){
             level = hydroWeek.value;
           }
         });
-        console.log(m.year(), m.week(), level);
         return value.y + level /1000 * factor;
       }
     }

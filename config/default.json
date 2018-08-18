@@ -9,7 +9,7 @@
   },
  
   "Pumpspeicher": {
-    "color": "lime",
+    "color": "green",
     "minpower": -1.9,
     "min": -1.9,
     "maxpower": 3.4,
