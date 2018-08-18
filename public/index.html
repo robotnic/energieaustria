@@ -55,7 +55,9 @@
       <a href="/">
         <img src="images/logo.png" style="height:36px;"/>
         </a>
-      <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}</h2>
+      <h2 flex md-truncate>Stromerzeugung Österreich - {{ctrl.titledate}}
+  <span ng-show="ctrl.loading"> &#160; loading ...</span>
+</h2>
       <md-input-container class="md-block">
   <md-radio-group ng-model="ctrl.timetype" tyle="position:absolute;right:200px;top:73px;z-index:100" layout="row">
     <md-radio-button value="day" class="md-primary">day</md-radio-button>
@@ -134,7 +136,6 @@
     Keep {{-ctrl.pumpsurplus | number:1}} GWh
     <md-icon ng-bind="'navigate_next'"></md-icon>
   </md-button>
-  <div class="loading" ng-show="ctrl.loading">loading ...</div>
   <!--
     <hydrostorage date="ctrl.date" ctrl="ctrl"></hydrostorage>
     <electrolysis date="ctrl.date" ctrl="ctrl" totals="totals"></electrolysis>
