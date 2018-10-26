@@ -92,7 +92,7 @@
     "type": "storage"
   },
   "Solar": {
-    "color": "#ffff00",
+    "color": "gold",
     "type": "renewable",
     "energyprice":"43",
     "pricesource":"https://www.pv-magazine.de/2018/02/21/sternstunde-der-photovoltaik-auf-augenhoehe-mit-wind-und-kohlestrom/"

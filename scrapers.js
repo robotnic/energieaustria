@@ -282,7 +282,6 @@ function parseExcel(results) {
   var response = {}
   results.forEach(function(result) {
     for (var s in result.Sheets) {
-      console.log(s);
       response[s] = result.Sheets[s];
     };
   });
@@ -493,7 +492,6 @@ function getChart(day, pid, resolution, reload) {
     text: 'select * from chart where day = $1 AND pid = $2 AND resolution = $3 LIMIT 1',
     values: [day, pid, resolution]
   }
-  console.log(select);
 //  getCookie().then(function(cookie){
   pool.query(select)
     .then(function(result) {
@@ -514,7 +512,6 @@ function getChart(day, pid, resolution, reload) {
             "AdditionalFilter": "B19|B16|B01|B04|B05|B06|B09|B10|B11|B12|B15|B17|B20|all"
           }
         }
-        console.log(options);
         request(options, function(error, response, body) {
           if (error) {
             q.reject(error);
@@ -544,6 +541,7 @@ function getChart(day, pid, resolution, reload) {
 function getStorage(year){
   var q = $q.defer();
   var url = 'https://www.energy-charts.de/energy/year_storage_' + year + '.json';
+  console.log(url);
   request(url, function(error, response, body){
     if (error) {
       q.reject(error);
@@ -555,12 +553,13 @@ function getStorage(year){
 }
 
 function insertToChart(day, body, pid, resolution) {
-  const query2 = {
-    text: 'INSERT INTO chart(day, data, pid, resolution) VALUES($1, $2, $3, $4)',
+  var query =  'INSERT INTO chart(day, data, pid, resolution) VALUES($1, $2, $3, $4)';
+  var query2 = {
+    text: query,
     values: [day, body, pid, resolution],
   }
   pool.query(query2)
-    .then(res => console.log(query2))
+    .then(res => console.log('done', query))
     .catch(e => console.error(e.stack))
 
 }

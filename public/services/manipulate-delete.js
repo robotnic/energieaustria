@@ -155,7 +155,6 @@ angular.module('manipulate', [])
             console.log(mutation.shift,to, total[mutation.shift].values);
             for(var k in total[mutation.shift].values){
               var value = total[mutation.shift].values[k];
-              console.log(k,value);
               freePower -= value;
               console.log(freePower);
               var origY = chart.values[i].y;

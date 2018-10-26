@@ -2,7 +2,6 @@ angular.module('CreateCharts',[])
 .factory('createCharts',function(){
   return {
     create:function(data, config){
-      console.log('create chart', data[0]);
       return create(data, config);
     }
   }

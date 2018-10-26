@@ -1,6 +1,18 @@
-var app = angular.module('plunker', ['charts','config','diffcharts','filllevel','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial']);
+var app = angular.module('plunker', ['charts','config','diffcharts','filllevel','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial', 'totalinstalled', 'eventHandler']);
+app.config(function($mdAriaProvider) {
+   // Globally disables all ARIA warnings.
+   $mdAriaProvider.disableWarnings();
+});
+app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalInstalledFactory, eventHandler) {
 
-app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
+  function initialize() {
+    totalInstalledFactory.init().then(function(){
+      $scope.initialized = true;
+    });
+  }
+  initialize();
+
+
   $scope.ctrl = {
     date: new Date(),
     mindate: new Date('2015-01-01'),
@@ -16,6 +28,11 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
     Power2Gas:0,
     Power2GasMax:0
   }
+
+
+
+
+
   console.log('hallo', $location.hash());
   var hashParts=$location.hash().split(';');
   if(hashParts[0]){
@@ -32,7 +49,7 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
     $scope.mutate=readMutation(hashParts[3]);
   }
   if(hashParts[4]){
-    $scope.activeTab=hashParts[4];
+    $scope.ctrl.activeTab=hashParts[4];
   }
 
   function readMutation(mutateString){
@@ -79,6 +96,50 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http) {
     }
     $scope.ctrl.myDate=moment($scope.ctrl.myDate).add(delta,'d');
   }
+
+
+  $scope.$watch('ctrl.date', function(){
+    init(false);
+  });
+
+  $scope.$watch('ctrl', function(newvalue, oldvalue) {
+    console.log('newvalue', newvalue);
+    if (newvalue) {
+      eventHandler.date(newvalue, oldvalue, $scope.ctrl);
+    }
+  }, true);
+console.log($scope);
+  $scope.$watch('mutate',function(value){
+      $scope.viewdata = eventHandler.mutate($scope.mutate, $scope.source, $scope.ctrl);
+  }, true);
+
+  function init(reload, original){
+    eventHandler.init($scope.ctrl, $scope.mutate, reload).then(function(result){
+      $scope.original = result.data;
+      $scope.viewdata = result.data;
+      $scope.data = result.data;
+    });
+  }
+
+  function showData(data){
+    $scope.viewdata = result.data;
+  }
+
+  $scope.setOriginal = function(){
+        $scope.cachedViewData = $scope.viewdata;
+        $scope.viewdata = $scope.original;
+  }
+  $scope.setModified = function(){
+        $scope.viewdata = eventHandler.mutate($scope.mutate, $scope.source, $scope.ctrl);
+
+  }
+
+  $scope.init = init;
+
+  $scope.reload = function(){
+    init(true);
+  }
+  
 
 /*
   $scope.currentEnergy = function (date){

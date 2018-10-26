@@ -1,6 +1,6 @@
 angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
 
-  .factory('manipulator', function(loadshift, timeshift, createCharts) {
+  .factory('manipulator', function(loadshift, timeshift, createCharts, $q, dataManager) {
     var data = null;
     var viewInit = null;
     var timeShiftedData = null;
@@ -8,6 +8,8 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
     var allTotals = null;
     var callbacks = [];
     var thisCtrl = null;
+    var cumulate = {};
+    console.log('------------------------------cumulate-----------------');
 
     return {
       manipulate: manipulate,
@@ -35,8 +37,10 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       }
 
       mm.config = JSON.parse(JSON.stringify(sources));
-      mm.config.Transport.power = mm.config.Transport.power * mutate.Transport /100;
-      mm.config.Power2Gas.min = -mutate.Power2Gas;
+      if(mm.config){
+        mm.config.Transport.power = mm.config.Transport.power * mutate.Transport /100;
+        mm.config.Power2Gas.min = -mutate.Power2Gas;
+      }
 
       createCharts.create(data, mm.config);
       viewInit = JSON.parse(JSON.stringify(data));
@@ -98,7 +102,101 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       return original;
     }
 
-    function getFillLevels(chartnames, hydro){
+    function getFillLevels(charts, data, viewdata){
+      var charts = JSON.parse(JSON.stringify(charts));
+      console.log('manipulare fillLevels', charts, data, viewdata);
+      var keys = [];
+      charts.forEach(function(chart){
+        keys.push(chart.key);
+      });
+      console.log('keys', keys);
+      /*
+      var dataByName = getDataByName(data);
+      var viewDataByName = getDataByName(viewdata);
+      charts.forEach(function(chart) {
+        console.log('filllevel', chart.key);
+        chart.values.forEach(function(item) {
+          var day = moment(item.x).format('YYYY-MM-DD');
+        });
+        
+      });
+      */
+      var newCharts = [];
+      viewdata = viewdata.filter(function(chart) {
+        //return (chart.originalKey !== 'Preis [EUR/MWh]' && chart.key !== 'Leistung [MW]')
+        var r = keys.indexOf(chart.originalKey) !== -1;
+        return r;
+      });
+      viewdata.forEach(function(chart, i){
+        cumulateByDay(chart, data[i]);
+      });
+      
+      console.log('cumulate', cumulate);
+      charts.forEach(function(chart){
+        console.log('----------',chart.key);
+        var sum = 0;
+        chart.values.forEach(function(item){
+          var day = moment(item.x).format('YYYY-MM-DD');
+          if(cumulate[chart.key] && cumulate[chart.key][day]){
+            sum += cumulate[chart.key][day];
+          }
+          if (chart.key === 'Pumpspeicher'){
+            item.y -= sum;
+          }else{
+            item.y -= sum;
+          }
+        });
+      });
+      return charts;
+    }
+
+    function getDataByName(charts) {
+      var namedCharts = {};
+      if(charts && charts.length){
+        charts.forEach(function(chart){
+          namedCharts[chart.key] = chart;
+          chart = cumulateByDay(chart);
+        });
+      }
+      return charts;
+    }
+
+    function cumulateByDay(chart, oldchart){
+      var chart = JSON.parse(JSON.stringify(chart));
+      if (!cumulate[chart.key]){
+          cumulate[chart.key] = {};
+      }
+
+      chart.values.forEach(function(item, i){
+        var day = moment(item.x).format('YYYY-MM-DD');
+        if (!cumulate[chart.key][day]) {
+          cumulate[chart.key][day] = 0;
+        } 
+        cumulate[chart.key][day] += item.y - oldchart.values[i].y;
+      });
+      /*
+      newValueArray = [];
+      var sum = 0;
+      for (var d in newValues){
+        var timestamp =  moment(d,'YYYY-MM-DD').unix() * 1000;
+        console.log(d, newValues[d], timestamp);
+        sum += newValues[d];
+        newValueArray.push({
+          x: timestamp,
+          y: -sum 
+        });
+      }
+      console.log('newValueArray', newValueArray);
+      chart.values = newValueArray;
+      chart.type = 'line';
+      
+      return chart;
+      */
+    }
+
+
+
+    function getFillLevels2(chartnames, hydro){
       var data = [];
       chartnames.forEach(function(chartname,i){
         var chart = getFillLevel(chartname, hydro);

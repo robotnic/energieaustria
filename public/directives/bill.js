@@ -86,7 +86,6 @@ Solar
           var priceTypes = ['original','modified','delta'];
           $scope.sum = {};
           $scope.totalPrices = {};
-          console.log('waitTotals',totals);
           $scope.totals = totals;
           if(totals.Transport){
 //            $scope.totals.Transport.original = 0; 
@@ -113,7 +112,7 @@ Solar
               $scope.sum[k] += totals[total][k];
             }
             priceTypes.forEach(function(type){
-              if($scope.sources[total].energyprice){
+              if($scope.sources[total] && $scope.sources[total].energyprice){
                 var partSum = parseFloat($scope.sources[total].energyprice) * totals[total][type] * 1000;
                 if (!$scope.totalPrices[type]){
                   $scope.totalPrices[type] =0;
@@ -123,7 +122,6 @@ Solar
             });
             //$scope.totals.Transport.original = 0; 
           }
-            console.log('total prices', $scope.totalPrices);
         });
       },true);
 

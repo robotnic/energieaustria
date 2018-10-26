@@ -2,72 +2,22 @@ angular.module('charts', ['nvd3','energiecharts','manipulate'])
 
 .directive('chart', function() {
   return {
-    $scope:{
+    scope:{
       ctrl:'=',
       mutate:'=',
       activeTab:'=',
       viewdata:'=',
-      data:'='
+      data:'=',
+      reload:'&'
     },
-    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3><pre>{{viewdata|json}}',
+    template:'<br/><nvd3 options="options" data="viewdata" api="api"></nvd3>',
     controller: function($scope, dataManager, $q, manipulator) {
       $scope.free={
         pump:0,
         unused:0
       };
- 
-      $scope.ctrl.myDate=moment($scope.ctrl.date);
-      //init();     
-      $scope.reload = function(){
-        init(null, true);
-      }
-          
-      //time navigation
 
-      $scope.$watch('ctrl',function(newvalue, oldvalue, scope){
-        if(newvalue.myDate){
-          var date=moment($scope.ctrl.myDate).startOf($scope.ctrl.timetype);
-          DateString=moment(date).format('YYYYMMDD');
-          
-          if($scope.ctrl.date !== DateString){
-            $scope.ctrl.date=DateString;
-            init(DateString);
-          }
-
-          switch($scope.ctrl.timetype){
-            case 'day':
-              $scope.ctrl.titledate = moment($scope.ctrl.date).format('YYYY MMM DD');
-              break;
-            case 'week':
-              var from=moment($scope.ctrl.date).startOf($scope.ctrl.timetype);
-              var to=moment($scope.ctrl.date).endOf($scope.ctrl.timetype);
-              if(from.format('MMM') === to.format('MMM')){
-                $scope.ctrl.titledate = from.format('YYYY') + ' ' + from.format('MMM') + ' ' + from.format('DD') + '  - ' +to.format('DD');;
-              }else{
-                $scope.ctrl.titledate = from.format('YYYY') + ' ' + from.format('MMM') + ' ' + from.format('DD') + '  - ' + to.format('MMM') + ' '  +to.format('DD');;
-              }
-              break;
-            case 'month':
-              var from=moment($scope.ctrl.date);
-              $scope.ctrl.titledate = from.format('YYYY') + ' ' + from.format('MMM');
-              break;
-            default:
-              $scope.ctrl.titledate = 'loading...';
-          
-
-          }
-          if($scope.api){ 
-            setTimeout(function(){
-              console.log('$scope.api', $scope.api);
-              $scope.api.updateWithData($scope.viewdata);
-            },10000);
-          }
-        }
-      },true);
-
-      
-      //nvd3
-
+//nvd3
 $scope.config = {
     visible: true, // default: true
     extended: false, // default: false
@@ -168,63 +118,6 @@ $scope.config = {
         }
       };
 
-      //load charts
-
-      function init(dateString, reload){
-        dataManager.getSources().then(function(sources){;
-          $scope.sources = sources;
-          dataManager.loadCharts(dateString, $scope.ctrl, reload).then(function(data){
-            $scope.data = data;
-            var values=[];
-            $scope.data[0].values.forEach(function(value){
-              values.push({x:value.x,y:0});
-            })
-            var surplus = 0;
-            if ($scope.ctrl.keep) {
-              surplus = $scope.ctrl.pumpsurplus;
-              console.log(' init keep' , $scope.ctrl, surplus, $scope.ctrl.pumpsurplus);
-            }
-            console.log('init', surplus, $scope.ctrl);
-            var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, $scope.ctrl);   //here the manipulation happens
-            $scope.viewdata = manipulationResult.data;
-            $scope.ctrl.totals = manipulationResult.totals;
-            $scope.ctrl.originalTotals = manipulationResult.originalTotals;
-            var hash = readHash();
-          },function(error){
-            console.log(error);
-          });
-        });
-      }
-
-      //watch manipulation
-      $scope.$watch('mutate',function(value){
-        if ($scope.ctrl.timetype === 'month') {
-          console.log('duration before',$scope.options.chart.duration);
-          $scope.options.chart.duration = 0;
-          console.log('duration after',$scope.options.chart.duration);
-        }else{
-          $scope.options.chart.duration = 500;
-        }
-        if(typeof($scope.data)!=='undefined'){
-          var surplus = 0;
-          if ($scope.ctrl.keep) {
-            surpulus = $scope.ctrl.pumpsurplus;
-          }
-          console.log('init2', $scope.ctrl);
-          var manipulationResult = manipulator.manipulate($scope.data, $scope.mutate, $scope.sources, $scope.ctrl);   //here the manipulation happens
-          console.log(manipulationResult);
-          $scope.viewdata = manipulationResult.data;
-          $scope.ctrl.totals = manipulationResult.totals;
-          $scope.ctrl.pumpsurplus = manipulationResult.pumpsurplus;
-          readHash();
-          if($scope.api){
-            //$scope.api.refresh();
-          }
-          setHash();
-        }
-      },true);
-
-
       //Deeplinking
 
       function legendStateChanged(){
@@ -240,9 +133,9 @@ $scope.config = {
           }
 
         });
-        setHash();
+//        setHash();
       }
-
+/*
       function setHash(){
         var code = $scope.ctrl.layercode || '';
         var mutateString=';'
@@ -262,6 +155,7 @@ $scope.config = {
           }
         }
       } 
+*/
     }
 
   }

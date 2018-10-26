@@ -31,7 +31,7 @@ angular.module('config', ['energiecharts'])
     controller: function($scope, dataManager, $q) {
       dataManager.getSources().then(function(sources){
         $scope.sources = sources;
-        delete $scope.sources.Curtailment;
+//        delete $scope.sources.Curtailment;
       }); 
     }
   }

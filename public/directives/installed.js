@@ -1,4 +1,4 @@
-angular.module('installed', ['nvd3','energiecharts'])
+angular.module('installed', ['nvd3','energiecharts', 'totalinstalled'])
 
 .directive('installed', function() {
   return {
@@ -9,24 +9,22 @@ angular.module('installed', ['nvd3','energiecharts'])
       template:`installed capacity {{year}}
 <nvd3 options="options" data="installedcapacity" api="api"></nvd3>
 `,
-    controller: function($scope, dataManager, $q) {
-      console.log('installed');
+    controller: function($scope, dataManager, $q, totalInstalledFactory) {
       var installed = {};
       $scope.$watch('ctrl.date',function(){
-        console.log('year changed', $scope.ctrl.date);
-        $scope.year = $scope.ctrl.date.substring(0,4);
-        console.log($scope.year, installed);
+//        $scope.year = $scope.ctrl.date.substring(0,4);
+        $scope.year = moment($scope.ctrl.date).year();
         $scope.ctrl.normalize ={
           Wind:  2696,
           Solar: 1031,
           Power2Gas: 0
         }
         if(installed[$scope.year] && installed[$scope.year]['Solar']){
-          console.log($scope.year, installed[$scope.year]['Wind'], installed['2017']['Solar']);
           $scope.ctrl.normalize.Solar = installed[$scope.year]['Solar'];
           $scope.ctrl.normalize.Wind = installed[$scope.year]['Wind'];
         }
       });
+
       function loadYear(year){
         var template = {
                 key: year,

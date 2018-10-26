@@ -16,6 +16,7 @@ angular.module('energiecharts',[])
   var energy = null;
   var timetype = 'day';
   var hydroPromises = [];
+  var fillByYear = {};
 
   function getInstalled(year) {
     var q = $q.defer();
@@ -26,6 +27,7 @@ angular.module('energiecharts',[])
     });
     return q.promise;
   }
+
 
   colors=null;
   function getSources(){
@@ -114,25 +116,48 @@ angular.module('energiecharts',[])
     return color;
   };
 
-  function getFillLevel(year) {
+  function getFillLevel(year, types) {
     var q = $q.defer();
-    var url = '/storage/' + year;
-    $http.get(url).then(function(response){
-      var values = [];
-      var data = response.data[1];
-      data.values.forEach(function(item){
-        values.push({
-          x: item[0],
-          y: item[1],
+    if(fillByYear[year]){
+      q.resolve(fillByYear[year]);
+    } else {
+      var url = '/storage/' + year;
+      $http.get(url).then(function(response){
+        var values = [];
+        var data = response.data[1];
+        data.values.forEach(function(item){
+          values.push({
+            x: item[0],
+            y: item[1],
+          });
         });
+        data.key = 'Austria';
+        data.values = values;
+        var result = [];
+        types.forEach(function(type) {
+          result.push(splitHydro(type.name, data, type.factor, type.color));
+        })
+        fillByYear[year] = result;
+        q.resolve(result);
+      }, function(error) {
+        q.reject(error);
       });
-      data.values = values;
-      q.resolve(data);
-    }, function(error) {
-      q.reject(error);
-    });
+    }
     return q.promise;
   }
+
+  function splitHydro(name, hydro, factor, color) {
+    var target = JSON.parse(JSON.stringify(hydro));
+    target.values.forEach(function(item){
+      item.y = item.y * factor;
+    });
+    target.key = name;
+    target.type = 'line';
+    target.color = color;
+    target.yAxis = 1;
+    return target;
+  }
+
 
   function getSector(type,year){
     var url='/data/sectors/' + type + '/' + year;
@@ -148,7 +173,6 @@ angular.module('energiecharts',[])
 
   function loadCharts(dateString, ctrl, reload){
     var q = $q.defer();
-    console.log('--init--', ctrl.layercode, dateString);
     var date = ctrl.date;
     if(dateString){
       date = dateString;
@@ -172,6 +196,7 @@ angular.module('energiecharts',[])
       data[0].values.forEach(function(value){
         values.push({x:value.x,y:0});
       })
+      console.log('--------loaded-------------');
       q.resolve(data);
     }, function(error){
       q.reject(error);
@@ -198,6 +223,7 @@ angular.module('energiecharts',[])
     }
     $http.post(url, query).then(function(response) {
       var charts = parseData(response.data, axis, type, valueCallback);
+      console.log('charts',charts);
       q.resolve(charts);
     }, function(error) {
       q.reject(error);
@@ -216,8 +242,11 @@ angular.module('energiecharts',[])
     if(colors){
       for(var c in colors){
         data.d.ResponseData[1].DataStreams.forEach(function(item,index){
+          //format changed 
+          if (item.YAxisTitle.substring(0,5) === 'Preis') {
+            item.YAxisTitle = 'Preis [EUR/MWh]';  
+          }
           if(item.YAxisTitle === c){
-            console.log('push',c, charts);
             charts.push(parseChart(item, timestamps,index, axis, type));
           }
         });

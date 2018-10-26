@@ -17,18 +17,22 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
 
       $scope.$watch('viewdata',function(){
         $scope.delta = makeDelta($scope.viewdata, $scope.data);
-        //console.log('delta',$scope.delta);
+        console.log('delta', $scope.delta);
       }, true);
 
       function makeDelta(viewdata, data) {
         var delta = JSON.parse(JSON.stringify(viewdata));
+        delta = delta.filter(function(item) {
+          return item.originalKey !== 'Preis [EUR/MWh]';
+        });
+
         //console.log('viewdata',viewdata, data);
-        viewdata.forEach(function(chart,i){
+        delta.forEach(function(chart,i){
           data.forEach(function(oldchart,j){
             if(chart.key === oldchart.key) {
               delta[i].type='line';
-              chart.values.forEach(function(value,j){
-                delta[i].values[j].y = value.y - oldchart.values[j].y;
+              chart.values.forEach(function(value,k){
+                delta[i].values[k].y = value.y - oldchart.values[k].y;
               });
             }
           });

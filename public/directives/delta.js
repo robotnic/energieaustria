@@ -17,15 +17,17 @@ angular.module('delta', ['nvd3', 'energiecharts', 'manipulate'])
             modified:'red',
           }
           $scope.$watch('ctrl', function() {
-            console.log('calc totals');
+            start();
+          }, true);
+
+          function start() {
             manipulator.waitTotals(function(totals){
-              console.log('CALLBACK', totals);
               $scope.data.length = 0;
               makeChart(totals, 'original');
               makeChart(totals, 'modified');
 //              makeChart(totals, 'delta');
             });
-          }, true);
+          }
 
 
           function makeChart(totals, type) {
@@ -49,7 +51,6 @@ angular.module('delta', ['nvd3', 'energiecharts', 'manipulate'])
               i++;
             }
             $scope.data.push(chart);
-          console.log($scope.data);
         }
         /*
               function populate(type){
