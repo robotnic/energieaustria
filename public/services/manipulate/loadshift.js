@@ -80,7 +80,7 @@ angular.module('LoadShift',['totalinstalled'])
           //var multiplier = (mutation[chart.key]  + norm) / norm;
           value.y = value.y * multiplier; //totalInstalledFactory.normalized(ctrl.date, chart.key);     //multiplier;
           var delta = value.y - oldValue;
-          if (chartsByName.Curtailment.values[i]) {
+          if (chartsByName &&ChartsByName.Curtailment && ChartsByName.Curtailment.values[i]) {
             chartsByName.Curtailment.values[i].y -= delta;
           }
           totalValue += delta;

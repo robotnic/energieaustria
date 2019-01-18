@@ -72,6 +72,9 @@ console.log('DAYinMonth',year, month, daysInMonth);
 
 app.get('/data/installed/:year', function(req, res) {
   var year = req.params.year;
+  if (parseInt(year) > 2018) {   //bad hotfix!!!!
+    year = 2018;
+  }
   installed.load(year).then(function(response){
     res.send(response);
   });

@@ -34,8 +34,17 @@ Feel free to do lobbying to free all the Data.
 * initialize postgres database
 
 ```
+createuser energy
+su postgres
+psql
+create database energy
+alter user energy with encrypted password 'energy';
+grant all privileges on database energy to energy;
+
 psql energy < config/energy.sql
 ```
+(untested)
+
 There are no initial data in the database. It's caching your requests.
 
 Feel free to host a live version.

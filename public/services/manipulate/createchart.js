@@ -8,7 +8,7 @@ angular.module('CreateCharts',[])
 
 
   function create(data, config){
-    if(!data.length)return;
+    if(data || !data.length)return;
     var chartByName={};
     data.forEach(function(chart){
       chartByName[chart.key] = chart;
