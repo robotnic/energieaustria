@@ -42,7 +42,8 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
         mm.config.Power2Gas.min = -mutate.Power2Gas;
       }
 
-      createCharts.create(data, mm.config);
+      createCharts.create(originalData, mm.config);
+      data = JSON.parse(JSON.stringify(originalData));
       viewInit = JSON.parse(JSON.stringify(data));
       var loadShiftedData = loadshift.shift(data, mm, mutate, sources, ctrl);
       timeShiftedData = timeshift.shift(viewInit, loadShiftedData.data,  mm.config, mm.timeShift);

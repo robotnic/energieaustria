@@ -4,10 +4,10 @@ angular.module('installed', ['nvd3', 'energiecharts', 'totalinstalled'])
     return {
       scope: {
         ctrl: '=',
-        mutate: '=',
+        mutate: '='
       },
-      template: `installed capacity {{year}}
-<nvd3 options="options" data="installedcapacity" api="api"></nvd3>
+      template: `<h2>Installed capacity </h2>
+<nvd3 options="options" data="installeddata" api="api"></nvd3>
 `,
       controller: function ($scope, dataManager, $q, totalInstalledFactory) {
         var installed = {};
@@ -25,11 +25,50 @@ angular.module('installed', ['nvd3', 'energiecharts', 'totalinstalled'])
           }
         });
 
-        function showData(installed) {
-          console.log('iiiiiiiiiiiiiiiiii', installed);
+        function showData(a, sources) {
+          console.log('iiiiiiiiiiiiiiiiii', sources );
+          var data = [];
+          var installedBar = [{
+            "key": "Series1",
+            "color": "#d62728",
+            "values": [{
+              "label": "Group A",
+              "value": -1.8746444827653
+            }]
+          }]
+          var collect={};
+          for(var i in installed){
+            for(var t in installed[i]){
+                if (!collect[t]) {
+                  collect[t] = {};
+                }
+                collect[t][i] = installed[i][t];
+            }
+          }
+          for(var c in collect) {
+            var color='red';
+            if(sources[c]) {
+              color = sources[c].color;
+            }
+            var item = {
+              key: c,
+              color: color,
+              values:[]
+            }
+            for(var v in collect[c]) {
+              item.values.push({
+                label:v,
+                value: collect[c][v]
+              })
+            }
+            data.push(item);
+          }
+          $scope.installeddata = data;
+
         }
 
         function loadYear(year) {
+          var q = $q.defer();
           var template = {
             key: year,
             values: []
@@ -49,7 +88,9 @@ angular.module('installed', ['nvd3', 'energiecharts', 'totalinstalled'])
               }
               installed[year][item.Title] = item.Value;
             });
+            q.resolve();
           });
+          //very strange programming
           if (installed[$scope.year]) {
             console.log('gefunedn', installed[$scope.year]['Solar']);
             $scope.ctrl.normalize = {
@@ -59,22 +100,31 @@ angular.module('installed', ['nvd3', 'energiecharts', 'totalinstalled'])
             }
             //$scope.mutate.normalizeWind = installed[$scope.year]['Wind'];
           }
-          showData(installed);
+          return q.promise;
         }
         console.log('load year');
-        loadYear('2018');
-        loadYear('2017');
-        loadYear('2016');
-        loadYear('2015');
+        var promises =[];
+        promises.push(loadYear('2018'));
+        promises.push(loadYear('2017'));
+        promises.push(loadYear('2016'));
+        promises.push(loadYear('2015'));
+        $q.all(promises).then(function(){
+          dataManager.getSources().then(function(sources){
+            showData($scope.installedcapacity, sources);
+          })
+        }, function(error) {
+          console.log(error);
+        })
         $scope.options = {
           chart: {
             type: 'multiBarHorizontalChart',
-            showLegend: false, // to hide legend
-            showControls: true, // to hide controls
-            height: 1250,
+            showLegend: true, // to hide legend
+            showControls: false, // to hide controls
+            stacked:true,
+            height: 550,
             width: 1250,
             margin: {
-              top: 20,
+              top: 80,
               right: 20,
               bottom: 150,
               left: 155
