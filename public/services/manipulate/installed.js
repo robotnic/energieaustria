@@ -14,7 +14,7 @@ normalized(date, type [wind, solar]) ->
 angular.module('totalinstalled',[])
 .factory('totalInstalledFactory',function($http, $q){
   var types = ['Wind','Solar']
-  var years = [2015, 2016, 2017, 2018];  //todo: bring to config file
+  var years = [2015, 2016, 2017, 2018, 2019];  //todo: bring to config file
   var installed = {}
 
   function init() {
@@ -31,7 +31,6 @@ angular.module('totalinstalled',[])
           installed[year][item.Title] = item.Value;
         });
       });
-      console.log('INSTALLED',installed); 
       q.resolve(installed);
     });
     return q.promise;
@@ -61,9 +60,7 @@ angular.module('totalinstalled',[])
     var begin = moment().year(beginYear).startOf('year').unix();
     var end = moment().year(endYear).startOf('year').unix();
     var value = installed[beginYear][type] + (installed[endYear][type] - installed[beginYear][type]) / (end - begin) * (moment(date).unix() - begin);
-    console.log('factor', value, installed[beginYear][type] , installed[endYear][type]);
     var returnValue = value / 1000; // installed[2018][type];
-    console.log(returnValue);
     return returnValue;
   }
 

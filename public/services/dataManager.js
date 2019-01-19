@@ -196,7 +196,6 @@ angular.module('energiecharts',[])
       data[0].values.forEach(function(value){
         values.push({x:value.x,y:0});
       })
-      console.log('--------loaded-------------');
       q.resolve(data);
     }, function(error){
       q.reject(error);
@@ -223,7 +222,6 @@ angular.module('energiecharts',[])
     }
     $http.post(url, query).then(function(response) {
       var charts = parseData(response.data, axis, type, valueCallback);
-      console.log('charts',charts);
       q.resolve(charts);
     }, function(error) {
       q.reject(error);

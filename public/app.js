@@ -103,12 +103,10 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalI
   });
 
   $scope.$watch('ctrl', function(newvalue, oldvalue) {
-    console.log('newvalue', newvalue);
     if (newvalue) {
       eventHandler.date(newvalue, oldvalue, $scope.ctrl);
     }
   }, true);
-console.log($scope);
   $scope.$watch('mutate',function(value){
       $scope.viewdata = eventHandler.mutate($scope.mutate, $scope.source, $scope.ctrl);
   }, true);
@@ -116,7 +114,7 @@ console.log($scope);
   function init(reload, original){
     eventHandler.init($scope.ctrl, $scope.mutate, reload).then(function(result){
       $scope.original = result.data;
-      $scope.viewdata = result.data;
+      $scope.viewdata = result.viewdata;
       $scope.data = result.data;
     });
   }

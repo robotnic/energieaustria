@@ -31,7 +31,7 @@ angular.module('TimeShift',[])
       origFromChart.values.forEach(function(value,i){
         var delta = value.y - newFromChart.values[i].y; 
         freeEnergy += delta;
-        if(newToChart.values[i].y > 0 && freeEnergy > 0){
+        if(newToChart && newToChart.values[i].y > 0 && freeEnergy > 0){
           var origY = newToChart.values[i].y;
           //  console.log(delta, freeEnergy, origY, config[origFromChart.key].max);
           var maxPower = config[origFromChart.key].max;

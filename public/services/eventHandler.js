@@ -52,7 +52,6 @@ angular.module('eventHandler', ['energiecharts', 'manipulate'])
       var q = $q.defer();
       var dateString=moment(ctrl.myDate).format('YYYYMMDD');
 
-      console.log('init', reload);
       dataManager.getSources().then(function(sources) {;
         theSources = sources;
         dataManager.loadCharts(dateString, ctrl, reload).then(function(data) {
@@ -67,7 +66,6 @@ angular.module('eventHandler', ['energiecharts', 'manipulate'])
           var surplus = 0;
           if (ctrl.keep) {
             surplus = ctrl.pumpsurplus;
-            console.log(' init keep', ctrl, surplus, ctrl.pumpsurplus);
           }
           var manipulationResult = manipulator.manipulate(data, mutateValues, sources, ctrl); //here the manipulation happens
           var viewdata = manipulationResult.data;
@@ -88,7 +86,6 @@ angular.module('eventHandler', ['energiecharts', 'manipulate'])
 
     //watch manipulation
     function mutate(mutateValues, source, ctrl) {
-      console.log('mutate data', theData);
       /*
       if ($scope.ctrl.timetype === 'month') {
         console.log('duration before', $scope.options.chart.duration);
@@ -98,17 +95,20 @@ angular.module('eventHandler', ['energiecharts', 'manipulate'])
         $scope.options.chart.duration = 500;
       }
       */
-      if (typeof(theData) !== 'undefined') {
+      if (typeof(theData) !== 'undefined' && theData) {
         var surplus = 0;
         if (ctrl.keep) {
           surpulus = ctrl.pumpsurplus;
         }
+        console.log('theData', theData)
         var manipulationResult = manipulator.manipulate(theData, mutateValues, theSources, ctrl); //here the manipulation happens
         var viewdata = manipulationResult.data;
         ctrl.totals = manipulationResult.totals;
         ctrl.pumpsurplus = manipulationResult.pumpsurplus;
         //readHash();
         //setHash();
+      }else{
+        console.log('no data in mutate')
       }
       return viewdata
     }
