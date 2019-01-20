@@ -115,11 +115,10 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalI
   }, true);
 
   function init(reload, original){
-    console.log($scope);
     var hashData = deeplinker.parse($scope);
-    console.log('got', hashData);
     eventHandler.init($scope.ctrl, $scope.mutate, reload).then(function(result){
       $scope.original = result.data;
+      $scope.originaldata = result.originaldata;
       $scope.viewdata = result.viewdata;
       $scope.data = result.data;
     });

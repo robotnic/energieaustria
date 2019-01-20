@@ -93,7 +93,7 @@ angular.module('LoadShift',['totalinstalled'])
         });
       }
       if (totalValue) {
-        console.log('Unused Energie', chart.key, totalValue, multiplier);
+        //console.log('Unused Energie', chart.key, totalValue, multiplier);
       }
       //ctrl.money[chart.key] = moneyValue * 1000;
       //ctrl.averagePrice[chart.key] = moneyValue / totalValue;

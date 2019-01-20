@@ -10,7 +10,6 @@ angular.module('deep',[])
 
   function link(name, data){
     linkData[name] = data;
-    console.log('++++',name, JSON.stringify(data, null, 2));
     var vs = '#!#';
     for(var d in linkData){
       vs += d + '=';
@@ -25,7 +24,6 @@ angular.module('deep',[])
   }
 
   function parseHash(scope) {
-    console.log('thescorp', scope);
     var all = {};
     var hash = location.hash.slice(3); //remove #!#
     var parts = hash.split('&');
@@ -49,6 +47,5 @@ angular.module('deep',[])
         })
       }
     })
-    console.log('hash read', all);
   }
 });

@@ -7,7 +7,7 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
       mutate:'=',
       activeTab:'=',
       viewdata:'=',
-      origdata:'=',
+      originaldata:'=',
       data:'='
     },
     template:'<br/><nvd3 options="options" data="delta" api="api"></nvd3>',
@@ -16,13 +16,14 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
 
 
       $scope.$watch('viewdata',function(){
-        $scope.delta = makeDelta($scope.viewdata, $scope.data);
-        console.log('delta', $scope.delta);
+        $scope.delta = makeDelta($scope.viewdata, $scope.originaldata);
       }, true);
 
-      console.log('here is the delta', $scope.delta);
 
       function makeDelta(viewdata, data) {
+        if(!viewdata){
+          return;
+        }
         var delta = JSON.parse(JSON.stringify(viewdata));
         delta = delta.filter(function(item) {
           return item.originalKey !== 'Preis [EUR/MWh]';

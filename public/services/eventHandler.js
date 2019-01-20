@@ -69,12 +69,13 @@ angular.module('eventHandler', ['energiecharts', 'manipulate'])
           }
           var manipulationResult = manipulator.manipulate(data, mutateValues, sources, ctrl); //here the manipulation happens
           var viewdata = manipulationResult.data;
+          var originaldata = manipulationResult.originaldata
           ctrl.totals = manipulationResult.totals;
           ctrl.originalTotals = manipulationResult.originalTotals;
           q.resolve({
             viewdata:viewdata,
-            data:data
-
+            data:data,
+            originaldata: originaldata
           });
           //var hash = readHash();
         }, function(error) {

@@ -8,7 +8,6 @@ angular.module('TimeShift',[])
   }
 
   function shift(originalData, viewdata, config, plan){
-    console.log('config',plan);
     var originalByName = {};
     var viewdataByName = {};
     originalData.forEach(function(chart){

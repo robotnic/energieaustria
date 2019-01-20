@@ -222,7 +222,6 @@ angular.module('energiecharts',[])
     }
     $http.post(url, query).then(function(response) {
       var charts = parseData(response.data, axis, type, valueCallback);
-      console.log('charts',charts);
       q.resolve(charts);
     }, function(error) {
       q.reject(error);

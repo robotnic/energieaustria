@@ -215,7 +215,7 @@
   </md-tabs>
 <div style="margin-right:50px">
   <chart ng-if="ctrl.activeTab == 0" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ></chart>
-  <diffchart ng-if="ctrl.activeTab == 1" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></diffchart>
+  <diffchart ng-if="ctrl.activeTab == 1" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" originaldata="originaldata" ng-if="viewdata"></diffchart>
   <!--
   <filllevel ng-if="ctrl.activeTab == 2" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></filllevel>
   -->

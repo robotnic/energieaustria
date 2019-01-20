@@ -21,6 +21,7 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
     }
 
     function manipulate(originalData, mutate, sources, ctrl) {
+      var realOriginalData = JSON.parse(JSON.stringify(originalData))
       thisCtrl = ctrl;
       data = JSON.parse(JSON.stringify(originalData));
       var mm = {
@@ -50,6 +51,7 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
       callbacks.forEach(function(callback){
         callback(getTotals());
       });
+      timeShiftedData.originaldata = realOriginalData;
       return timeShiftedData;
     }
 
