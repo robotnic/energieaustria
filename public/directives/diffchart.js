@@ -20,6 +20,8 @@ angular.module('diffcharts', ['nvd3','energiecharts','manipulate'])
         console.log('delta', $scope.delta);
       }, true);
 
+      console.log('here is the delta', $scope.delta);
+
       function makeDelta(viewdata, data) {
         var delta = JSON.parse(JSON.stringify(viewdata));
         delta = delta.filter(function(item) {

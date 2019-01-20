@@ -31,6 +31,7 @@
 
 
   <script src="services/dataManager.js"></script>
+  <script src="services/deeplinker.js"></script>
   <script src="services/manipulate/index.js"></script>
   <script src="services/manipulate/createchart.js"></script>
   <script src="services/manipulate/loadshift.js"></script>
@@ -101,8 +102,8 @@
       <md-button class="md-icon-button" aria-label="More" ng-click="reload()">
         <md-icon ng-bind="'cached'"></md-icon>
       </md-button>
-      <md-datepicker ng-if="ctrl.timetype=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate" md-mode="month"></md-datepicker>
-      <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="ctrl.mindate"></md-datepicker>
+      <md-datepicker ng-if="ctrl.timetype=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="mindate" md-mode="month"></md-datepicker>
+      <md-datepicker ng-if="ctrl.timetype!=='month'" ng-model="ctrl.myDate" md-placeholder="Enter date" md-min-date="mindate"></md-datepicker>
     </div>
   </md-toolbar>
   <div style="position:absolute;right:00px;top:123px;z-index:100">
@@ -130,39 +131,11 @@
         <button type="button" ng-click="mutate.Power2Gas" style="width:50px;background-color:white;border:1px solid black" ng-model-options='{ debounce: 200 }' value="click" ng-mouseover="setOriginal()" ng-mouseout="setModified()">orig</button>
       </md-input-container>
   </div>
-<!--
-  <md-radio-group ng-model="ctrl.timetype" style="position:absolute;right:200px;top:73px;z-index:100" layout="row">
-    <md-radio-button value="day" class="md-primary">day</md-radio-button>
-    <md-radio-button value="week"> week </md-radio-button>
-    <md-radio-button value="month">month</md-radio-button>
-  </md-radio-group>
--->
-  <md-button class="md-raised" style="position:absolute;right:10px;top:60px" ng-click="nextDay(true)">
-<!--
-    Keep {{-ctrl.pumpsurplus | number:1}} GWh {{ctrl.money.Solar | currency:"€"}}
-    <md-icon ng-bind="'navigate_next'"></md-icon>
--->
-    {{ctrl.money.Solar | currency:"€"}}
-    {{ctrl.averagePrice.Solar | currency:"€"}}
-  </md-button>
-
-  <!--
-    <hydrostorage date="ctrl.date" ctrl="ctrl"></hydrostorage>
-    <electrolysis date="ctrl.date" ctrl="ctrl" totals="totals"></electrolysis>
--->
-
-  <div style="position:absolute;top:200px;right:10px">
-    <!--
-          <sum ctrl="ctrl" sources="sources"></sum>
--->
-  </div>
-  <md-tabs ng-if="initialized" md-dynamic-height md-border-bottom md-selected="ctrl.activeTab" x="{{activeTab}}">
+ <md-tabs ng-if="initialized" md-dynamic-height md-border-bottom md-selected="ctrl.activeTab" x="{{activeTab}}">
     <md-tab label="Power"> </md-tab>
     <md-tab label="Diff"> </md-tab>
-    <md-tab label="Fill Level"></md-tab>
     <md-tab label="Energy"> </md-tab>
     <md-tab label="Statistics"> </md-tab>
-    <md-tab label="bill"> </md-tab>
     <md-tab label="installed"></md-tab>
 <!--
     <md-tab label="Publish">
@@ -243,8 +216,10 @@
 <div style="margin-right:50px">
   <chart ng-if="ctrl.activeTab == 0" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ></chart>
   <diffchart ng-if="ctrl.activeTab == 1" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></diffchart>
+  <!--
   <filllevel ng-if="ctrl.activeTab == 2" ctrl="ctrl" totals="totals" viewdata="viewdata" data="data" ng-if="viewdata"></filllevel>
-  <md-content ng-if="ctrl.activeTab == 3" class="md-padding">
+  -->
+  <md-content ng-if="ctrl.activeTab == 2" class="md-padding">
         <delta ctrl="ctrl" sources="sources"></delta>
         <br/> <br/> <br/> <br/> <br/> <br/>
         <br/> <br/> <br/> <br/> <br/> <br/>
@@ -275,7 +250,7 @@
         </table>
         {{sources|json}}
   </md-content>
-  <md-content  ng-if="ctrl.activeTab == 4"  class="md-padding">
+  <md-content  ng-if="ctrl.activeTab == 3"  class="md-padding">
         <pie type="'Tabelle1'" year="'Summe'" thetitle="'Total'" mutate="mutate"></pie>
         <pie type="'Tabelle1'" year="'Traktion'" thetitle="'Verkehr'" mutate="mutate"></pie>
         <pie type="'Tabelle1'" year="'Raumheizung und Klimaanlagen'" thetitle="'Raumheizung und Klimaanlagen'" mutate="mutate"></pie>
@@ -294,10 +269,12 @@
         <pie type="'Erneuerbare'" year="'2016'"></pie>
  
   </md-content>
+  <!--
   <md-content  ng-if="ctrl.activeTab == 5"  class="md-padding">
   <bill  ctrl="ctrl" sources="sources" mutate="mutate" totals="totals"></bill>
   </md-content>
-  <installed  ng-if="ctrl.activeTab == 6"  ctrl="ctrl" sources="sources" mutate="mutate" activeTab="activeTab"></installed>
+-->
+  <installed  ng-if="ctrl.activeTab == 4"  ctrl="ctrl" sources="sources" mutate="mutate" activeTab="activeTab"></installed>
 </div>
   <!--
 <pre>{{originalTotal|json}}</pre>

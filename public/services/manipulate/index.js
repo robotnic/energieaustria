@@ -63,6 +63,9 @@ angular.module('manipulate', ["CreateCharts", "LoadShift", "TimeShift"])
 
     function waitTotals(callback){
       callbacks.push(callback);
+      if(allTotals) {
+        callback(allTotals);
+      }
     }
 
     function getTotals(){

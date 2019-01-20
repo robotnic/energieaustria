@@ -21,6 +21,7 @@ angular.module('delta', ['nvd3', 'energiecharts', 'manipulate'])
           }, true);
 
           function start() {
+            console.log('waiting for totals');
             manipulator.waitTotals(function(totals){
               $scope.data.length = 0;
               makeChart(totals, 'original');

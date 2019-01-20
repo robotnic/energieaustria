@@ -19,8 +19,8 @@ angular.module('LoadShift',['totalinstalled'])
       console.log('no data for loadshift');
       return;
     }
-    ctrl.money = {};
-    ctrl.averagePrice = {};
+    //ctrl.money = {};
+    //ctrl.averagePrice = {};
     chartsByName={};
     data.forEach(function(chart){
       chartsByName[chart.key] = chart;
@@ -95,8 +95,8 @@ angular.module('LoadShift',['totalinstalled'])
       if (totalValue) {
         console.log('Unused Energie', chart.key, totalValue, multiplier);
       }
-      ctrl.money[chart.key] = moneyValue * 1000;
-      ctrl.averagePrice[chart.key] = moneyValue / totalValue;
+      //ctrl.money[chart.key] = moneyValue * 1000;
+      //ctrl.averagePrice[chart.key] = moneyValue / totalValue;
     }
 
     function addToTotal(name, type, delta,i,x){

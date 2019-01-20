@@ -1,9 +1,9 @@
-var app = angular.module('plunker', ['charts','config','diffcharts','filllevel','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial', 'totalinstalled', 'eventHandler']);
+var app = angular.module('plunker', ['charts','config','diffcharts','filllevel','pie','hydrostorage','delta','sum','bill','installed', 'electrolysis', 'ngMaterial', 'totalinstalled', 'eventHandler', 'deep']);
 app.config(function($mdAriaProvider) {
    // Globally disables all ARIA warnings.
    $mdAriaProvider.disableWarnings();
 });
-app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalInstalledFactory, eventHandler) {
+app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalInstalledFactory, eventHandler, deeplinker) {
 
   function initialize() {
     totalInstalledFactory.init().then(function(){
@@ -13,9 +13,9 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalI
   initialize();
 
 
+  $scope.mindate = new Date('2015-01-01');
   $scope.ctrl = {
-    date: new Date(),
-    mindate: new Date('2015-01-01'),
+    date: moment().format('YYYYMMDD'),
     timetype: 'day',
     layercode: '0111111111111111111111',
     keep: false
@@ -32,7 +32,7 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalI
 
 
 
-
+/*
   console.log('hallo', $location.hash());
   var hashParts=$location.hash().split(';');
   if(hashParts[0]){
@@ -51,6 +51,7 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalI
   if(hashParts[4]){
     $scope.ctrl.activeTab=hashParts[4];
   }
+  */
 
   function readMutation(mutateString){
     console.log('readMutate');
@@ -106,12 +107,17 @@ app.controller('MainCtrl', function($scope, dataManager,$location, $http, totalI
     if (newvalue) {
       eventHandler.date(newvalue, oldvalue, $scope.ctrl);
     }
+    deeplinker.link('ctrl', $scope.ctrl);
   }, true);
   $scope.$watch('mutate',function(value){
-      $scope.viewdata = eventHandler.mutate($scope.mutate, $scope.source, $scope.ctrl);
+    $scope.viewdata = eventHandler.mutate($scope.mutate, $scope.source, $scope.ctrl);
+    deeplinker.link('mutate', $scope.mutate);
   }, true);
 
   function init(reload, original){
+    console.log($scope);
+    var hashData = deeplinker.parse($scope);
+    console.log('got', hashData);
     eventHandler.init($scope.ctrl, $scope.mutate, reload).then(function(result){
       $scope.original = result.data;
       $scope.viewdata = result.viewdata;
